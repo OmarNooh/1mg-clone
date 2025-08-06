@@ -1,12 +1,50 @@
-# React + Vite
+# 1mg Clone - Online Pharmacy Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
+This project is a clone of the 1mg online pharmacy platform, built with React and Vite. It features a comprehensive e-commerce experience for pharmaceutical products, health services, and medical information.
 
-Currently, two official plugins are available:
+## Features
+- Product browsing and search functionality
+- Shopping cart and checkout process
+- User authentication and account management
+- Admin dashboard with data visualization
+- Responsive design for all device sizes
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
+- React
+- Vite
+- CSS Modules
+- React Router
+- React Icons
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Prerequisites
+- Node.js (v14 or higher)
+- npm or yarn
+
+### Installation
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/1mg-clone.git
+
+# Navigate to project directory
+cd 1mg-clone
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+## Project Structure
+- `/src` - Source code
+  - `/components` - Reusable UI components
+  - `/pages` - Page components
+  - `/contexts` - React context providers
+  - `/data` - Mock data for development
+  - `/styles` - Global styles
+
+## Admin Dashboard
+The admin dashboard provides analytics and management tools for products, orders, and users. It features interactive charts and data visualization components.
