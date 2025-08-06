@@ -1,0 +1,290 @@
+.comparePage {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.compareHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.compareTitle {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #0071dc;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.backButton:hover {
+  text-decoration: underline;
+}
+
+.clearButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 15px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  background-color: #fff0f0;
+  color: #e41e3f;
+  border: 1px solid #ffccd1;
+  transition: all 0.2s ease;
+}
+
+.clearButton:hover {
+  background-color: #ffe0e0;
+}
+
+.emptyCompare {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  margin: 40px auto;
+  max-width: 600px;
+}
+
+.emptyMessage h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.emptyMessage p {
+  color: #666;
+  margin-bottom: 20px;
+  max-width: 400px;
+}
+
+.shopNowButton {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #0071dc;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.shopNowButton:hover {
+  background-color: #005eb8;
+}
+
+.compareTable {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.compareRow {
+  display: flex;
+  border-bottom: 1px solid #eee;
+}
+
+.compareRow:last-child {
+  border-bottom: none;
+}
+
+.attributeCell {
+  width: 200px;
+  padding: 15px;
+  background-color: #f8f8f8;
+  border-right: 1px solid #eee;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+
+.productCell, .valueCell {
+  flex: 1;
+  padding: 15px;
+  text-align: center;
+  border-right: 1px solid #eee;
+  min-width: 180px;
+}
+
+.productCell:last-child, .valueCell:last-child {
+  border-right: none;
+}
+
+.productImage {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.productImage img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.removeButton {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #fff;
+  border: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  color: #666;
+  transition: all 0.2s ease;
+}
+
+.removeButton:hover {
+  background-color: #ffebee;
+  color: #e41e3f;
+  border-color: #ffccd1;
+}
+
+.productName {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  text-decoration: none;
+  margin-bottom: 5px;
+  display: block;
+  line-height: 1.4;
+}
+
+.productName:hover {
+  color: #0071dc;
+}
+
+.productManufacturer {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.productPrice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.discountedPrice {
+  font-size: 16px;
+  font-weight: 600;
+  color: #0071dc;
+}
+
+.originalPrice {
+  font-size: 14px;
+  color: #999;
+  text-decoration: line-through;
+}
+
+.addToCartButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 15px;
+  background-color: #0071dc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin: 0 auto;
+}
+
+.addToCartButton:hover {
+  background-color: #005eb8;
+}
+
+/* Highlight differences */
+.valueCell.different {
+  background-color: #fff9e6;
+}
+
+.valueCell.better {
+  background-color: #e6f7e6;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .compareHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .compareTable {
+    display: block;
+    overflow-x: auto;
+  }
+  
+  .attributeCell {
+    min-width: 120px;
+    width: 120px;
+  }
+  
+  .productCell, .valueCell {
+    min-width: 150px;
+  }
+  
+  .productImage {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+@media (max-width: 480px) {
+  .compareTitle {
+    font-size: 20px;
+  }
+  
+  .attributeCell {
+    min-width: 100px;
+    width: 100px;
+    padding: 10px;
+  }
+  
+  .productCell, .valueCell {
+    min-width: 130px;
+    padding: 10px;
+  }
+}

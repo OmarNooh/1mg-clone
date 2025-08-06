@@ -1,0 +1,90 @@
+.wishlistButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 6px 10px;
+  border-radius: 4px;
+  color: #666;
+}
+
+.wishlistButton:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.wishlistButton.active {
+  color: #e41e3f;
+}
+
+.wishlistButton.active:hover {
+  color: #c41834;
+}
+
+.icon {
+  transition: transform 0.3s ease;
+}
+
+.animate .icon {
+  transform: scale(1.3);
+}
+
+.buttonText {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Size variants */
+.small {
+  font-size: 14px;
+}
+
+.medium {
+  font-size: 16px;
+}
+
+.large {
+  font-size: 18px;
+}
+
+/* When used on product cards */
+.onCard {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.onCard:hover {
+  background-color: rgba(255, 255, 255, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .buttonText {
+    font-size: 12px;
+  }
+  
+  .small {
+    font-size: 12px;
+  }
+  
+  .medium {
+    font-size: 14px;
+  }
+  
+  .large {
+    font-size: 16px;
+  }
+}

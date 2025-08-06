@@ -1,0 +1,509 @@
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { 
+  FaArrowRight, FaTag, FaFlask, FaStethoscope, FaPercent, FaShieldAlt, 
+  FaHeart, FaRegHeart, FaStar, FaShippingFast, FaUserMd, FaTablets,
+  FaClinicMedical, FaSearch, FaChevronRight, FaMapMarkerAlt, FaClock,
+  FaShoppingCart, FaRegClock, FaFire, FaGift, FaThumbsUp, FaCheckCircle
+} from 'react-icons/fa';
+import { useWishlist } from '../../contexts/WishlistContext';
+import { useCart } from '../../context/CartContext';
+import HeroBanner from '../../components/HeroBanner/HeroBanner';
+import CategorySection from '../../components/CategorySection/CategorySection';
+import ProductCarousel from '../../components/ProductCarousel/ProductCarousel';
+import OfferBanner from '../../components/OfferBanner/OfferBanner';
+import LabTestsSection from '../../components/LabTestsSection/LabTestsSection';
+import DoctorsSection from '../../components/DoctorsSection/DoctorsSection';
+import HealthConcerns from '../../components/HealthConcerns/HealthConcerns';
+import BrandsSection from '../../components/BrandsSection/BrandsSection';
+import DownloadApp from '../../components/DownloadApp/DownloadApp';
+import AddToCartButton from '../../components/AddToCartButton/AddToCartButton';
+import styles from './Home.module.css';
+
+// Import mock data
+import { products } from '../../data/products';
+import { categories } from '../../data/categories';
+import { offers } from '../../data/offers';
+import { doctors } from '../../data/doctors';
+
+const Home = () => {
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const { addToCart } = useCart();
+  const [recentlyViewed, setRecentlyViewed] = useState([]);
+  const [recommendedForYou, setRecommendedForYou] = useState([]);
+  const [timeLeft, setTimeLeft] = useState({ hours: 5, minutes: 59, seconds: 59 });
+  const [showSearchPanel, setShowSearchPanel] = useState(false);
+  
+  // Filter products by category for different sections
+  const featuredProducts = products.slice(0, 8);
+  const trendingProducts = [...products].sort(() => 0.5 - Math.random()).slice(0, 8);
+  const ayurvedaProducts = products.filter(product => product.category === 'ayurveda').slice(0, 8);
+  const topDeals = [...products].sort((a, b) => (b.mrp - b.discountedPrice) - (a.mrp - a.discountedPrice)).slice(0, 8);
+  const healthDevices = products.filter(product => product.category === 'healthcare').slice(0, 8);
+  const personalCare = products.filter(product => product.category === 'personal-care').slice(0, 8);
+  const flashDeals = [...products]
+    .sort((a, b) => ((b.mrp - b.discountedPrice) / b.mrp) - ((a.mrp - a.discountedPrice) / a.mrp))
+    .slice(0, 6);
+  
+  // Countdown timer for flash deals
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev.seconds > 0) {
+          return { ...prev, seconds: prev.seconds - 1 };
+        } else if (prev.minutes > 0) {
+          return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
+        } else if (prev.hours > 0) {
+          return { hours: prev.hours - 1, minutes: 59, seconds: 59 };
+        } else {
+          // Reset timer when it reaches zero
+          return { hours: 5, minutes: 59, seconds: 59 };
+        }
+      });
+    }, 1000);
+    
+    return () => clearInterval(timer);
+  }, []);
+  
+  // Simulate recently viewed products
+  useEffect(() => {
+    // In a real app, this would come from user browsing history
+    setRecentlyViewed(products.slice(10, 18));
+    setRecommendedForYou(products.slice(18, 26));
+  }, []);
+  
+  // Quick links for 1mg-style navigation
+  const quickLinks = [
+    { icon: <FaTablets />, title: 'Medicines', link: '/medicines' },
+    { icon: <FaFlask />, title: 'Lab Tests', link: '/lab-tests' },
+    { icon: <FaUserMd />, title: 'Doctors', link: '/doctors' },
+    { icon: <FaClinicMedical />, title: 'Health Packages', link: '/health-packages' },
+    { icon: <FaShippingFast />, title: 'Express Delivery', link: '/express-delivery' },
+    { icon: <FaPercent />, title: 'Offers', link: '/offers' }
+  ];
+  
+  // Health concerns categories
+  const healthConcerns = [
+    { name: 'Diabetes Care', image: 'https://onemg.gumlet.io/a_ignore,w_150,h_150,c_fit,q_auto,f_auto/c2a0598f-483c-48ff-9783-71e402aa28d3.png' },
+    { name: 'Cardiac Care', image: 'https://onemg.gumlet.io/a_ignore,w_150,h_150,c_fit,q_auto,f_auto/ab1da5f4-c074-47d2-b278-a5fbd2c93f1f.png' },
+    { name: 'Stomach Care', image: 'https://onemg.gumlet.io/a_ignore,w_150,h_150,c_fit,q_auto,f_auto/702457a8-ff7d-43a6-bd1d-6bcb278ce686.png' },
+    { name: 'Liver Care', image: 'https://onemg.gumlet.io/a_ignore,w_150,h_150,c_fit,q_auto,f_auto/995e64ba-5bd9-42bc-8db6-5dc0b821c89d.png' },
+    { name: 'Bone & Joint Care', image: 'https://onemg.gumlet.io/a_ignore,w_150,h_150,c_fit,q_auto,f_auto/ba975795-98dc-4cd8-8b55-3c20230d70e3.png' },
+    { name: 'Kidney Care', image: 'https://onemg.gumlet.io/a_ignore,w_150,h_150,c_fit,q_auto,f_auto/e77d5099-d905-4462-ab9d-b51802e3738b.png' },
+    { name: 'Respiratory Care', image: 'https://onemg.gumlet.io/a_ignore,w_150,h_150,c_fit,q_auto,f_auto/fa7ff8e9-f1f8-4a3e-9125-c9b36bcf38cd.png' },
+    { name: 'Eye Care', image: 'https://onemg.gumlet.io/a_ignore,w_150,h_150,c_fit,q_auto,f_auto/631e3dca-3d5b-49f8-832b-8341ec4784e7.png' }
+  ];
+  
+  // Handle wishlist toggle
+  const handleWishlistToggle = (product) => {
+    if (isInWishlist(product.id)) {
+      removeFromWishlist(product.id);
+      // Show feedback to user
+      showToast('Removed from wishlist');
+    } else {
+      addToWishlist(product);
+      // Show feedback to user
+      showToast('Added to wishlist');
+    }
+  };
+  
+  // Handle add to cart
+  const handleAddToCart = (product) => {
+    addToCart(product);
+    // Show feedback to user
+    showToast(`${product.name} added to cart`);
+  };
+  
+  // Handle buy now
+  const handleBuyNow = (product) => {
+    addToCart(product);
+    // In a real app, this would navigate to checkout
+    // history.push('/checkout');
+    showToast('Proceeding to checkout...');
+  };
+  
+  // Simple toast notification (would be replaced with a proper toast component)
+  const showToast = (message) => {
+    console.log(message); // For now, just log to console
+    // In a real app, this would show a toast notification
+  };
+  
+  return (
+    <div className={styles.homePage}>
+      {/* Hero Banner with Floating Search Panel */}
+      <div className={styles.heroBannerContainer}>
+        <HeroBanner />
+        
+        {/* Floating Search Panel */}
+        <div className={styles.floatingSearchPanel}>
+          <div className={styles.searchPanelContent}>
+            <h2>Find Medicines & Health Products</h2>
+            <div className={styles.searchInputWrapper}>
+              <input 
+                type="text" 
+                className={styles.searchInput} 
+                placeholder="Search for medicines, health products and more"
+                onFocus={() => setShowSearchPanel(true)}
+                onBlur={() => setTimeout(() => setShowSearchPanel(false), 200)}
+              />
+              <button className={styles.searchButton}>
+                <FaSearch className={styles.searchIcon} /> Search
+              </button>
+            </div>
+            
+            {showSearchPanel && (
+              <div className={styles.trendingSearches}>
+                <h4>Trending Searches</h4>
+                <div className={styles.popularSearches}>
+                  <span>Diabetes Care</span>
+                  <span>Vitamin D3</span>
+                  <span>N95 Masks</span>
+                  <span>BP Monitor</span>
+                  <span>Immunity Boosters</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+      
+      {/* Quick Links */}
+      <section className={styles.quickLinksSection}>
+        <div className={styles.container}>
+          <div className={styles.quickLinksWrapper}>
+            {quickLinks.map((link, index) => (
+              <Link key={index} to={link.link} className={styles.quickLink}>
+                <div className={styles.quickLinkIcon}>
+                  {link.icon}
+                </div>
+                <span className={styles.quickLinkTitle}>{link.title}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+      
+      {/* Flash Deals - Walmart/Amazon style */}
+      <section className={styles.flashDealsSection}>
+        <div className={styles.container}>
+          <div className={styles.flashDealsHeader}>
+            <div className={styles.flashDealsTitle}>
+              <FaFire className={styles.fireIcon} />
+              <h2>Flash Deals</h2>
+              <div className={styles.countdownTimer}>
+                <span>Ends in: </span>
+                <div className={styles.timeUnit}>{String(timeLeft.hours).padStart(2, '0')}</div>
+                <span>:</span>
+                <div className={styles.timeUnit}>{String(timeLeft.minutes).padStart(2, '0')}</div>
+                <span>:</span>
+                <div className={styles.timeUnit}>{String(timeLeft.seconds).padStart(2, '0')}</div>
+              </div>
+            </div>
+            <Link to="/flash-deals" className={styles.viewAllLink}>
+              VIEW ALL <FaArrowRight className={styles.arrowIcon} />
+            </Link>
+          </div>
+          
+          <div className={styles.flashDealsGrid}>
+            {flashDeals.map(product => (
+              <div key={product.id} className={styles.flashDealCard}>
+                <div className={styles.discountBadge}>
+                  {Math.round(((product.mrp - product.discountedPrice) / product.mrp) * 100)}% OFF
+                </div>
+                
+                <button 
+                  className={styles.wishlistButton}
+                  onClick={() => handleWishlistToggle(product)}
+                  aria-label={isInWishlist(product.id) ? "Remove from wishlist" : "Add to wishlist"}
+                >
+                  {isInWishlist(product.id) ? 
+                    <FaHeart className={styles.heartIconActive} /> : 
+                    <FaRegHeart className={styles.heartIcon} />}
+                </button>
+                
+                <Link to={`/product/${product.id}`} className={styles.productImageLink}>
+                  <div className={styles.productImage}>
+                    <img src={product.image} alt={product.name} />
+                  </div>
+                </Link>
+                
+                <div className={styles.productInfo}>
+                  <Link to={`/product/${product.id}`} className={styles.productNameLink}>
+                    <h3 className={styles.productName}>{product.name}</h3>
+                  </Link>
+                  <p className={styles.productManufacturer}>{product.manufacturer}</p>
+                  
+                  <div className={styles.productRating}>
+                    <div className={styles.ratingValue}>
+                      {product.rating || 4.5}
+                      <FaStar className={styles.starIcon} />
+                    </div>
+                    <span className={styles.ratingCount}>({product.ratingCount || Math.floor(Math.random() * 500) + 50})</span>
+                  </div>
+                  
+                  <div className={styles.productPricing}>
+                    <span className={styles.discountedPrice}>₹{product.discountedPrice}</span>
+                    <span className={styles.mrp}>₹{product.mrp}</span>
+                  </div>
+                  
+                  <div className={styles.stockInfo}>
+                    <span><FaCheckCircle /> In Stock</span>
+                  </div>
+                  
+                  <div className={styles.productActions}>
+                    <button 
+                      className={styles.addToCartButton}
+                      onClick={() => handleAddToCart(product)}
+                    >
+                      <FaShoppingCart /> Add to Cart
+                    </button>
+                    <button 
+                      className={styles.buyNowButton}
+                      onClick={() => handleBuyNow(product)}
+                    >
+                      Buy Now
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      
+      {/* Enhanced Featured Products */}
+      <section className={styles.section}>
+        <div className={styles.container}>
+          <div className={styles.enhancedSectionHeader}>
+            <div className={styles.sectionTitleGroup}>
+              <h2>Featured Products</h2>
+              <span className={styles.sectionSubtitle}>Handpicked for your health needs</span>
+            </div>
+            <Link to="/products" className={styles.viewAllLink}>
+              VIEW ALL <FaArrowRight className={styles.arrowIcon} />
+            </Link>
+          </div>
+          
+          <div className={styles.enhancedProductGrid}>
+            {featuredProducts.map(product => (
+              <div key={product.id} className={styles.enhancedProductCard}>
+                <div className={styles.discountBadge}>
+                  {Math.round(((product.mrp - product.discountedPrice) / product.mrp) * 100)}% OFF
+                </div>
+                
+                <button 
+                  className={styles.wishlistButton}
+                  onClick={() => handleWishlistToggle(product)}
+                  aria-label={isInWishlist(product.id) ? "Remove from wishlist" : "Add to wishlist"}
+                >
+                  {isInWishlist(product.id) ? 
+                    <FaHeart className={styles.heartIconActive} /> : 
+                    <FaRegHeart className={styles.heartIcon} />}
+                </button>
+                
+                <Link to={`/product/${product.id}`} className={styles.productImageLink}>
+                  <div className={styles.productImage}>
+                    <img src={product.image} alt={product.name} />
+                  </div>
+                </Link>
+                
+                <div className={styles.enhancedProductInfo}>
+                  <Link to={`/product/${product.id}`} className={styles.productNameLink}>
+                    <h3 className={styles.productName}>{product.name}</h3>
+                  </Link>
+                  <p className={styles.productManufacturer}>{product.manufacturer}</p>
+                  
+                  <div className={styles.productRating}>
+                    <div className={styles.ratingValue}>
+                      {product.rating || 4.5}
+                      <FaStar className={styles.starIcon} />
+                    </div>
+                    <span className={styles.ratingCount}>({product.ratingCount || Math.floor(Math.random() * 500) + 50})</span>
+                  </div>
+                  
+                  <div className={styles.enhancedProductPricing}>
+                    <div className={styles.priceGroup}>
+                      <span className={styles.discountedPrice}>₹{product.discountedPrice}</span>
+                      <span className={styles.mrp}>₹{product.mrp}</span>
+                    </div>
+                    <div className={styles.discountBadgeInline}>
+                      {Math.round(((product.mrp - product.discountedPrice) / product.mrp) * 100)}% OFF
+                    </div>
+                  </div>
+                  
+                  <div className={styles.productActions}>
+                    <button 
+                      className={styles.addToCartButton}
+                      onClick={() => handleAddToCart(product)}
+                    >
+                      <FaShoppingCart /> Add to Cart
+                    </button>
+                    <button 
+                      className={styles.buyNowButton}
+                      onClick={() => handleBuyNow(product)}
+                    >
+                      Buy Now
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      
+      {/* Enhanced Offer Banners */}
+      <section className={styles.enhancedOfferSection}>
+        <div className={styles.container}>
+          <div className={styles.enhancedSectionHeader}>
+            <div className={styles.sectionTitleGroup}>
+              <h2>Special Offers</h2>
+              <span className={styles.sectionSubtitle}>Exclusive deals for you</span>
+            </div>
+          </div>
+          
+          <div className={styles.offerBannerGrid}>
+            <div className={styles.offerBannerLarge}>
+              <img src="https://onemg.gumlet.io/a_ignore,w_899,h_200,c_fit,q_auto,f_auto/24eabd3a-0eb3-485a-b43d-ace7f6d310a0.png" alt="Special Offer" />
+            </div>
+            <div className={styles.offerBannerSmall}>
+              <img src="https://onemg.gumlet.io/a_ignore,w_480,h_200,c_fit,q_auto,f_auto/c3e1b1e5-a515-4e9d-9131-9e1861e1c5e5.png" alt="Diabetes Care" />
+            </div>
+            <div className={styles.offerBannerSmall}>
+              <img src="https://onemg.gumlet.io/a_ignore,w_480,h_200,c_fit,q_auto,f_auto/6f337f1e-1a79-4103-b5ff-3f69fb4e1c41.png" alt="Health Checkups" />
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      {/* Health Concerns - 1mg style with enhanced UI */}
+      <section className={styles.section}>
+        <div className={styles.container}>
+          <div className={styles.enhancedSectionHeader}>
+            <div className={styles.sectionTitleGroup}>
+              <h2>Shop by Health Concerns</h2>
+              <span className={styles.sectionSubtitle}>Find products for specific health needs</span>
+            </div>
+            <Link to="/health-concerns" className={styles.viewAllLink}>
+              VIEW ALL <FaArrowRight className={styles.arrowIcon} />
+            </Link>
+          </div>
+          
+          <div className={styles.healthConcernsGrid}>
+            {healthConcerns.map((concern, index) => (
+              <div key={index} className={styles.healthConcernCard}>
+                <Link to={`/health-concern/${concern.name.toLowerCase().replace(/\s+/g, '-')}`} className={styles.healthConcernLink}>
+                  <div className={styles.healthConcernImage}>
+                    <img src={concern.image} alt={concern.name} />
+                  </div>
+                  <h3 className={styles.healthConcernName}>{concern.name}</h3>
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      
+      {/* Trending Products - 1mg style with enhanced UI */}
+      <section className={styles.trendingSection}>
+        <div className={styles.container}>
+          <div className={styles.enhancedSectionHeader}>
+            <div className={styles.sectionTitleGroup}>
+              <h2>Trending Now</h2>
+              <span className={styles.sectionSubtitle}>Most popular products this week</span>
+            </div>
+            <Link to="/trending" className={styles.viewAllLink}>
+              VIEW ALL <FaArrowRight className={styles.arrowIcon} />
+            </Link>
+          </div>
+          
+          <div className={styles.trendingProductsCarousel}>
+            <ProductCarousel products={trendingProducts} />
+          </div>
+        </div>
+      </section>
+      
+      {/* Lab Tests Section - 1mg style with enhanced UI */}
+      <section className={styles.labTestsSection}>
+        <div className={styles.container}>
+          <div className={styles.enhancedSectionHeader}>
+            <div className={styles.sectionTitleGroup}>
+              <h2>Popular Lab Tests</h2>
+              <span className={styles.sectionSubtitle}>Accurate diagnostics at affordable prices</span>
+            </div>
+            <Link to="/lab-tests" className={styles.viewAllLink}>
+              VIEW ALL <FaArrowRight className={styles.arrowIcon} />
+            </Link>
+          </div>
+          
+          <LabTestsSection />
+        </div>
+      </section>
+      
+      {/* Recently Viewed - Amazon style */}
+      {recentlyViewed.length > 0 && (
+        <section className={styles.recentlyViewedSection}>
+          <div className={styles.container}>
+            <div className={styles.sectionHeader}>
+              <h2>Recently Viewed</h2>
+            </div>
+            
+            <div className={styles.recentlyViewedGrid}>
+              {recentlyViewed.map(product => (
+                <Link key={product.id} to={`/product/${product.id}`} className={styles.recentlyViewedItem}>
+                  <div className={styles.recentlyViewedImage}>
+                    <img src={product.image} alt={product.name} />
+                  </div>
+                  <h4 className={styles.recentlyViewedName}>{product.name}</h4>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+      
+      {/* Consult Doctors - 1mg style with enhanced UI */}
+      <section className={styles.doctorsSection}>
+        <div className={styles.container}>
+          <div className={styles.enhancedSectionHeader}>
+            <div className={styles.sectionTitleGroup}>
+              <h2>Consult Top Doctors</h2>
+              <span className={styles.sectionSubtitle}>Connect with specialists online</span>
+            </div>
+            <Link to="/doctors" className={styles.viewAllLink}>
+              VIEW ALL <FaArrowRight className={styles.arrowIcon} />
+            </Link>
+          </div>
+          
+          <DoctorsSection doctors={doctors.slice(0, 4)} />
+        </div>
+      </section>
+      
+      {/* Top Brands - Enhanced UI */}
+      <section className={styles.brandsSection}>
+        <div className={styles.container}>
+          <div className={styles.enhancedSectionHeader}>
+            <div className={styles.sectionTitleGroup}>
+              <h2>Top Brands</h2>
+              <span className={styles.sectionSubtitle}>Quality products from trusted manufacturers</span>
+            </div>
+            <Link to="/brands" className={styles.viewAllLink}>
+              VIEW ALL <FaArrowRight className={styles.arrowIcon} />
+            </Link>
+          </div>
+          
+          <BrandsSection />
+        </div>
+      </section>
+      
+      {/* Enhanced Download App Banner */}
+      <section className={styles.downloadAppSection}>
+        <div className={styles.container}>
+          <DownloadApp />
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default Home;

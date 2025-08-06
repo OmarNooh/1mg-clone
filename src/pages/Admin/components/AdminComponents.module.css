@@ -1,0 +1,1051 @@
+/* Common styles for admin components */
+.overview,
+.productManagement,
+.orderManagement,
+.userManagement,
+.analytics,
+.settings {
+  width: 100%;
+  background-color: #F7F7F7;
+  padding: 20px;
+  border: none;
+}
+
+/* Dashboard Header */
+.dashboardHeader {
+  margin-bottom: 30px;
+}
+
+.welcomeSection {
+  margin-bottom: 30px;
+}
+
+.welcomeText {
+  font-size: 24px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.headerActions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Style all action buttons */
+.actionButton {
+  background-color: #F2F2F2;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 12px 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #0E63DA;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+/* Style the first action button */
+.actionButton:first-child {
+  background-color: #006AFF;
+  color: white;
+  border-color: #006AFF;
+}
+
+.actionButton:first-child:hover {
+  background-color: #0052cc;
+  border-color: #0052cc;
+}
+
+/* Hover effect for other action buttons */
+.actionButton:not(:first-child):hover {
+  background-color: #f5f5f5;
+}
+
+.moreButton {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+}
+
+.performanceSection {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  margin-bottom: 24px;
+}
+
+.performanceTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 20px 0;
+  text-align: left;
+}
+
+.filterSection {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  position: relative;
+}
+
+.filterButton {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 8px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.filterButton:hover {
+  background-color: #f9f9f9;
+  border-color: #ccc;
+}
+
+.filterButtonLabel {
+  font-size: 14px;
+  color: #666;
+}
+
+.filterButtonValue {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+
+/* Calendar Dropdown Styles */
+.calendarDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 470px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  display: flex;
+  overflow: hidden;
+}
+
+.calendarSidebar {
+  width: 150px;
+  background-color: #f5f7fa;
+  padding: 16px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.calendarOption {
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.calendarOption:hover {
+  background-color: #e5effe;
+}
+
+.customOption {
+  background-color: #e9f2ff;
+  border: none;
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #0070e0;
+  cursor: pointer;
+  margin-top: auto;
+  transition: all 0.2s;
+}
+
+.customOption:hover {
+  background-color: #d0e5ff;
+}
+
+.calendarContent {
+  flex: 1;
+  padding: 16px;
+}
+
+.calendarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.calendarTitle {
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.calendarNavButton {
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: #666;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.calendarNavButton:hover {
+  background-color: #f0f0f0;
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.monthGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 8px;
+}
+
+.monthItem {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.monthItem:hover {
+  background-color: #f0f0f0;
+}
+
+.selectedMonth {
+  background-color: #006AFF !important;
+  color: white;
+}
+
+.yearGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 8px;
+}
+
+.yearItem {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.yearItem:hover {
+  background-color: #f0f0f0;
+}
+
+.selectedYear {
+  background-color: #006AFF !important;
+  color: white;
+}
+
+.calendarDay {
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.calendarDay:nth-child(-n+7) {
+  font-weight: 500;
+  color: #666;
+  cursor: default;
+}
+
+.calendarDay:not(:empty):not(:nth-child(-n+7)):hover {
+  background-color: #f0f0f0;
+}
+
+.selectedDay {
+  background-color: #006AFF !important;
+  color: white;
+}
+
+/* Checks Dropdown Styles */
+.checksDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 150px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.dropdownOption {
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.2s;
+}
+
+.dropdownOption:hover {
+  background-color: #f5f5f5;
+}
+
+.smallIcon {
+  font-size: 10px;
+}
+
+.metricsSection {
+  margin-top: 20px;
+}
+
+.metricsTitle {
+  font-size: 20px;
+  font-weight: 800;
+  color: #333;
+  margin-bottom: 16px;
+}
+
+.metricsSubtitle {
+  font-size: 14px;
+  font-weight: normal;
+  color: #666;
+}
+
+/* Stats Grid */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.statCard {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border-left: 4px solid;
+}
+
+.statIcon {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 15px;
+  color: white;
+  font-size: 20px;
+}
+
+.statInfo {
+  flex: 1;
+}
+
+.statValue {
+  font-size: 14px;
+  margin: 0 0 5px;
+  color: #333;
+}
+
+.statLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.9);
+  margin: 0;
+}
+
+/* Dashboard Row */
+.dashboardRow {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-bottom: 30px;
+  font-size: 14px;
+}
+
+.dashboardRow:last-child {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.dashboardColumn {
+  width: 100%;
+}
+
+/* Modern font smoothing */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.dashboardCard {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  height: 100%;
+}
+
+.cardHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  gap: 4px;
+}
+
+.cardHeader h2 {
+  font-size: 16px;
+  font-weight: 700; /* Make the header bolder */
+  margin: 0;
+  color: #333;
+  line-height: 1.2;
+}
+
+.cardSubtitle {
+  font-size: 12px;
+  color: #666;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.viewAllBtn {
+  background-color: transparent;
+  border: none;
+  color: #0071dc;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.viewAllBtn:hover {
+  text-decoration: underline;
+}
+
+/* Global styles */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* Table Styles */
+.tableContainer {
+  overflow-x: auto;
+}
+
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dataTable th,
+.dataTable td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.dataTable th {
+  font-weight: 600;
+  color: #666;
+  font-size: 14px;
+}
+
+.dataTable td {
+  font-size: 14px;
+  color: #333;
+  font-family: var(--font-family);
+}
+
+.status {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.delivered {
+  background-color: #e6f7ed;
+  color: #2a8703;
+}
+
+.processing {
+  background-color: #e6f0ff;
+  color: #0071dc;
+}
+
+.shipped {
+  background-color: #fff8e6;
+  color: #ffc220;
+}
+
+.cancelled {
+  background-color: #ffebee;
+  color: #e53935;
+}
+
+.completed {
+  background-color: #e6f7ed;
+  color: #2a8703;
+}
+
+.pending {
+  background-color: #f5f5f5;
+  color: #757575;
+}
+
+.returned {
+  background-color: #ede7f6;
+  color: #673ab7;
+}
+
+.lowStock {
+  color: #e91e63;
+  font-weight: 500;
+}
+
+/* Product Management */
+.productHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border-radius: 4px;
+  padding: 0 15px;
+  border: 1px solid #ddd;
+  width: 300px;
+}
+
+.searchBar input {
+  border: none;
+  padding: 10px 0;
+  flex: 1;
+  outline: none;
+  font-size: 14px;
+}
+
+.searchIcon {
+  color: #666;
+  margin-right: 10px;
+}
+
+.addButton {
+  background-color: #0071dc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.addButton:hover {
+  background-color: #005eb8;
+}
+
+.productGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.productCard {
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.productImage {
+  height: 180px;
+  background-color: #f8f8f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.productImage img {
+  max-height: 80%;
+  max-width: 80%;
+  object-fit: contain;
+}
+
+.productInfo {
+  padding: 15px;
+}
+
+.productName {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0 0 5px;
+  color: #333;
+}
+
+.productPrice {
+  font-size: 18px;
+  font-weight: 600;
+  color: #0071dc;
+  margin: 0 0 10px;
+}
+
+.productMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: #666;
+}
+
+.productActions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.editButton,
+.deleteButton {
+  padding: 8px 15px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+}
+
+.editButton {
+  background-color: #f8f8f8;
+  color: #333;
+}
+
+.deleteButton {
+  background-color: #ffebee;
+  color: #e91e63;
+}
+
+/* Form Styles */
+.formGroup {
+  margin-bottom: 20px;
+}
+
+.formLabel {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.formInput,
+.formTextarea,
+.formSelect {
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.formTextarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.cancelButton {
+  background-color: #f8f8f8;
+  color: #333;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.saveButton {
+  background-color: #0071dc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Customer Stats */
+.customerStats {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.customerStat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.customerStat:last-child {
+  border-bottom: none;
+}
+
+/* Payment Chart */
+.paymentChart {
+  margin-top: 20px;
+}
+
+.paymentBar {
+  height: 48px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.paymentTypes {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.paymentType {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.paymentColor {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.paymentName {
+  flex: 1;
+  font-size: 14px;
+  color: #333;
+  text-align: left;
+  margin-right: 20px;
+  min-width: 100px;
+}
+
+.paymentAmount {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin-right: 10px;
+}
+
+.paymentPercentage {
+  font-size: 14px;
+  color: #666;
+  width: 40px;
+  text-align: right;
+}
+
+/* Items Chart */
+.itemsChart {
+  margin-top: 20px;
+}
+
+.categoriesChart {
+  margin-top: 20px;
+  position: relative;
+}
+
+.barChartContainer {
+  height: 200px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+  background-color: #ffffff;
+  padding: 0 10px;
+  border: none;
+}
+
+.barChart {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+  gap: 4px;
+  padding: 0 10px;
+}
+
+.barChartBar {
+  width: calc((100% - 44px) / 12);
+  min-height: 4px;
+  border-radius: 2px 2px 0 0;
+  transition: all 0.3s ease;
+  position: relative;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+}
+
+.barChartBar:hover {
+  opacity: 0.85;
+  cursor: pointer;
+  transform: scaleY(1.02);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.barChartValue {
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  font-weight: 500;
+  color: #333;
+  white-space: nowrap;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 2px 5px;
+  border-radius: 3px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.barChartBar:hover .barChartValue {
+  opacity: 1;
+}
+
+.barChartAxis {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  position: absolute;
+  bottom: -25px;
+  left: 0;
+  font-size: 12px;
+  color: #999;
+  padding: 0 20px;
+}
+
+.itemsList {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 10px;
+  padding-top: 30px;
+}
+
+.categoriesList {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  padding-top: 30px;
+  flex: 1;
+  min-height: 0;
+  gap: 15px;
+}
+
+.itemRow {
+  display: grid;
+  grid-template-columns: 12px 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 30px;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s ease;
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.categoryRow {
+  display: grid;
+  grid-template-columns: 12px 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 30px;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s ease;
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.categoryRow:hover {
+  background-color: #f9f9f9;
+}
+
+.categoryRow:last-child {
+  border-bottom: none;
+}
+
+.itemColor {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+.categoryColor {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.itemName {
+  font-weight: 500;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 10px;
+  text-align: left;
+  font-size: 14px;
+  line-height: 22px;
+  letter-spacing: -0.01em;
+}
+
+.categoryName {
+  font-weight: 500;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 10px;
+  text-transform: none;
+  text-align: left;
+  font-size: 14px;
+  line-height: 22px;
+  letter-spacing: -0.01em;
+}
+
+.itemAmount {
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+  text-align: right;
+  min-width: 90px;
+  margin-right: 10px;
+  font-family: var(--font-family);
+}
+
+.categoryAmount {
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+  text-align: right;
+  min-width: 90px;
+  font-family: var(--font-family);
+  margin-right: 10px;
+}
+
+.itemQuantity {
+  font-size: 13px;
+  color: #666;
+  min-width: 35px;
+  text-align: right;
+  font-weight: 500;
+  font-family: var(--font-family);
+  letter-spacing: -0.01em;
+}
+
+.categoryQuantity {
+  font-size: 13px;
+  color: #666;
+  min-width: 35px;
+  text-align: right;
+  font-weight: 500;
+  font-family: var(--font-family);
+  letter-spacing: -0.01em;
+}
+
+/* Responsive styles */
+@media (max-width: 1024px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .dashboardRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .productHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .searchBar {
+    width: 100%;
+  }
+  
+  .productGrid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .productGrid {
+    grid-template-columns: 1fr;
+  }
+}

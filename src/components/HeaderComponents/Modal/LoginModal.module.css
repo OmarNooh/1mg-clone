@@ -1,0 +1,226 @@
+.loginContainer {
+  width: 100%;
+}
+
+.errorMessage {
+  background-color: rgba(255, 0, 0, 0.1);
+  color: #d32f2f;
+  padding: 10px;
+  border-radius: var(--border-radius-sm);
+  margin-bottom: 15px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.loginForm {
+  margin-bottom: 20px;
+}
+
+.formGroup {
+  margin-bottom: 16px;
+}
+
+.formGroup label {
+  display: block;
+  font-size: 14px;
+  color: var(--text-color);
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.inputWithIcon {
+  position: relative;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-light);
+  font-size: 16px;
+}
+
+.inputWithIcon input {
+  width: 100%;
+  padding: 12px 12px 12px 40px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+}
+
+.inputWithIcon input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(0, 113, 220, 0.2);
+}
+
+.formOptions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.rememberMe {
+  display: flex;
+  align-items: center;
+}
+
+.rememberMe input {
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.rememberMe label {
+  font-size: 13px;
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.forgotPassword {
+  font-size: 13px;
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.forgotPassword:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}
+
+.loginButton {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--primary-color);
+  color: var(--white);
+  border: none;
+  border-radius: var(--border-radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.loginButton:hover {
+  background-color: var(--primary-dark);
+}
+
+.loginButton:disabled {
+  background-color: var(--border-color);
+  cursor: not-allowed;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  color: var(--text-light);
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.divider span {
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+.socialLogin {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.socialButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: var(--border-radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid var(--border-color);
+}
+
+.googleButton {
+  background-color: #fff;
+  color: #757575;
+}
+
+.googleButton:hover {
+  background-color: #f5f5f5;
+}
+
+.facebookButton {
+  background-color: #1877f2;
+  color: white;
+  border-color: #1877f2;
+}
+
+.facebookButton:hover {
+  background-color: #166fe5;
+}
+
+.socialButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.signupPrompt {
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-color);
+}
+
+.signupLink {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 5px;
+  transition: color 0.2s ease;
+}
+
+.signupLink:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}
+
+@media (max-width: 576px) {
+  .formOptions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .inputWithIcon input {
+    padding: 10px 10px 10px 36px;
+    font-size: 13px;
+  }
+  
+  .inputIcon {
+    font-size: 14px;
+  }
+  
+  .loginButton {
+    padding: 10px;
+    font-size: 13px;
+  }
+  
+  .socialButton {
+    padding: 8px;
+    font-size: 13px;
+  }
+}

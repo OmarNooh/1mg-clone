@@ -1,0 +1,842 @@
+/* Auth Component Styles - Modern Clean Design */
+.authContainer {
+  width: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+/* Modal Styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalContent {
+  position: relative;
+  width: 100%;
+  max-width: 450px;
+  background-color: var(--white);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: 24px;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.closeBtn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: var(--text-light);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.closeBtn:hover {
+  background-color: var(--bg-light);
+  color: var(--text-color);
+}
+
+/* Page Container Styles */
+.pageContainer {
+  width: 100%;
+  max-width: 400px;
+  margin: 20px auto;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 40px 30px;
+}
+
+/* Auth Content Styles */
+.authContent {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.authHeader {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.authHeader h1 {
+  font-size: 24px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  color: #000;
+}
+
+.logo {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 15px;
+}
+
+.tabs {
+  display: flex;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e7e7e7;
+}
+
+.tabBtn {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #555;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.tabBtn.active {
+  color: #e77600;
+}
+
+.tabBtn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #e77600;
+}
+
+.formContainer {
+  padding: 10px 0;
+}
+
+.formTitle {
+  font-size: 18px;
+  font-weight: 400;
+  margin-bottom: 15px;
+}
+
+.formGroup {
+  position: relative;
+  margin-bottom: 14px;
+}
+
+.formLabel {
+  display: block;
+  font-weight: 700;
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+
+.passwordHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.showPasswordBtn {
+  background: none;
+  border: none;
+  color: #0066c0;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.showPasswordBtn:hover {
+  color: #c45500;
+  text-decoration: underline;
+}
+
+.inputIcon {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: #555;
+  font-size: 16px;
+}
+
+.formGroup input {
+  width: 100%;
+  padding: 12px 16px;
+  height: 48px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: #006aff;
+  box-shadow: 0 0 0 2px rgba(0, 106, 255, 0.2);
+}
+
+.errorInput {
+  border-color: #d00 !important;
+}
+
+.errorText {
+  color: #e41749;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+}
+
+.errorBox {
+  display: flex;
+  align-items: flex-start;
+  background-color: #fff4f4;
+  border: 1px solid #e41749;
+  border-radius: 4px;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.errorIcon {
+  color: #e41749;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.lockoutBox {
+  display: flex;
+  align-items: flex-start;
+  background-color: #fff4f4;
+  border: 1px solid #e41749;
+  border-radius: 4px;
+  padding: 15px;
+  margin: 15px 0;
+}
+
+.lockoutIcon {
+  color: #e41749;
+  margin-right: 10px;
+  flex-shrink: 0;
+  font-size: 1.2rem;
+}
+
+.lockoutText {
+  color: #e41749;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.warningBox {
+  display: flex;
+  align-items: flex-start;
+  background-color: #fff9e6;
+  border: 1px solid #f5a623;
+  border-radius: 4px;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.warningIcon {
+  color: #f5a623;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.warningText {
+  color: #f5a623;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.passwordStrength {
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.passwordStrength svg {
+  margin-right: 5px;
+}
+
+.none {
+  color: #888;
+}
+
+.weak {
+  color: #e41749;
+}
+
+.medium {
+  color: #f5a623;
+}
+
+.good {
+  color: #4a90e2;
+}
+
+.strong {
+  color: #2ecc71;
+}
+
+.generalError {
+  background-color: #fff;
+  border: 1px solid #c40000;
+  border-radius: 4px;
+  box-shadow: 0 0 0 4px #fcf4f4 inset;
+  color: #c40000;
+  padding: 14px;
+  margin-bottom: 14px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.generalError h4 {
+  color: #c40000;
+  font-size: 17px;
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+
+.rememberForgot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.rememberMe {
+  display: flex;
+  align-items: center;
+}
+
+.rememberMe input[type="checkbox"] {
+  margin-right: 8px;
+  accent-color: #e77600;
+}
+
+.rememberMe label {
+  font-size: 13px;
+  color: #111;
+}
+
+.forgotPassword a {
+  color: #0066c0;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.forgotPassword a:hover {
+  color: #c45500;
+  text-decoration: underline;
+}
+
+.submitButton {
+  width: 100%;
+  height: 48px;
+  padding: 0 16px;
+  background-color: #006aff;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 16px;
+}
+
+.submitButton:hover {
+  background-color: #0055cc;
+}
+
+.submitButton:active {
+  background-color: #004499;
+}
+
+.submitButton:disabled {
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+}
+
+.orDivider {
+  position: relative;
+  text-align: center;
+  margin: 18px 0;
+  line-height: 1;
+}
+
+.orDivider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: #e7e7e7;
+  z-index: 1;
+}
+
+.orDivider span {
+  position: relative;
+  background-color: #fff;
+  padding: 0 8px;
+  color: #767676;
+  font-size: 14px;
+  z-index: 2;
+}
+
+.passkeyButton {
+  width: 100%;
+  height: 48px;
+  padding: 0 16px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #333;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 16px;
+}
+
+.passkeyButton:hover {
+  background-color: #f5f5f5;
+}
+
+.newToSquare {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #333;
+}
+
+.signupLink {
+  color: #006aff;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.signupLink:hover {
+  text-decoration: underline;
+}
+
+.resetPasswordForm {
+  width: 100%;
+}
+
+.resetInstructions {
+  margin-bottom: 24px;
+  font-size: 14px;
+  color: #333;
+  line-height: 1.5;
+}
+
+.backToLoginBtn {
+  background: none;
+  border: none;
+  color: #006aff;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 20px;
+  text-align: center;
+  width: 100%;
+  text-decoration: none;
+}
+
+.backToLoginBtn:hover {
+  text-decoration: underline;
+}
+
+.socialLogin {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.socialBtn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 0;
+  height: 31px;
+  border: 1px solid #a6a6a6;
+  border-radius: 3px;
+  background: linear-gradient(to bottom, #f7f8fa, #e7e9ec);
+  box-shadow: 0 1px 0 rgba(255,255,255,.6) inset;
+  font-size: 13px;
+  color: #111;
+  cursor: pointer;
+  transition: all 0.1s linear;
+}
+
+.socialBtn.facebook {
+  color: #3b5998;
+}
+
+.socialBtn.google {
+  color: #db4437;
+}
+
+.socialBtn:hover {
+  background: linear-gradient(to bottom, #e7eaf0, #d9dce1);
+}
+
+.socialBtn:active {
+  background: #e7e9ec;
+  box-shadow: 0 1px 3px rgba(0,0,0,.2) inset;
+}
+
+.termsCheckbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 20px;
+  margin-top: 16px;
+}
+
+.termsCheckbox input {
+  margin-top: 3px;
+}
+
+.termsCheckbox label {
+  font-size: 14px;
+  color: #333;
+  line-height: 1.4;
+}
+
+.termsLink {
+  color: #006aff;
+  text-decoration: none;
+}
+
+.termsLink:hover {
+  text-decoration: underline;
+}
+
+.loginLink {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 14px;
+  color: #333;
+}
+
+.passwordStrength {
+  margin-top: 12px;
+  margin-bottom: 16px;
+}
+
+.strengthLabel {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.strengthMeter {
+  height: 4px;
+  background-color: #eee;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.strengthIndicator {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.strength0 {
+  background-color: #e41749;
+  width: 25%;
+}
+
+.strength1 {
+  background-color: #ff9800;
+  width: 25%;
+}
+
+.strength2 {
+  background-color: #ffc107;
+  width: 50%;
+}
+
+.strength3 {
+  background-color: #8bc34a;
+  width: 75%;
+}
+
+.strength4 {
+  background-color: #4caf50;
+  width: 100%;
+}
+
+.strengthText {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+  text-align: right;
+}
+
+.termsConditions a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.termsConditions a:hover {
+  text-decoration: underline;
+}
+
+.successMessage {
+  text-align: center;
+  padding: 30px 20px;
+  color: #0f834d;
+}
+
+.successIcon {
+  font-size: 40px;
+  color: #0f834d;
+  margin-bottom: 15px;
+  height: 60px;
+  width: 60px;
+  line-height: 60px;
+  border-radius: 50%;
+  background-color: rgba(15, 131, 77, 0.1);
+  display: inline-block;
+}
+
+.successMessage h3 {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  color: #0f834d;
+}
+
+.successMessage p {
+  font-size: 14px;
+  color: #333;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .modalContent {
+    max-width: 90%;
+    padding: 22px;
+  }
+  
+  .pageContainer {
+    max-width: 90%;
+    margin: 30px auto;
+    padding: 25px;
+  }
+  
+  .tabBtn {
+    font-size: 15px;
+    padding: 10px;
+  }
+  
+  .formGroup input {
+    padding: 11px 11px 11px 38px;
+    font-size: 14px;
+  }
+  
+  .submitBtn {
+    padding: 11px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 576px) {
+  .modalContent {
+    max-width: 100%;
+    margin: 0 16px;
+    padding: 20px;
+  }
+  
+  .pageContainer {
+    max-width: 100%;
+    margin: 20px 16px;
+    padding: 20px;
+  }
+  
+  .socialLogin {
+    flex-direction: column;
+  }
+  
+  .tabBtn {
+    font-size: 14px;
+    padding: 10px 8px;
+  }
+  
+  .formGroup {
+    margin-bottom: 16px;
+  }
+  
+  .formGroup input {
+    padding: 10px 10px 10px 36px;
+    font-size: 13px;
+  }
+  
+  .inputIcon {
+    font-size: 14px;
+    left: 10px;
+  }
+  
+  .forgotPassword {
+    margin-bottom: 16px;
+  }
+  
+  .forgotPassword a {
+    font-size: 13px;
+  }
+  
+  .submitBtn {
+    padding: 10px;
+    font-size: 14px;
+  }
+  
+  .orDivider {
+    margin: 20px 0;
+  }
+  
+  .orDivider span {
+    font-size: 13px;
+    padding: 0 10px;
+  }
+  
+  .socialBtn {
+    padding: 9px;
+    font-size: 13px;
+  }
+  
+  .termsConditions label {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modalContent {
+    padding: 16px;
+  }
+  
+  .pageContainer {
+    padding: 16px;
+    margin: 16px;
+  }
+  
+  .closeBtn {
+    top: 12px;
+    right: 12px;
+    width: 26px;
+    height: 26px;
+    font-size: 18px;
+  }
+  
+  .tabs {
+    margin-bottom: 20px;
+  }
+  
+  .tabBtn {
+    font-size: 13px;
+    padding: 8px 6px;
+  }
+  
+  .formGroup {
+    margin-bottom: 14px;
+  }
+  
+  .formGroup input {
+    padding: 9px 9px 9px 34px;
+    font-size: 12px;
+  }
+  
+  .inputIcon {
+    font-size: 13px;
+    left: 9px;
+  }
+  
+  .errorText {
+    font-size: 11px;
+  }
+  
+  .forgotPassword a {
+    font-size: 12px;
+  }
+  
+  .submitBtn {
+    padding: 9px;
+    font-size: 13px;
+  }
+  
+  .orDivider {
+    margin: 16px 0;
+  }
+  
+  .orDivider span {
+    font-size: 12px;
+  }
+  
+  .socialBtn {
+    padding: 8px;
+    font-size: 12px;
+    gap: 6px;
+  }
+  
+  .termsConditions {
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  
+  .termsConditions label {
+    font-size: 12px;
+  }
+  
+  .successMessage {
+    padding: 16px;
+    font-size: 14px;
+  }
+}

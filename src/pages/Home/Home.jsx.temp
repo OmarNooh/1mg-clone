@@ -1,0 +1,602 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import { 
+  FaArrowRight, FaTag, FaFlask, FaStethoscope, FaPercent, FaShieldAlt, 
+  FaHeart, FaRegHeart, FaStar, FaShippingFast, FaUserMd, FaTablets,
+  FaClinicMedical, FaSearch, FaChevronRight, FaMapMarkerAlt, FaClock,
+  FaShoppingCart, FaRegClock, FaFire, FaGift, FaThumbsUp, FaCheckCircle,
+  FaChevronDown, FaTshirt, FaChild, FaBaby, FaGamepad, FaSwimmer, FaVideo,
+  FaCarSide, FaHome, FaUtensils, FaPrescriptionBottleAlt, FaHeartbeat,
+  FaWeight, FaRulerVertical, FaCalendarAlt, FaChartLine, FaClipboardCheck,
+  FaMapMarkedAlt, FaPhoneAlt, FaDirections, FaStore, FaHospital, FaFirstAid,
+  FaSun, FaSnowflake, FaLeaf, FaUmbrella, FaThermometerHalf, FaWind, FaSeedling,
+  FaDumbbell, FaRunning, FaYoga, FaHiking, FaBiking, FaSwimmer, FaFootball, FaTennis, FaGolf
+} from 'react-icons/fa';
+import { useWishlist } from '../../contexts/WishlistContext';
+import { useCart } from '../../context/CartContext';
+import CategorySection from '../../components/CategorySection/CategorySection';
+import ProductCarousel from '../../components/ProductCarousel/ProductCarousel';
+import OfferBanner from '../../components/OfferBanner/OfferBanner';
+import LabTestsSection from '../../components/LabTestsSection/LabTestsSection';
+import DoctorsSection from '../../components/DoctorsSection/DoctorsSection';
+import HealthConcerns from '../../components/HealthConcerns/HealthConcerns';
+import BrandsSection from '../../components/BrandsSection/BrandsSection';
+import DownloadApp from '../../components/DownloadApp/DownloadApp';
+import AddToCartButton from '../../components/AddToCartButton/AddToCartButton';
+import styles from './Home.module.css';
+
+// Import mock data
+import { products } from '../../data/products';
+import { categories } from '../../data/categories';
+import { offers } from '../../data/offers';
+import { doctors } from '../../data/doctors';
+
+const Home = () => {
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const { addToCart } = useCart();
+  const [recentlyViewed, setRecentlyViewed] = useState([]);
+  const [recommendedForYou, setRecommendedForYou] = useState([]);
+  const [timeLeft, setTimeLeft] = useState({ hours: 5, minutes: 59, seconds: 59 });
+  const [showSearchPanel, setShowSearchPanel] = useState(false);
+  
+  // Filter products by category for different sections
+  const featuredProducts = products.slice(0, 8);
+  const trendingProducts = [...products].sort(() => 0.5 - Math.random()).slice(0, 8);
+  const ayurvedaProducts = products.filter(product => product.category === 'ayurveda').slice(0, 8);
+  const topDeals = [...products].sort((a, b) => (b.mrp - b.discountedPrice) - (a.mrp - a.discountedPrice)).slice(0, 8);
+  const healthDevices = products.filter(product => product.category === 'healthcare').slice(0, 8);
+  const personalCare = products.filter(product => product.category === 'personal-care').slice(0, 8);
+  const flashDeals = [...products]
+    .sort((a, b) => ((b.mrp - b.discountedPrice) / b.mrp) - ((a.mrp - a.discountedPrice) / a.mrp))
+    .slice(0, 6);
+  
+  // Countdown timer for flash deals
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev.seconds > 0) {
+          return { ...prev, seconds: prev.seconds - 1 };
+        } else if (prev.minutes > 0) {
+          return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
+        } else if (prev.hours > 0) {
+          return { hours: prev.hours - 1, minutes: 59, seconds: 59 };
+        } else {
+          // Reset timer when it reaches zero
+          return { hours: 5, minutes: 59, seconds: 59 };
+        }
+      });
+    }, 1000);
+    
+    return () => clearInterval(timer);
+  }, []);
+  
+  // Simulate recently viewed products
+  useEffect(() => {
+    // In a real app, this would come from user browsing history
+    setRecentlyViewed(products.slice(10, 18));
+    setRecommendedForYou(products.slice(18, 26));
+  }, []);
+  
+  const quickLinks = [
+    { icon: <FaTablets />, title: 'Medicines', link: '/medicines' },
+    { icon: <FaFlask />, title: 'Lab Tests', link: '/lab-tests' },
+    { icon: <FaUserMd />, title: 'Consult Doctors', link: '/doctors' },
+    { icon: <FaHospital />, title: 'COVID-19', link: '/covid' },
+    { icon: <FaHeartbeat />, title: 'Ayurveda', link: '/ayurveda' },
+    { icon: <FaWeight />, title: 'Healthcare', link: '/healthcare' },
+    { icon: <FaHome />, title: 'Health Blog', link: '/blog' }
+  ];
+  
+  // Handle wishlist toggle
+  const handleWishlistToggle = (product) => {
+    if (isInWishlist(product.id)) {
+      removeFromWishlist(product.id);
+      showToast(`${product.name} removed from wishlist`);
+    } else {
+      addToWishlist(product);
+      showToast(`${product.name} added to wishlist`);
+    }
+  };
+  
+  // Handle add to cart
+  const handleAddToCart = (product) => {
+    addToCart(product);
+    showToast(`${product.name} added to cart`);
+  };
+  
+  // Handle buy now
+  const handleBuyNow = (product) => {
+    addToCart(product);
+    // In a real app, this would navigate to checkout
+    showToast(`Proceeding to checkout with ${product.name}`);
+  };
+  
+  // Simple toast notification (would be replaced with a proper toast component)
+  const showToast = (message) => {
+    alert(message); // Replace with a proper toast component in a real app
+  };
+  
+  // Ad carousel state
+  const [currentAdSlide, setCurrentAdSlide] = useState(0);
+  const adCarouselRef = useRef(null);
+  
+  // Function to change ad slides
+  const changeAdSlide = (slideIndex) => {
+    setCurrentAdSlide(slideIndex);
+  };
+  
+  // Handle dot click
+  const handleDotClick = (index) => {
+    changeAdSlide(index);
+    
+    // Reset the interval when manually changing slides
+    if (adCarouselRef.current) {
+      clearInterval(adCarouselRef.current);
+      startAdCarouselInterval();
+    }
+  };
+  
+  // Start the carousel interval
+  const startAdCarouselInterval = () => {
+    adCarouselRef.current = setInterval(() => {
+      setCurrentAdSlide(prev => (prev + 1) % 3); // Assuming 3 slides
+    }, 5000);
+  };
+  
+  // Start the carousel interval on component mount
+  useEffect(() => {
+    startAdCarouselInterval();
+    return () => {
+      if (adCarouselRef.current) {
+        clearInterval(adCarouselRef.current);
+      }
+    };
+  }, []);
+  
+  return (
+    <div className={styles.homePage}>
+      {/* Modern Full-Width Hero Banner Section */}
+      <section className={styles.heroSectionFullWidth}>
+        <div className={styles.heroBannerContainer}>
+          <img 
+            src="https://i5.walmartimages.com/dfw/4ff9c6c9-a6b9/k2-_c0c5b7b0-3b48-4b25-a7e2-c74e98e1b1e4.v1.jpg" 
+            alt="HOOD Medical Deals" 
+            className={styles.heroBannerImage} 
+          />
+          <div className={styles.heroBannerContent}>
+            <div className={styles.heroBannerText}>
+              <h1>Up to 50% off</h1>
+              <h2>Medical Supplies</h2>
+              <p>Save big on essential health products</p>
+              <button className={styles.shopNowButton}>Shop now</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Promo Cards Row */}
+      <section className={styles.promoCardsRow}>
+        <div className={styles.container}>
+          <div className={styles.promoCards}>
+            <div className={styles.promoCard}>
+              <div className={styles.promoIcon}>
+                <FaTablets />
+              </div>
+              <div className={styles.promoText}>
+                <h3>Medicines</h3>
+                <p>Prescription & OTC</p>
+              </div>
+            </div>
+            
+            <div className={styles.promoCard}>
+              <div className={styles.promoIcon}>
+                <FaFlask />
+              </div>
+              <div className={styles.promoText}>
+                <h3>Lab Tests</h3>
+                <p>Health Checkups</p>
+              </div>
+            </div>
+            
+            <div className={styles.promoCard}>
+              <div className={styles.promoIcon}>
+                <FaUserMd />
+              </div>
+              <div className={styles.promoText}>
+                <h3>Consult</h3>
+                <p>Online Doctors</p>
+              </div>
+            </div>
+            
+            <div className={styles.promoCard}>
+              <div className={styles.promoIcon}>
+                <FaHeartbeat />
+              </div>
+              <div className={styles.promoText}>
+                <h3>Ayurveda</h3>
+                <p>Natural Products</p>
+              </div>
+            </div>
+            
+            <div className={styles.promoCard}>
+              <div className={styles.promoIcon}>
+                <FaWeight />
+              </div>
+              <div className={styles.promoText}>
+                <h3>Healthcare</h3>
+                <p>Devices & Aids</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      {/* Featured Categories */}
+      <section className={styles.featuredCategories}>
+        <div className={styles.container}>
+          <div className={styles.sectionHeader}>
+            <h2>Shop by Health Concerns</h2>
+            <Link to="/all-categories" className={styles.viewAllLink}>
+              View All <FaArrowRight />
+            </Link>
+          </div>
+          
+          <div className={styles.categoriesGrid}>
+            {categories.slice(0, 8).map((category, index) => (
+              <Link to={`/category/${category.slug}`} key={index} className={styles.categoryCard}>
+                <div className={styles.categoryImage}>
+                  <img src={category.image} alt={category.name} />
+                </div>
+                <h3>{category.name}</h3>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+      
+      {/* Top Deals Section */}
+      <section className={styles.topDealsSection}>
+        <div className={styles.container}>
+          <div className={styles.sectionHeader}>
+            <h2>Top Deals</h2>
+            <Link to="/deals" className={styles.viewAllLink}>
+              View All <FaArrowRight />
+            </Link>
+          </div>
+          
+          <div className={styles.productsGrid}>
+            {topDeals.map((product, index) => (
+              <div key={index} className={styles.productCard}>
+                <div className={styles.productImageContainer}>
+                  <img 
+                    src={product.image} 
+                    alt={product.name} 
+                    className={styles.productImage} 
+                  />
+                  <button 
+                    className={styles.wishlistButton}
+                    onClick={() => handleWishlistToggle(product)}
+                  >
+                    {isInWishlist(product.id) ? <FaHeart className={styles.wishlistActive} /> : <FaRegHeart />}
+                  </button>
+                  {product.discountPercentage > 15 && (
+                    <span className={styles.discountTag}>
+                      <FaTag /> {product.discountPercentage}% OFF
+                    </span>
+                  )}
+                </div>
+                
+                <div className={styles.productInfo}>
+                  <h3 className={styles.productName}>{product.name}</h3>
+                  <p className={styles.productDesc}>{product.description}</p>
+                  
+                  <div className={styles.productMeta}>
+                    {product.rating && (
+                      <div className={styles.productRating}>
+                        <FaStar /> <span>{product.rating}</span>
+                      </div>
+                    )}
+                    {product.ratingCount && (
+                      <div className={styles.ratingCount}>
+                        {product.ratingCount} ratings
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className={styles.productPricing}>
+                    <div className={styles.priceContainer}>
+                      <span className={styles.discountedPrice}>₹{product.discountedPrice}</span>
+                      <span className={styles.mrp}>MRP <span className={styles.strikethrough}>₹{product.mrp}</span></span>
+                    </div>
+                    <AddToCartButton onClick={() => handleAddToCart(product)} />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      
+      {/* Health Articles Section */}
+      <section className={styles.healthArticlesSection}>
+        <div className={styles.container}>
+          <div className={styles.sectionHeader}>
+            <h2>Health Tips & Articles</h2>
+            <Link to="/health-articles" className={styles.viewAllLink}>
+              View All <FaArrowRight />
+            </Link>
+          </div>
+          
+          <div className={styles.articlesGrid}>
+            <div className={styles.articleCard}>
+              <div className={styles.articleImage}>
+                <img src="https://img.freepik.com/free-photo/doctor-with-stethoscope-hands-hospital-background_1423-1.jpg" alt="Preventive Health" />
+              </div>
+              <div className={styles.articleContent}>
+                <span className={styles.articleCategory}>Wellness</span>
+                <h3>10 Preventive Health Checkups Everyone Should Get</h3>
+                <p>Regular health screenings can detect problems before they start...</p>
+                <Link to="/article/preventive-health" className={styles.readMoreLink}>
+                  Read More <FaArrowRight />
+                </Link>
+              </div>
+            </div>
+            
+            <div className={styles.articleCard}>
+              <div className={styles.articleImage}>
+                <img src="https://img.freepik.com/free-photo/woman-doing-yoga-beach_23-2148739099.jpg" alt="Stress Management" />
+              </div>
+              <div className={styles.articleContent}>
+                <span className={styles.articleCategory}>Mental Health</span>
+                <h3>Effective Stress Management Techniques</h3>
+                <p>Learn how to manage stress with these science-backed approaches...</p>
+                <Link to="/article/stress-management" className={styles.readMoreLink}>
+                  Read More <FaArrowRight />
+                </Link>
+              </div>
+            </div>
+            
+            <div className={styles.articleCard}>
+              <div className={styles.articleImage}>
+                <img src="https://img.freepik.com/free-photo/healthy-vegetables-wooden-table_1150-38014.jpg" alt="Nutrition" />
+              </div>
+              <div className={styles.articleContent}>
+                <span className={styles.articleCategory}>Nutrition</span>
+                <h3>Superfoods to Boost Your Immune System</h3>
+                <p>Incorporate these nutrient-rich foods into your diet...</p>
+                <Link to="/article/immune-boosting-foods" className={styles.readMoreLink}>
+                  Read More <FaArrowRight />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      {/* Health Assessment Tool */}
+      <section className={styles.healthAssessmentSection}>
+        <div className={styles.container}>
+          <div className={styles.assessmentCard}>
+            <div className={styles.assessmentContent}>
+              <h2>Health Risk Assessment</h2>
+              <p>Take our quick assessment to understand your health risks and get personalized recommendations.</p>
+              
+              <div className={styles.assessmentFeatures}>
+                <div className={styles.assessmentFeature}>
+                  <FaCheckCircle />
+                  <span>5-minute questionnaire</span>
+                </div>
+                <div className={styles.assessmentFeature}>
+                  <FaCheckCircle />
+                  <span>Personalized health score</span>
+                </div>
+                <div className={styles.assessmentFeature}>
+                  <FaCheckCircle />
+                  <span>Custom recommendations</span>
+                </div>
+              </div>
+              
+              <button className={styles.assessmentButton}>
+                Start Assessment <FaArrowRight />
+              </button>
+            </div>
+            
+            <div className={styles.assessmentIllustration}>
+              <img src="https://img.freepik.com/free-vector/doctor-examining-patient-illustrated_23-2148856559.jpg" alt="Health Assessment" />
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      {/* Medical Supplies Finder */}
+      <section className={styles.medicalSuppliesFinderSection}>
+        <div className={styles.container}>
+          <div className={styles.sectionHeader}>
+            <h2>Medical Supplies Near You</h2>
+          </div>
+          
+          <div className={styles.finderContainer}>
+            <div className={styles.finderMap}>
+              <img src="https://img.freepik.com/free-vector/city-map-with-pins-navigation-app_23-2148646775.jpg" alt="Location Map" />
+              <div className={styles.mapMarker} style={{ top: '40%', left: '30%' }}>
+                <FaMapMarkerAlt />
+              </div>
+              <div className={styles.mapMarker} style={{ top: '25%', left: '60%' }}>
+                <FaMapMarkerAlt />
+              </div>
+              <div className={styles.mapMarker} style={{ top: '60%', left: '50%' }}>
+                <FaMapMarkerAlt />
+              </div>
+              <div className={styles.mapMarker} style={{ top: '70%', left: '25%' }}>
+                <FaMapMarkerAlt />
+              </div>
+            </div>
+            
+            <div className={styles.finderSidebar}>
+              <div className={styles.finderSearch}>
+                <h3>Find Medical Supplies</h3>
+                <div className={styles.finderSearchInput}>
+                  <input type="text" placeholder="Enter your location" />
+                  <button><FaSearch /></button>
+                </div>
+                <div className={styles.finderFilters}>
+                  <button className={styles.filterActive}>Pharmacies</button>
+                  <button>Medical Stores</button>
+                  <button>Hospitals</button>
+                </div>
+              </div>
+              
+              <div className={styles.finderResults}>
+                <div className={styles.finderResultItem}>
+                  <div className={styles.resultItemIcon}>
+                    <FaStore />
+                  </div>
+                  <div className={styles.resultItemInfo}>
+                    <h4>City Pharmacy</h4>
+                    <p><FaMapMarkerAlt /> 123 Main St, Downtown</p>
+                    <p><FaClock /> Open until 10:00 PM</p>
+                    <div className={styles.resultItemActions}>
+                      <button><FaPhoneAlt /> Call</button>
+                      <button><FaDirections /> Directions</button>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className={styles.finderResultItem}>
+                  <div className={styles.resultItemIcon}>
+                    <FaHospital />
+                  </div>
+                  <div className={styles.resultItemInfo}>
+                    <h4>Central Medical Store</h4>
+                    <p><FaMapMarkerAlt /> 456 Oak Ave, Westside</p>
+                    <p><FaClock /> Open 24 hours</p>
+                    <div className={styles.resultItemActions}>
+                      <button><FaPhoneAlt /> Call</button>
+                      <button><FaDirections /> Directions</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      {/* Seasonal Health Guide */}
+      <section className={styles.seasonalHealthSection}>
+        <div className={styles.container}>
+          <div className={styles.sectionHeader}>
+            <h2>Summer Health Guide</h2>
+            <div className={styles.seasonSelector}>
+              <button className={styles.seasonActive}>
+                <FaSun /> Summer
+              </button>
+              <button>
+                <FaLeaf /> Fall
+              </button>
+              <button>
+                <FaSnowflake /> Winter
+              </button>
+              <button>
+                <FaSeedling /> Spring
+              </button>
+            </div>
+          </div>
+          
+          <div className={styles.seasonalContent}>
+            <div className={styles.seasonalHeader}>
+              <div className={styles.seasonalIcon}>
+                <FaSun />
+              </div>
+              <div className={styles.seasonalInfo}>
+                <h3>Summer Health Tips</h3>
+                <p>Stay healthy during the hot summer months with these essential tips and recommended products.</p>
+              </div>
+            </div>
+            
+            <div className={styles.seasonalCardsGrid}>
+              <div className={styles.seasonalCard}>
+                <div className={styles.seasonalCardIcon}>
+                  <img src="https://img.icons8.com/fluency/96/000000/water.png" alt="Hydration" />
+                </div>
+                <h4>Stay Hydrated</h4>
+                <p>Drink at least 8-10 glasses of water daily to prevent dehydration in hot weather.</p>
+                <Link to="/health-guide/summer/hydration" className={styles.seasonalCardLink}>Learn more</Link>
+              </div>
+              
+              <div className={styles.seasonalCard}>
+                <div className={styles.seasonalCardIcon}>
+                  <img src="https://img.icons8.com/fluency/96/000000/sunscreen.png" alt="Sun Protection" />
+                </div>
+                <h4>Sun Protection</h4>
+                <p>Use SPF 30+ sunscreen and wear protective clothing to prevent sunburn and skin damage.</p>
+                <Link to="/health-guide/summer/sun-protection" className={styles.seasonalCardLink}>Learn more</Link>
+              </div>
+              
+              <div className={styles.seasonalCard}>
+                <div className={styles.seasonalCardIcon}>
+                  <img src="https://img.icons8.com/fluency/96/000000/food-and-wine.png" alt="Summer Diet" />
+                </div>
+                <h4>Summer Diet</h4>
+                <p>Include fresh fruits, vegetables, and light meals to maintain energy and digestion.</p>
+                <Link to="/health-guide/summer/diet" className={styles.seasonalCardLink}>Learn more</Link>
+              </div>
+              
+              <div className={styles.seasonalCard}>
+                <div className={styles.seasonalCardIcon}>
+                  <img src="https://img.icons8.com/fluency/96/000000/protection-mask.png" alt="Heat Protection" />
+                </div>
+                <h4>Heat Protection</h4>
+                <p>Recognize signs of heat exhaustion and take precautions during peak sun hours.</p>
+                <Link to="/health-guide/summer/heat-protection" className={styles.seasonalCardLink}>Learn more</Link>
+              </div>
+            </div>
+            
+            <div className={styles.seasonalProducts}>
+              <h4>Recommended Summer Health Products</h4>
+              <div className={styles.seasonalProductsGrid}>
+                <div className={styles.seasonalProduct}>
+                  <img src="https://img.freepik.com/free-photo/sunscreen-bottle-beach-accessories_23-2148171676.jpg" alt="Sunscreen" />
+                  <h5>SPF 50 Sunscreen</h5>
+                  <span className={styles.seasonalProductPrice}>₹499</span>
+                  <button className={styles.seasonalAddToCart}>
+                    <FaShoppingCart /> Add
+                  </button>
+                </div>
+                
+                <div className={styles.seasonalProduct}>
+                  <img src="https://img.freepik.com/free-photo/water-bottle-with-fresh-lemon_23-2148560847.jpg" alt="Hydration Bottle" />
+                  <h5>Insulated Water Bottle</h5>
+                  <span className={styles.seasonalProductPrice}>₹799</span>
+                  <button className={styles.seasonalAddToCart}>
+                    <FaShoppingCart /> Add
+                  </button>
+                </div>
+                
+                <div className={styles.seasonalProduct}>
+                  <img src="https://img.freepik.com/free-photo/vitamin-c-serum-bottle_23-2148421006.jpg" alt="Vitamin C Serum" />
+                  <h5>Vitamin C Serum</h5>
+                  <span className={styles.seasonalProductPrice}>₹899</span>
+                  <button className={styles.seasonalAddToCart}>
+                    <FaShoppingCart /> Add
+                  </button>
+                </div>
+                
+                <div className={styles.seasonalProduct}>
+                  <img src="https://img.freepik.com/free-photo/electrolyte-drink-sports-bottle_23-2148571459.jpg" alt="Electrolyte Drink" />
+                  <h5>Electrolyte Powder</h5>
+                  <span className={styles.seasonalProductPrice}>₹349</span>
+                  <button className={styles.seasonalAddToCart}>
+                    <FaShoppingCart /> Add
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default Home;

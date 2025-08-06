@@ -1,0 +1,180 @@
+.heroBanner {
+  width: 100%;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.bannerContainer {
+  position: relative;
+  width: 100%;
+  max-width: 2560px;
+  margin: 0 auto;
+  height: 300px;
+  overflow: hidden;
+}
+
+.slidesContainer {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.active {
+  opacity: 1;
+}
+
+.slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--border-radius-md);
+}
+
+.navButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(255, 255, 255, 0.5);
+  color: var(--text-color);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: background-color 0.2s ease;
+}
+
+.navButton:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.prevButton {
+  left: 10px;
+}
+
+.nextButton {
+  right: 10px;
+}
+
+.dotsContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--border-color);
+  margin: 0 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.activeDot {
+  background-color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+  .heroBanner {
+    margin-bottom: 15px;
+  }
+  
+  .bannerContainer {
+    height: 200px;
+    padding: 0 var(--spacing-sm);
+  }
+  
+  .navButton {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+  }
+  
+  .dotsContainer {
+    margin-top: 8px;
+  }
+  
+  .dot {
+    width: 8px;
+    height: 8px;
+    margin: 0 4px;
+  }
+}
+
+@media (max-width: 576px) {
+  .heroBanner {
+    margin-bottom: 12px;
+  }
+  
+  .bannerContainer {
+    height: 150px;
+    border-radius: var(--border-radius-sm);
+  }
+  
+  .slide img {
+    border-radius: var(--border-radius-sm);
+  }
+  
+  .navButton {
+    width: 25px;
+    height: 25px;
+    font-size: 12px;
+  }
+  
+  .prevButton {
+    left: 5px;
+  }
+  
+  .nextButton {
+    right: 5px;
+  }
+  
+  .dotsContainer {
+    margin-top: 6px;
+  }
+  
+  .dot {
+    width: 6px;
+    height: 6px;
+    margin: 0 3px;
+  }
+}
+
+@media (max-width: 480px) {
+  .heroBanner {
+    margin-bottom: 10px;
+  }
+  
+  .bannerContainer {
+    height: 130px;
+  }
+  
+  .navButton {
+    width: 22px;
+    height: 22px;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 360px) {
+  .bannerContainer {
+    height: 110px;
+  }
+}

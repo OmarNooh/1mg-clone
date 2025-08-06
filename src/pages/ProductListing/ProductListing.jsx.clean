@@ -1,0 +1,393 @@
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { FaFilter, FaStar, FaHeart, FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import styles from './ProductListing.module.css';
+
+// Import APIs
+import { ProductAPI } from '../../backend/api/index';
+import { useCart } from '../../context/CartContext';
+
+const ProductListing = () => {
+  const { categoryId } = useParams();
+  const { addToCart } = useCart();
+  
+  const [category, setCategory] = useState(null);
+  const [allProducts, setAllProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [brands, setBrands] = useState([]);
+  const [sortOption, setSortOption] = useState('popularity');
+  const [showFilters, setShowFilters] = useState(false);
+  const [selectedFilters, setSelectedFilters] = useState({
+    subcategories: [],
+    brands: [],
+    discounts: [],
+    ratings: []
+  });
+  const [loading, setLoading] = useState(true);
+  
+  // Filter options
+  const filterOptions = {
+    subcategories: category ? 
+      category.subcategories.map(sub => ({ id: sub.id, name: sub.name })) : [],
+    brands: brands,
+    discounts: [
+      { id: '10', name: '10% and above' },
+      { id: '20', name: '20% and above' },
+      { id: '30', name: '30% and above' },
+      { id: '40', name: '40% and above' },
+      { id: '50', name: '50% and above' }
+    ],
+    ratings: [
+      { id: '4', name: '4★ & above' },
+      { id: '3', name: '3★ & above' },
+      { id: '2', name: '2★ & above' },
+      { id: '1', name: '1★ & above' }
+    ]
+  };
+  
+  // Sort options
+  const sortOptions = [
+    { id: 'popularity', name: 'Popularity' },
+    { id: 'price-low-to-high', name: 'Price: Low to High' },
+    { id: 'price-high-to-low', name: 'Price: High to Low' },
+    { id: 'discount', name: 'Discount' }
+  ];
+  
+  // Load products and categories from API
+  useEffect(() => {
+    const loadData = async () => {
+      setLoading(true);
+      try {
+        // Load all products
+        const products = await ProductAPI.getAllProducts();
+        setAllProducts(products);
+        
+        // Extract unique brands
+        const uniqueBrands = [...new Set(products.map(product => product.manufacturer))].map(brand => ({
+          id: brand.toLowerCase().replace(/\s+/g, '-'),
+          name: brand
+        }));
+        setBrands(uniqueBrands);
+        
+        // Find category if categoryId is provided
+        if (categoryId) {
+          const mockCategory = {
+            id: categoryId,
+            name: 'Category ' + categoryId,
+            subcategories: []
+          };
+          setCategory(mockCategory);
+        }
+      } catch (error) {
+        console.error('Error loading data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadData();
+  }, [categoryId]);
+  
+  // Filter products based on category and selected filters
+  useEffect(() => {
+    const filterAndSortProducts = () => {
+      try {
+        // Start with all products
+        let results = [...allProducts];
+        
+        // Filter by category
+        if (category) {
+          results = results.filter(product => product.category === category.id);
+        }
+        
+        // Apply subcategory filters
+        if (selectedFilters.subcategories.length > 0) {
+          results = results.filter(product => 
+            selectedFilters.subcategories.includes(product.subcategory)
+          );
+        }
+        
+        // Apply brand filters
+        if (selectedFilters.brands.length > 0) {
+          results = results.filter(product => 
+            selectedFilters.brands.includes(product.manufacturer.toLowerCase().replace(/\s+/g, '-'))
+          );
+        }
+        
+        // Apply discount filters
+        if (selectedFilters.discounts.length > 0) {
+          results = results.filter(product => {
+            const minDiscount = Math.min(...selectedFilters.discounts.map(d => parseInt(d)));
+            return product.discountPercentage >= minDiscount;
+          });
+        }
+        
+        // Apply rating filters
+        if (selectedFilters.ratings.length > 0) {
+          results = results.filter(product => {
+            const minRating = Math.min(...selectedFilters.ratings.map(r => parseInt(r)));
+            return product.rating >= minRating;
+          });
+        }
+        
+        // Apply sorting
+        switch (sortOption) {
+          case 'price-low-to-high':
+            results.sort((a, b) => a.discountedPrice - b.discountedPrice);
+            break;
+          case 'price-high-to-low':
+            results.sort((a, b) => b.discountedPrice - a.discountedPrice);
+            break;
+          case 'discount':
+            results.sort((a, b) => b.discountPercentage - a.discountPercentage);
+            break;
+          case 'popularity':
+          default:
+            // Assuming higher rating = more popular
+            results.sort((a, b) => b.rating - a.rating);
+            break;
+        }
+        
+        setFilteredProducts(results);
+      } catch (error) {
+        console.error('Error filtering products:', error);
+      }
+    };
+    
+    filterAndSortProducts();
+  }, [allProducts, category, selectedFilters, sortOption]);
+  
+  // Toggle filter selection
+  const toggleFilter = (type, id) => {
+    setSelectedFilters(prev => {
+      const updatedFilters = { ...prev };
+      if (updatedFilters[type].includes(id)) {
+        updatedFilters[type] = updatedFilters[type].filter(item => item !== id);
+      } else {
+        updatedFilters[type] = [...updatedFilters[type], id];
+      }
+      return updatedFilters;
+    });
+  };
+  
+  // Clear all filters
+  const clearAllFilters = () => {
+    setSelectedFilters({
+      subcategories: [],
+      brands: [],
+      discounts: [],
+      ratings: []
+    });
+  };
+  
+  // Handle add to cart
+  const handleAddToCart = (productId) => {
+    try {
+      const product = allProducts.find(p => p.id === productId);
+      if (product) {
+        addToCart({
+          id: product.id,
+          name: product.name,
+          price: product.discountedPrice,
+          image: product.image,
+          quantity: 1
+        });
+      }
+    } catch (error) {
+      console.error('Error adding product to cart:', error);
+    }
+  };
+  
+  // Toggle mobile filters
+  const toggleMobileFilters = () => {
+    setShowFilters(!showFilters);
+  };
+  
+  // Filter section component
+  const FilterSection = ({ title, options, type }) => {
+    const [expanded, setExpanded] = useState(true);
+    
+    return (
+      <div className={styles.filterSection}>
+        <div 
+          className={styles.filterHeader} 
+          onClick={() => setExpanded(!expanded)}
+        >
+          <h3>{title}</h3>
+          {expanded ? <FaChevronUp /> : <FaChevronDown />}
+        </div>
+        
+        {expanded && (
+          <div className={styles.filterOptions}>
+            {options.map(option => (
+              <label key={option.id} className={styles.filterOption}>
+                <input 
+                  type="checkbox" 
+                  checked={selectedFilters[type].includes(option.id)}
+                  onChange={() => toggleFilter(type, option.id)}
+                />
+                <span>{option.name}</span>
+              </label>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <div className={styles.productListing}>
+      <div className={styles.container}>
+        <div className={styles.categoryHeader}>
+          <h1>{category ? category.name : 'All Products'}</h1>
+          <p>{filteredProducts.length} products found</p>
+        </div>
+        
+        <div className={styles.mobileFilterSort}>
+          <button 
+            className={styles.filterButton} 
+            onClick={toggleMobileFilters}
+          >
+            <FaFilter /> Filters
+          </button>
+          
+          <div className={styles.sortDropdown}>
+            <select 
+              value={sortOption} 
+              onChange={(e) => setSortOption(e.target.value)}
+            >
+              <option value="" disabled>Sort By</option>
+              {sortOptions.map(option => (
+                <option key={option.id} value={option.id}>
+                  {option.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        
+        <div className={styles.productContent}>
+          <aside className={`${styles.filtersPanel} ${showFilters ? styles.showFilters : ''}`}>
+            <div className={styles.filtersPanelHeader}>
+              <h2>Filters</h2>
+              <button 
+                className={styles.clearButton}
+                onClick={clearAllFilters}
+              >
+                Clear All
+              </button>
+              <button 
+                className={styles.closeButton}
+                onClick={toggleMobileFilters}
+              >
+                &times;
+              </button>
+            </div>
+            
+            {category && filterOptions.subcategories.length > 0 && (
+              <FilterSection 
+                title="Subcategories" 
+                options={filterOptions.subcategories} 
+                type="subcategories" 
+              />
+            )}
+            
+            <FilterSection 
+              title="Brands" 
+              options={filterOptions.brands} 
+              type="brands" 
+            />
+            
+            <FilterSection 
+              title="Discounts" 
+              options={filterOptions.discounts} 
+              type="discounts" 
+            />
+            
+            <FilterSection 
+              title="Ratings" 
+              options={filterOptions.ratings} 
+              type="ratings" 
+            />
+          </aside>
+          
+          <div className={styles.productsPanel}>
+            <div className={styles.sortBar}>
+              <span>Sort By:</span>
+              {sortOptions.map(option => (
+                <button 
+                  key={option.id}
+                  className={`${styles.sortOption} ${sortOption === option.id ? styles.active : ''}`}
+                  onClick={() => setSortOption(option.id)}
+                >
+                  {option.name}
+                </button>
+              ))}
+            </div>
+            
+            <div className={styles.productsGrid}>
+              {loading ? (
+                <div className={styles.loading}>
+                  <p>Loading products...</p>
+                </div>
+              ) : filteredProducts.length > 0 ? (
+                filteredProducts.map(product => (
+                  <div key={product.id} className={styles.productCard}>
+                    <div className={styles.wishlistButton}>
+                      <FaHeart />
+                    </div>
+                    
+                    <div className={styles.productImage}>
+                      <img src={product.image} alt={product.name} />
+                    </div>
+                    
+                    <div className={styles.productInfo}>
+                      <h3 className={styles.productName}>{product.name}</h3>
+                      <p className={styles.productManufacturer}>{product.manufacturer}</p>
+                      
+                      {product.rating && (
+                        <div className={styles.productRating}>
+                          <span className={styles.ratingValue}>
+                            {product.rating} <FaStar />
+                          </span>
+                          <span className={styles.ratingCount}>({product.ratingCount})</span>
+                        </div>
+                      )}
+                      
+                      <div className={styles.productPricing}>
+                        <div className={styles.priceContainer}>
+                          <span className={styles.discountedPrice}>TZS{product.discountedPrice}</span>
+                          {product.mrp !== product.discountedPrice && (
+                            <span className={styles.mrp}>TZS{product.mrp}</span>
+                          )}
+                        </div>
+                        
+                        {product.discountPercentage > 0 && (
+                          <span className={styles.discountTag}>{product.discountPercentage}% OFF</span>
+                        )}
+                      </div>
+                      
+                      <button 
+                        className={styles.addToCartButton}
+                        onClick={() => handleAddToCart(product.id)}
+                      >
+                        ADD TO CART
+                      </button>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className={styles.noResults}>
+                  <h3>No products found</h3>
+                  <p>Try adjusting your filter criteria</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProductListing;

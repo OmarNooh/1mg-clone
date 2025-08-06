@@ -1,0 +1,87 @@
+.unauthorizedContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 20px;
+  background-color: #f8f8f8;
+}
+
+.unauthorizedContent {
+  max-width: 600px;
+  text-align: center;
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.iconContainer {
+  margin-bottom: 20px;
+}
+
+.lockIcon {
+  font-size: 60px;
+  color: #ff6f61;
+}
+
+.title {
+  font-size: 28px;
+  color: #333;
+  margin-bottom: 16px;
+}
+
+.message {
+  font-size: 16px;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.actions {
+  margin-top: 20px;
+}
+
+.homeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ff6f61;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.homeButton:hover {
+  background-color: #e55a4f;
+}
+
+.homeIcon {
+  margin-right: 8px;
+}
+
+@media (max-width: 576px) {
+  .unauthorizedContent {
+    padding: 30px 20px;
+  }
+  
+  .lockIcon {
+    font-size: 50px;
+  }
+  
+  .title {
+    font-size: 24px;
+  }
+  
+  .message {
+    font-size: 14px;
+  }
+  
+  .homeButton {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}

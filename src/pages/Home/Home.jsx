@@ -1,0 +1,1536 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import { 
+  FaArrowRight, FaLeaf, FaFlask, FaPercent, FaShieldAlt, 
+  FaHeart, FaRegHeart, FaStar, FaShippingFast, FaUserMd, FaTablets,
+  FaWeight , FaHeartbeat , FaChevronRight, FaMapMarkerAlt, FaClock,
+  FaShoppingCart, FaRegClock, FaFire, FaGift, FaThumbsUp, FaCheckCircle,
+  FaChevronLeft
+} from 'react-icons/fa';
+import ProductCardLink from '../../components/ProductCardLink/ProductCardLink';
+import ProductCard from '../../components/ProductCard/ProductCard';
+import { useWishlist } from '../../contexts/WishlistContext';
+import { useCart } from '../../context/CartContext';
+import HeroBanner from '../../components/HeroBanner/HeroBanner';
+import CategorySection from '../../components/CategorySection/CategorySection';
+import ProductCarousel from '../../components/ProductCarousel/ProductCarousel';
+import OfferBanner from '../../components/OfferBanner/OfferBanner';
+import LabTestsSection from '../../components/LabTestsSection/LabTestsSection';
+import DoctorsSection from '../../components/DoctorsSection/DoctorsSection';
+import HealthConcerns from '../../components/HealthConcerns/HealthConcerns';
+import BrandsSection from '../../components/BrandsSection/BrandsSection';
+import DownloadApp from '../../components/DownloadApp/DownloadApp';
+import AddToCartButton from '../../components/AddToCartButton/AddToCartButton';
+import styles from './Home.module.css';
+import { vitaminProducts, medicineProducts, comboDealsProducts, personalCareProducts } from '../../data/productData';
+
+// Import mock data
+import { products } from '../../data/products';
+import { categories } from '../../data/categories';
+import { offers } from '../../data/offers';
+import { doctors } from '../../data/doctors';
+
+const Home = () => {
+  const [currentHeroSlide, setCurrentHeroSlide] = useState(0);
+  
+  // State for wishlist items
+  const [wishlistItems, setWishlistItems] = useState([]);
+  const [currentCategorySlide, setCurrentCategorySlide] = useState(0);
+  const [currentDealsSlide, setCurrentDealsSlide] = useState(0);
+  const [currentLaRocheSlide, setCurrentLaRocheSlide] = useState(0);
+  const [currentVitaminsSlide, setCurrentVitaminsSlide] = useState(0);
+  const [currentComboDealsSlide, setCurrentComboDealsSlide] = useState(0);
+  const [currentMedicineSlide, setCurrentMedicineSlide] = useState(0);
+  const [currentSkechersSlide, setCurrentSkechersSlide] = useState(0);
+  const [showRightScroll, setShowRightScroll] = useState(true);
+  const [showLeftScroll, setShowLeftScroll] = useState(false);
+  const [showRightDealScroll, setShowRightDealScroll] = useState(true);
+  const [showLeftDealScroll, setShowLeftDealScroll] = useState(false);
+  const [showRightLaRocheScroll, setShowRightLaRocheScroll] = useState(true);
+  const [showLeftLaRocheScroll, setShowLeftLaRocheScroll] = useState(false);
+  const [showRightVitaminsScroll, setShowRightVitaminsScroll] = useState(true);
+  const [showLeftVitaminsScroll, setShowLeftVitaminsScroll] = useState(false);
+  const [showRightSkechersScroll, setShowRightSkechersScroll] = useState(true);
+  const [showLeftSkechersScroll, setShowLeftSkechersScroll] = useState(false);
+  const [timeLeft, setTimeLeft] = useState({ hours: 12, minutes: 0, seconds: 0 });
+  
+  const heroSliderRef = useRef(null);
+  const categoryGridRef = useRef(null);
+  const dealsGridRef = useRef(null);
+  const laRocheContainerRef = useRef(null);
+  const vitaminsSliderRef = useRef(null);
+  const comboDealsSliderRef = useRef(null);
+  const medicineSliderRef = useRef(null);
+  const skechersSliderRef = useRef(null);
+  
+  // Flash Deals data
+  const bestsellingToys = [
+    {
+      id: 1,
+      name: "LEGO Classic Large Creative Brick Box Construction Set, Build Your Own Creative Toys",
+      image: "https://images.unsplash.com/photo-1587654780291-39c9404d746b?q=80&w=500&h=500&auto=format&fit=crop",
+      price: 39.99,
+      sponsored: true,
+      buttonType: "add"
+    },
+    {
+      id: 2,
+      name: "Barbie Dreamhouse, 75+ Pieces, 3 Story Dollhouse with Pool, Slide",
+      image: "https://images.unsplash.com/photo-1558060370-d644479cb6f7?q=80&w=500&h=500&auto=format&fit=crop",
+      currentPrice: 99.00,
+      originalPrice: 129.00,
+      sponsored: false,
+      buttonType: "options"
+    },
+    {
+      id: 3,
+      name: "Monopoly Classic Board Game, Family Games For Ages 8+",
+      image: "https://images.unsplash.com/photo-1611371805429-8b5c1b2c34ba?q=80&w=500&h=500&auto=format&fit=crop",
+      price: 19.82,
+      sponsored: false,
+      buttonType: "add"
+    },
+    {
+      id: 4,
+      name: "Hot Wheels 20 Car Gift Pack, Assortment of Die-Cast Vehicles",
+      image: "https://images.unsplash.com/photo-1594787318286-3d835c1d207f?q=80&w=500&h=500&auto=format&fit=crop",
+      currentPrice: 20.97,
+      originalPrice: 24.99,
+      sponsored: false,
+      buttonType: "add"
+    },
+    {
+      id: 5,
+      name: "Jenga Classic Game, Hardwood Blocks, Stacking Tower Game for Kids",
+      image: "https://images.unsplash.com/photo-1610890716171-6b1bb98ffd09?q=80&w=500&h=500&auto=format&fit=crop",
+      price: 14.97,
+      sponsored: true,
+      buttonType: "add"
+    },
+    {
+      id: 6,
+      name: "Connect 4 Game, Classic Grid, Board Games For Kids Ages 6+",
+      image: "https://images.unsplash.com/photo-1606503153255-59d8b2e4739e?q=80&w=500&h=500&auto=format&fit=crop",
+      price: 10.97,
+      sponsored: false,
+      buttonType: "options"
+    },
+    {
+      id: 7,
+      name: "PlayStation 5 DualSense Wireless Controller, White",
+      image: "https://images.unsplash.com/photo-1621259182978-fbf93132d53d?q=80&w=500&h=500&auto=format&fit=crop",
+      price: 69.99,
+      sponsored: false,
+      buttonType: "add"
+    },
+    {
+      id: 8,
+      name: "Nintendo Switch OLED Model with White Joy-Con",
+      image: "https://images.unsplash.com/photo-1662997291234-3c9b3b7edc26?q=80&w=500&h=500&auto=format&fit=crop",
+      currentPrice: 349.99,
+      originalPrice: 399.99,
+      sponsored: true,
+      buttonType: "options"
+    },
+    {
+      id: 9,
+      name: "Bluetooth Wireless Headphones, Over-Ear with Noise Cancellation",
+      image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=500&h=500&auto=format&fit=crop",
+      price: 79.99,
+      sponsored: false,
+      buttonType: "add"
+    },
+    {
+      id: 10,
+      name: "Smart Watch with Heart Rate Monitor, Fitness Tracker",
+      image: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?q=80&w=500&h=500&auto=format&fit=crop",
+      currentPrice: 129.99,
+      originalPrice: 159.99,
+      sponsored: false,
+      buttonType: "add"
+    },
+    {
+      id: 11,
+      name: "Portable Bluetooth Speaker, Waterproof for Outdoor Use",
+      image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?q=80&w=500&h=500&auto=format&fit=crop",
+      price: 49.99,
+      sponsored: true,
+      buttonType: "options"
+    },
+    {
+      id: 12,
+      name: "Digital Camera with 4K Video Recording and Zoom Lens",
+      image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=500&h=500&auto=format&fit=crop",
+      price: 399.99,
+      sponsored: false,
+      buttonType: "add"
+    }
+  ];
+  
+  // La Roche-Posay products data
+  const laRochePosayProducts = [
+    {
+      id: 1,
+      name: "La Roche-Posay Effaclar Medicated Gel Cleanser",
+      price: 15.99,
+      image: "../assets/images/La-Roche-Posay/La-Roche-Posay-Effaclar-Medicate.png",
+      rating: 4.7,
+      reviews: 3240,
+      pricePerUnit: "$5.33/oz",
+      moreOptions: "2 sizes"
+    },
+    {
+      id: 2,
+      name: "La Roche-Posay Toleriane Double Repair Face Moisturizer",
+      price: 19.99,
+      image: "../assets/images/La-Roche-Posay/La-Roche-Posay-Toleriane-Double.png",
+      rating: 4.6,
+      reviews: 15678,
+      pricePerUnit: "$9.99/oz",
+      moreOptions: "3 sizes"
+    },
+    {
+      id: 3,
+      name: "La Roche-Posay Anthelios UV Clear Sunscreen SPF 60",
+      price: 24.99,
+      image: "../assets/images/La-Roche-Posay/La-Roche-Posay-Anthelios-UV-Clea.png",
+      rating: 4.8,
+      reviews: 7865,
+      pricePerUnit: "$12.50/oz",
+      moreOptions: "2 sizes"
+    },
+    {
+      id: 4,
+      name: "La Roche-Posay Lipikar AP+ Moisturizer for Dry Skin",
+      price: 16.99,
+      image: "../assets/images/La-Roche-Posay/La-Roche-Posay-Lipikar-AP-Moistu.png",
+      rating: 4.5,
+      reviews: 5432,
+      pricePerUnit: "$4.25/oz",
+      moreOptions: "3 sizes"
+    },
+    {
+      id: 5,
+      name: "La Roche-Posay Cicaplast Balm B5 for Dry Skin",
+      price: 14.99,
+      image: "../assets/images/La-Roche-Posay/La-Roche-Posay-Cicaplast-Balm-B5.png",
+      rating: 4.9,
+      reviews: 9876,
+      pricePerUnit: "$14.99/oz",
+      moreOptions: "1 size"
+    },
+    {
+      id: 6,
+      name: "La Roche-Posay Toleriane Hydrating Gentle Cleanser",
+      price: 14.99,
+      image: "../assets/images/La-Roche-Posay/La-Roche-Posay-Toleriane-Hydrati.png",
+      rating: 4.6,
+      reviews: 4321,
+      pricePerUnit: "$4.99/oz",
+      moreOptions: "2 sizes"
+    },
+    {
+      id: 7,
+      name: "La Roche-Posay Pure Retinol Face Serum",
+      price: 39.99,
+      image: "../assets/images/La-Roche-Posay/La-Roche-Posay-Pure-Retinol-Face.png",
+      rating: 4.7,
+      reviews: 2345,
+      pricePerUnit: "$39.99/oz",
+      moreOptions: "1 size"
+    },
+    {
+      id: 8,
+      name: "La Roche-Posay Anthelios Tinted Sunscreen SPF 50",
+      price: 34.99,
+      image: "../assets/images/La-Roche-Posay/La-Roche-Posay-Anthelios-Tinted.png",
+      rating: 4.5,
+      reviews: 3456,
+      pricePerUnit: "$17.50/oz",
+      moreOptions: "2 sizes"
+    },
+    {
+      id: 9,
+      name: "La Roche-Posay Toleriane Double Repair Matte Moisturizer SPF 30, 2.5 fl oz",
+      image: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?q=80&w=500&h=500&auto=format&fit=crop",
+      price: 24.97,
+      buttonType: "add"
+    },
+    {
+      id: 10,
+      name: "La Roche-Posay Effaclar Salicylic Acid Acne Treatment Serum, 1.0 fl oz",
+      image: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?q=80&w=500&h=500&auto=format&fit=crop",
+      price: 42.97,
+      buttonType: "add"
+    },
+    {
+      id: 11,
+      name: "La Roche-Posay Anthelios UV Clear Sunscreen SPF 50, 1.7 fl oz",
+      image: "https://images.unsplash.com/photo-1556228578-8c89e6adf883?q=80&w=500&h=500&auto=format&fit=crop",
+      price: 39.97,
+      buttonType: "add"
+    },
+    {
+      id: 12,
+      name: "La Roche-Posay Effaclar Duo Acne Face Wash With 4% Benzoyl Peroxide",
+      image: "https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?q=80&w=500&h=500&auto=format&fit=crop",
+      price: 19.97,
+      buttonType: "add"
+    },
+    
+    // Screen 3 Products
+    {
+      id: 13,
+      name: "La Roche-Posay Effaclar Salicylic Acid Acne Treatment Serum, 1.0 fl oz",
+      image: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?q=80&w=500&h=500&auto=format&fit=crop",
+      price: 42.97,
+      buttonType: "add"
+    },
+    {
+      id: 14,
+      name: "La Roche-Posay Anthelios UV Clear Sunscreen SPF 50, 1.7 fl oz",
+      image: "https://images.unsplash.com/photo-1556228578-8c89e6adf883?q=80&w=500&h=500&auto=format&fit=crop",
+      price: 39.97,
+      buttonType: "add"
+    },
+    {
+      id: 15,
+      name: "La Roche-Posay Effaclar Duo Acne Face Wash With 4% Benzoyl Peroxide",
+      image: "https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?q=80&w=500&h=500&auto=format&fit=crop",
+      price: 19.97,
+      buttonType: "add"
+    },
+    {
+      id: 16,
+      name: "La Roche-Posay Mela B3 Melasyl Niacinamide Dark Spot Correcting Serum",
+      image: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?q=80&w=500&h=500&auto=format&fit=crop",
+      price: 44.97,
+      pricePerUnit: "$44.97/fl oz",
+      buttonType: "add"
+    },
+    {
+      id: 17,
+      name: "La Roche-Posay Toleriane Double Repair Moisturizer, 2.5 fl oz",
+      image: "https://images.unsplash.com/photo-1556229174-5e42a09e45af?q=80&w=500&h=500&auto=format&fit=crop",
+      price: 23.97,
+      pricePerUnit: "$7.09/fl oz",
+      buttonType: "add"
+    },
+    {
+      id: 18,
+      name: "La Roche-Posay Anthelios Tinted Mineral Fluid Sunscreen for Face SPF 50",
+      image: "https://images.unsplash.com/photo-1556228578-8c89e6adf883?q=80&w=500&h=500&auto=format&fit=crop",
+      price: 39.97,
+      buttonType: "options"
+    }
+  ];
+  
+  // Quick Links data will be defined later
+  
+  // Category data for "Get it all right here" section
+  const categories = [
+    { id: 1, name: 'Medicines', image: '../assets/images/categories/images.png', link: '/medicines' },
+    { id: 2, name: 'Vitamins', image: '../assets/images/categories/Vitamins.png', link: '/vitamins' },
+    { id: 3, name: 'Diabetes', image: '../assets/images/categories/Diabetes.png', link: '/diabetes' },
+    { id: 4, name: 'Healthcare Devices', image: '../assets/images/categories/Healthcare Devices.png', link: '/healthcare-devices' },
+    { id: 5, name: 'Personal Care', image: '../assets/images/categories/Untitled.png', link: '/personal-care' },
+    { id: 6, name: 'Health Food', image: '../assets/images/categories/Health Food.png', link: '/health-food' },
+    { id: 7, name: 'Skin Care', image: '../assets/images/categories/Untitled2.png', link: '/skin-care' },
+    { id: 8, name: 'Ayurveda', image: '../assets/images/categories/Untitled3.png', link: '/ayurveda' },
+    { id: 9, name: 'Homeopathy', image: '../assets/images/categories/images 2.png', link: '/homeopathy' },
+    { id: 10, name: 'Fitness', image: '../assets/images/categories/Fitness.png', link: '/fitness' },
+    { id: 11, name: 'Mom & Baby', image: '../assets/images/categories/Untitled5.png', link: '/mom-baby' },
+    { id: 12, name: 'Covid Essentials', image: '../assets/images/categories/images4.png', link: '/covid' },
+    { id: 13, name: 'Elderly Care', image: '../assets/images/categories/Untitled.png', link: '/elderly-care' },
+    { id: 14, name: 'Supplements', image: '../assets/images/categories/Supplements.png', link: '/supplements' },
+    { id: 15, name: 'Pain Relief', image: '../assets/images/categories/images.png', link: '/pain-relief' },
+    { id: 16, name: 'Sexual Wellness', image: '../assets/images/categories/Untitled2.png', link: '/sexual-wellness' }
+  ];
+    
+  // Hero slider content
+  const heroSlides = [
+    {
+      image: "https://images.unsplash.com/photo-1631549916768-4119b4123a3a?q=80&w=1000&h=400&auto=format&fit=crop",
+      title: "Your Health Comes First",
+      subtitle: "Quality Healthcare Products Delivered to Your Doorstep",
+      cta: "Shop Now",
+      link: "/products",
+      bgColor: "#EBF5FF"
+    },
+    {
+      image: "https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?q=80&w=1000&h=400&auto=format&fit=crop",
+      title: "Up to 60% Off",
+      subtitle: "On all health & wellness products",
+      cta: "Explore Deals",
+      link: "/offers",
+      bgColor: "#FFF5EB"
+    },
+    {
+      image: "https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=1000&h=400&auto=format&fit=crop",
+      title: "Consult Top Doctors",
+      subtitle: "Book appointments with verified specialists",
+      cta: "Book Now",
+      link: "/doctors",
+      bgColor: "#EBF8F3"
+    }
+  ];
+  
+  // Hero slider auto-rotation
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentHeroSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 5000);
+    
+    return () => clearInterval(interval);
+  }, []);
+  
+  // Generic scroll handler for all carousels
+  const handleScroll = (direction, ref) => {
+    if (ref.current) {
+      const scrollAmount = 300;
+      const newScrollLeft = direction === 'left' 
+        ? ref.current.scrollLeft - scrollAmount
+        : ref.current.scrollLeft + scrollAmount;
+      
+      ref.current.scrollTo({
+        left: newScrollLeft,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  // Scroll category grid left or right
+  const handleCategoryScroll = (direction) => {
+    handleScroll(direction, categoryGridRef);
+  };
+  
+  // Scroll deals grid left or right
+  const handleDealsScroll = (direction) => {
+    handleScroll(direction, dealsGridRef);
+  };
+  
+  // Scroll La Roche-Posay container left or right
+  const handleLaRocheScroll = (direction) => {
+    handleScroll(direction, laRocheContainerRef);
+  };
+
+  // Scroll Vitamins & Supplements slider left or right
+  const handleVitaminsScroll = (direction) => {
+    handleScroll(direction, vitaminsSliderRef);
+  };
+
+  // Generic slide position handler for carousels
+  const handleSlidePosition = (ref, setCurrentSlide) => {
+    if (ref.current) {
+      const scrollLeft = ref.current.scrollLeft;
+      const maxScrollLeft = ref.current.scrollWidth - ref.current.clientWidth;
+      
+      if (scrollLeft === 0) {
+        setCurrentSlide(0);
+      } else if (Math.abs(scrollLeft - maxScrollLeft) < 10) {
+        setCurrentSlide(1);
+      } else {
+        setCurrentSlide(0.5);
+      }
+    }
+  };
+  
+  // Generic scroll check handler for showing/hiding navigation buttons
+  const handleScrollCheck = (ref, setShowLeftScroll, setShowRightScroll) => {
+    if (ref.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = ref.current;
+      // Show left scroll button if we've scrolled to the right
+      setShowLeftScroll(scrollLeft > 0);
+      // Show right scroll button if we haven't reached the end
+      setShowRightScroll(scrollLeft < scrollWidth - clientWidth - 10);
+    }
+  };
+
+  // Monitor scroll position to show/hide category scroll buttons
+  const handleCategoryScrollCheck = () => {
+    handleScrollCheck(categoryGridRef, setShowLeftScroll, setShowRightScroll);
+  };
+  
+  // Monitor scroll position to show/hide deals scroll buttons
+  const handleDealsScrollCheck = () => {
+    // This one is different from others, keeping original behavior
+    if (dealsGridRef.current) {
+      setShowLeftDealScroll(true);
+      setShowRightDealScroll(true);
+    }
+  };
+  
+  // Monitor scroll position to show/hide La Roche-Posay scroll buttons
+  const handleLaRocheScrollCheck = () => {
+    handleScrollCheck(laRocheContainerRef, setShowLeftLaRocheScroll, setShowRightLaRocheScroll);
+  };
+  
+  // Monitor scroll position to show/hide Vitamins & Supplements scroll buttons
+  const handleVitaminsScrollCheck = () => {
+    handleSlidePosition(vitaminsSliderRef, setCurrentVitaminsSlide);
+  };
+  
+  // Monitor scroll position to show/hide Skechers carousel scroll buttons
+  const handleSkechersScrollCheck = () => {
+    handleScrollCheck(skechersSliderRef, setShowLeftSkechersScroll, setShowRightSkechersScroll);
+  };
+  
+  // Monitor scroll position to show/hide Popular Combo Deals scroll buttons
+  const handleComboDealsScrollCheck = () => {
+    handleSlidePosition(comboDealsSliderRef, setCurrentComboDealsSlide);
+  };
+  
+  // Monitor scroll position to show/hide Medicine scroll buttons
+  const handleMedicineScrollCheck = () => {
+    handleSlidePosition(medicineSliderRef, setCurrentMedicineSlide);
+  };
+  
+  // Toggle wishlist item
+  const toggleWishlist = (productId) => {
+    setWishlistItems(prevItems => {
+      if (prevItems.includes(productId)) {
+        return prevItems.filter(id => id !== productId);
+      } else {
+        return [...prevItems, productId];
+      }
+    });
+  };
+
+  // Countdown timer functionality
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(prevTime => {
+        if (prevTime.seconds > 0) {
+          return { ...prevTime, seconds: prevTime.seconds - 1 };
+        } else if (prevTime.minutes > 0) {
+          return { ...prevTime, minutes: prevTime.minutes - 1, seconds: 59 };
+        } else if (prevTime.hours > 0) {
+          return { ...prevTime, hours: prevTime.hours - 1, minutes: 59, seconds: 59 };
+        } else {
+          // Reset timer when it reaches zero
+          return { hours: 12, minutes: 0, seconds: 0 };
+        }
+      });
+    }, 1000);
+    
+    return () => clearInterval(timer);
+  }, []);
+  
+  // Set up scroll event listeners
+  useEffect(() => {
+    const categoryGrid = categoryGridRef.current;
+    const dealsGrid = dealsGridRef.current;
+    const vitaminsGrid = vitaminsSliderRef.current;
+    const comboDealsGrid = comboDealsSliderRef.current;
+    const medicineGrid = medicineSliderRef.current;
+    const skechersGrid = skechersSliderRef.current;
+    
+    if (categoryGrid) {
+      categoryGrid.addEventListener('scroll', handleCategoryScrollCheck);
+      // Initial check
+      handleCategoryScrollCheck();
+    }
+    
+    if (dealsGrid) {
+      dealsGrid.addEventListener('scroll', handleDealsScrollCheck);
+      // Initial check
+      handleDealsScrollCheck();
+    }
+    
+    if (vitaminsGrid) {
+      vitaminsGrid.addEventListener('scroll', handleVitaminsScrollCheck);
+      // Initial check
+      handleVitaminsScrollCheck();
+    }
+    
+    if (comboDealsGrid) {
+      comboDealsGrid.addEventListener('scroll', handleComboDealsScrollCheck);
+      // Initial check
+      handleComboDealsScrollCheck();
+    }
+    
+    if (medicineGrid) {
+      medicineGrid.addEventListener('scroll', handleMedicineScrollCheck);
+      // Initial check
+      handleMedicineScrollCheck();
+    }
+    
+    if (skechersGrid) {
+      skechersGrid.addEventListener('scroll', handleSkechersScrollCheck);
+      // Initial check
+      handleSkechersScrollCheck();
+    }
+    
+    return () => {
+      if (categoryGrid) {
+        categoryGrid.removeEventListener('scroll', handleCategoryScrollCheck);
+      }
+      if (dealsGrid) {
+        dealsGrid.removeEventListener('scroll', handleDealsScrollCheck);
+      }
+      if (vitaminsGrid) {
+        vitaminsGrid.removeEventListener('scroll', handleVitaminsScrollCheck);
+      }
+      if (comboDealsGrid) {
+        comboDealsGrid.removeEventListener('scroll', handleComboDealsScrollCheck);
+      }
+      if (medicineGrid) {
+        medicineGrid.removeEventListener('scroll', handleMedicineScrollCheck);
+      }
+      if (skechersGrid) {
+        skechersGrid.removeEventListener('scroll', handleSkechersScrollCheck);
+      }
+    };
+  }, []);
+
+
+
+  const quickLinks = [
+    { icon: <FaTablets />, title: 'Medicines', link: '/medicines', color: '#FF5722' },
+    { icon: <FaFlask />, title: 'Lab Tests', link: '/lab-tests', color: '#2196F3' },
+    { icon: <FaUserMd />, title: 'Consult Doctor', link: '/consult', color: '#4CAF50' },
+    { icon: <FaShieldAlt />, title: 'Insurance', link: '/insurance', color: '#FFC107' },
+    { icon: <FaLeaf />, title: 'Ayurveda', link: '/ayurveda', color: '#8BC34A' },
+    { icon: <FaWeight />, title: 'Wellness', link: '/wellness', color: '#9C27B0' },
+    { icon: <FaHeartbeat />, title: 'Health Packages', link: '/health-packages', color: '#E91E63' },
+    { icon: <FaPercent />, title: 'Offers', link: '/offers', color: '#673AB7' }
+  ];
+  
+  return (
+    <div className={styles.homePage}>
+
+             {/* Modern Hero Slider Section */}
+      <section className={styles.heroSlider} ref={heroSliderRef}>
+        <div className={styles.heroSlidesContainer} style={{ transform: `translateX(-${currentHeroSlide * 100}%)` }}>
+          {heroSlides.map((slide, index) => (
+            <div 
+              key={index} 
+              className={styles.heroSlide}
+              style={{ backgroundColor: slide.bgColor }}
+            >
+              <div className={styles.heroSlideContent}>
+                <div className={styles.heroSlideText}>
+                  <h1>{slide.title}</h1>
+                  <p>{slide.subtitle}</p>
+                  <Link to={slide.link} className={styles.heroButton}>
+                    {slide.cta} <FaChevronRight />
+                  </Link>
+                </div>
+                <div className={styles.heroSlideImageContainer}>
+                  <img src={slide.image} alt={slide.title} className={styles.heroSlideImage} />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        <div className={styles.heroSliderDots}>
+          {heroSlides.map((_, index) => (
+            <button 
+              key={index} 
+              className={`${styles.heroSliderDot} ${currentHeroSlide === index ? styles.heroSliderDotActive : ''}`}
+              onClick={() => setCurrentHeroSlide(index)}
+              aria-label={`Go to slide ${index + 1}`}
+            ></button>
+          ))}
+        </div>
+      </section>
+
+      {/* Get it all right here section */}
+      <div className={styles.categorySection}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>Get it all right here</h2>
+          <a href="/categories" className={styles.viewAllLink}>
+            View all <FaChevronRight className={styles.viewAllIcon} />
+          </a>
+        </div>
+        <div className={styles.categoryContainer} ref={categoryGridRef}>
+          <div className={styles.categoryGrid}>
+            {categories.map((category) => (
+              <Link to={category.link} key={category.id} className={styles.categoryItem}>
+                <div className={styles.categoryImageContainer}>
+                  <img
+                    src={category.image}
+                    alt={category.name}
+                    className={styles.categoryImage}
+                  />
+                </div>
+                <p className={styles.categoryName}>{category.name}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* 
+        Skechers Promotion Section 
+        - Fully responsive promotional section with gradient background
+        - Features interactive product carousel with 5 products
+        - Includes wishlist toggle functionality
+        - Left side: promotional content with heading, button, and logo
+        - Right side: product carousel with navigation arrows
+        - Accessibility features: proper alt text, aria labels, keyboard navigation
+      */}
+      <section className={styles.skechersPromotion}>
+        <div className={styles.promoContainer}>
+          <div className={styles.promoContent}>
+            <h2 className={styles.promoHeading}>Skechers up to 30% off</h2>
+            <button className={styles.shopNowBtn}>Shop now</button>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Skechers_logo.svg/2560px-Skechers_logo.svg.png" 
+                 alt="Skechers logo" 
+                 className={styles.skechersLogo} />
+          </div>
+          <div className={styles.promoImage}>
+            <img src="https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg" 
+                 alt="Blue athletic shoe" 
+                 className={`${styles.shoeImage} ${styles.shoeImage1}`} />
+            <img src="https://images.pexels.com/photos/2529147/pexels-photo-2529147.jpeg" 
+                 alt="Black athletic shoe" 
+                 className={`${styles.shoeImage} ${styles.shoeImage2}`} />
+            <img src="https://images.pexels.com/photos/1598505/pexels-photo-1598505.jpeg" 
+                 alt="White athletic shoe" 
+                 className={`${styles.shoeImage} ${styles.shoeImage3}`} />
+          </div>
+        </div>
+        <div className={styles.productCarousel}>
+          <div className={styles.productsRow} ref={skechersSliderRef} onScroll={handleSkechersScrollCheck}>
+            {/* Product 1 */}
+            <div className={styles.skechersProductCard}>
+              <div className={styles.skechersProductImageContainer}>
+                <button 
+                  className={styles.wishlistBtn}
+                  onClick={() => toggleWishlist('skechers-1')}
+                  aria-label="Add to wishlist"
+                >
+                  {wishlistItems.includes('skechers-1') ? <FaHeart style={{color: '#ff5722'}} /> : <FaRegHeart />}
+                </button>
+                <img src="https://images.pexels.com/photos/1598508/pexels-photo-1598508.jpeg" 
+                     alt="Skechers Black athletic running shoe" 
+                     className={styles.skechersProductImage}
+                     loading="lazy" />
+              </div>
+              <div className={styles.skechersProductInfo}>
+                <div className={styles.skechersPriceInfo}>
+                  <span className={styles.currentPrice}>Now $49.99</span>
+                  <span className={styles.originalPrice}>$79.99</span>
+                </div>
+                <p className={styles.skechersProductName}>Skechers Women's Street BLILON - HOMESTORE RAMBLER Cali Walking Sneaker</p>
+                <button className={styles.optionsButton}>Options</button>
+              </div>
+            </div>
+
+            {/* Product 2 */}
+            <div className={styles.skechersProductCard}>
+              <div className={styles.skechersProductImageContainer}>
+                <button 
+                  className={styles.wishlistBtn}
+                  onClick={() => toggleWishlist('skechers-2')}
+                  aria-label="Add to wishlist"
+                >
+                  {wishlistItems.includes('skechers-2') ? <FaHeart style={{color: '#ff5722'}} /> : <FaRegHeart />}
+                </button>
+                <img src="https://images.pexels.com/photos/1598505/pexels-photo-1598505.jpeg" 
+                     alt="Skechers Gray athletic running shoe" 
+                     className={styles.skechersProductImage}
+                     loading="lazy" />
+              </div>
+              <div className={styles.skechersProductInfo}>
+                <div className={styles.skechersPriceInfo}>
+                  <span className={styles.currentPrice}>Now $34.60</span>
+                  <span className={styles.originalPrice}>$59.99</span>
+                </div>
+                <p className={styles.skechersProductName}>Skechers Ultra-and-Boy Boys Sketch-Lite Pro Surge Street Sneaker</p>
+                <button className={styles.optionsButton}>Options</button>
+              </div>
+            </div>
+
+            {/* Product 3 */}
+            <div className={styles.skechersProductCard}>
+              <div className={styles.skechersProductImageContainer}>
+                <button 
+                  className={styles.wishlistBtn}
+                  onClick={() => toggleWishlist('skechers-3')}
+                  aria-label="Add to wishlist"
+                >
+                  {wishlistItems.includes('skechers-3') ? <FaHeart style={{color: '#ff5722'}} /> : <FaRegHeart />}
+                </button>
+                <img src="https://images.pexels.com/photos/1464625/pexels-photo-1464625.jpeg" 
+                     alt="Skechers Black slip-on casual shoe" 
+                     className={styles.skechersProductImage}
+                     loading="lazy" />
+              </div>
+              <div className={styles.skechersProductInfo}>
+                <div className={styles.skechersPriceInfo}>
+                  <span className={styles.currentPrice}>Now $45.00</span>
+                  <span className={styles.originalPrice}>$89.99</span>
+                </div>
+                <p className={styles.skechersProductName}>Skechers Men's Equalizer 4.0 Slip-On Walking Sneaker (Wide Width Available)</p>
+                <button className={styles.optionsButton}>Options</button>
+              </div>
+            </div>
+
+            {/* Product 4 */}
+            <div className={styles.skechersProductCard}>
+              <div className={styles.skechersProductImageContainer}>
+                <button 
+                  className={styles.wishlistBtn}
+                  onClick={() => toggleWishlist('skechers-4')}
+                  aria-label="Add to wishlist"
+                >
+                  {wishlistItems.includes('skechers-4') ? <FaHeart style={{color: '#ff5722'}} /> : <FaRegHeart />}
+                </button>
+                <img src="https://images.pexels.com/photos/1456706/pexels-photo-1456706.jpeg" 
+                     alt="Skechers White athletic performance shoe" 
+                     className={styles.skechersProductImage}
+                     loading="lazy" />
+              </div>
+              <div className={styles.skechersProductInfo}>
+                <div className={styles.skechersPriceInfo}>
+                  <span className={styles.currentPrice}>Now $39.99</span>
+                  <span className={styles.originalPrice}>$69.99</span>
+                </div>
+                <p className={styles.skechersProductName}>Skechers Women's Go Walk Joy Walking Shoe</p>
+                <button className={styles.optionsButton}>Options</button>
+              </div>
+            </div>
+
+            {/* Product 5 (additional) */}
+            <div className={styles.skechersProductCard}>
+              <div className={styles.skechersProductImageContainer}>
+                <button 
+                  className={styles.wishlistBtn}
+                  onClick={() => toggleWishlist('skechers-5')}
+                  aria-label="Add to wishlist"
+                >
+                  {wishlistItems.includes('skechers-5') ? <FaHeart style={{color: '#ff5722'}} /> : <FaRegHeart />}
+                </button>
+                <img src="https://images.pexels.com/photos/2529147/pexels-photo-2529147.jpeg" 
+                     alt="Skechers Blue athletic running shoe" 
+                     className={styles.skechersProductImage}
+                     loading="lazy" />
+              </div>
+              <div className={styles.skechersProductInfo}>
+                <div className={styles.skechersPriceInfo}>
+                  <span className={styles.currentPrice}>Now $54.99</span>
+                  <span className={styles.originalPrice}>$94.99</span>
+                </div>
+                <p className={styles.skechersProductName}>Skechers Men's Max Cushioning Elite-Performance Walking & Running Shoe</p>
+                <button className={styles.optionsButton}>Options</button>
+              </div>
+            </div>
+          </div>
+          <button 
+            className={`${styles.carouselButton} ${styles.carouselButtonLeft} ${showLeftSkechersScroll ? '' : styles.hidden}`}
+            onClick={() => {
+              if (skechersSliderRef.current) {
+                skechersSliderRef.current.scrollBy({ left: -300, behavior: 'smooth' });
+              }
+            }}
+            aria-label="Scroll left"
+          >
+            <FaChevronLeft />
+          </button>
+          {showRightSkechersScroll && (
+            <button 
+              className={`${styles.carouselButton} ${styles.carouselButtonRight}`}
+              aria-label="Scroll right"
+              onClick={() => {
+                if (skechersSliderRef.current) {
+                  skechersSliderRef.current.scrollBy({ left: skechersSliderRef.current.offsetWidth, behavior: 'smooth' });
+                }
+              }}
+            >
+              <FaChevronRight />
+            </button>
+          )}
+        </div>
+      </section>
+
+      {/* 
+        Swimwear Promotion Section 
+        - Fully responsive promotional section with pink gradient background
+        - Left side: product list with clearance tags, wishlist toggle, pricing
+        - Right side: promotional content with heading, button, and featured image
+        - Interactive elements: wishlist toggle, options button
+        - Accessibility features: proper alt text, aria labels, keyboard navigation
+        - Performance optimizations: lazy loading images
+      */}
+      <section className={styles.swimwearPromotion}>
+        <div className={styles.swimContainer}>
+          <div className={styles.swimProducts}>
+            {/* Product 1 */}
+            <div className={styles.swimProductCard}>
+              <div className={styles.clearanceTag}>Clearance</div>
+              <div className={styles.swimProductImageContainer}>
+                <button 
+                  className={styles.wishlistBtn}
+                  onClick={() => toggleWishlist('swim-1')}
+                  aria-label="Add to wishlist"
+                >
+                  {wishlistItems.includes('swim-1') ? <FaHeart style={{color: '#ff5722'}} /> : <FaRegHeart />}
+                </button>
+                <img src="https://images.pexels.com/photos/1536619/pexels-photo-1536619.jpeg" 
+                     alt="Women's green bikini swimsuit - clearance item" 
+                     className={styles.swimProductImage}
+                     loading="lazy" />
+              </div>
+              <div className={styles.swimProductInfo}>
+                <div className={styles.swimPriceInfo}>
+                  <span className={styles.swimCurrentPrice}>Now $9.00</span>
+                  <span className={styles.swimOriginalPrice}>$19.99</span>
+                </div>
+                <p className={styles.swimProductName}>No Boundaries Women's Smocked Bandeau Swim Top, Sizes XS...</p>
+                <button className={styles.optionsButton}>Options</button>
+              </div>
+            </div>
+
+            {/* Product 2 */}
+            <div className={styles.swimProductCard}>
+              <div className={styles.swimProductImageContainer}>
+                <button 
+                  className={styles.wishlistBtn}
+                  onClick={() => toggleWishlist('swim-2')}
+                  aria-label="Add to wishlist"
+                >
+                  {wishlistItems.includes('swim-2') ? <FaHeart style={{color: '#ff5722'}} /> : <FaRegHeart />}
+                </button>
+                <img src="https://images.pexels.com/photos/1701209/pexels-photo-1701209.jpeg" 
+                     alt="Women's red one-piece swimsuit" 
+                     className={styles.swimProductImage}
+                     loading="lazy" />
+              </div>
+              <div className={styles.swimProductInfo}>
+                <div className={styles.swimPriceInfo}>
+                  <span className={styles.swimCurrentPrice}>$29.98</span>
+                </div>
+                <p className={styles.swimProductName}>Time and Tru Women's and Women's Plus V Wire One Piece...</p>
+                <button className={styles.optionsButton}>Options</button>
+              </div>
+            </div>
+
+            {/* Product 3 */}
+            <div className={styles.swimProductCard}>
+              <div className={styles.clearanceTag}>Clearance</div>
+              <div className={styles.swimProductImageContainer}>
+                <button 
+                  className={styles.wishlistBtn}
+                  onClick={() => toggleWishlist('swim-3')}
+                  aria-label="Add to wishlist"
+                >
+                  {wishlistItems.includes('swim-3') ? <FaHeart style={{color: '#ff5722'}} /> : <FaRegHeart />}
+                </button>
+                <img src="https://images.pexels.com/photos/1159622/pexels-photo-1159622.jpeg" 
+                     alt="Women's pink and white bikini swimsuit - clearance item" 
+                     className={styles.swimProductImage}
+                     loading="lazy" />
+              </div>
+              <div className={styles.swimProductInfo}>
+                <div className={styles.swimPriceInfo}>
+                  <span className={styles.swimCurrentPrice}>Now $8.61</span>
+                  <span className={styles.swimOriginalPrice}>$17.99</span>
+                </div>
+                <p className={styles.swimProductName}>Time and Tru Women's and Women's Plus Covering Shirt with...</p>
+                <button className={styles.optionsButton}>Options</button>
+              </div>
+            </div>
+          </div>
+          
+          <div className={styles.swimPromo}>
+            <div className={styles.swimPromoContent}>
+              <p className={styles.swimPromoSubtitle}>No Boundaries & more</p>
+              <h2 className={styles.swimPromoHeading}>Swim for her</h2>
+              <button className={styles.shopNowBtn}>Shop now</button>
+              <div className={styles.priceHighlight}>
+                <span className={styles.fromText}>From</span>
+                <span className={styles.priceText}>$10</span>
+              </div>
+            </div>
+            <div className={styles.swimPromoImageContainer}>
+              <img src="https://images.pexels.com/photos/1382728/pexels-photo-1382728.jpeg" 
+                   alt="Women in swimwear" 
+                   className={styles.swimPromoImage} />
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      {/* Vitamins & Supplements Section */}
+      <section className={styles.productSection}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>Vitamins & Supplements | <span className={styles.sectionSubtitle}>supplement of the week</span></h2>
+          <a href="/vitamins-supplements" className={styles.viewAllLink}>SEE ALL <FaArrowRight /></a>
+        </div>
+        
+        <div className={styles.productsCarouselContainer}>
+          <button 
+            className={`${styles.carouselButton} ${styles.carouselButtonLeft} ${currentVitaminsSlide === 0 ? styles.hidden : ''}`}
+            aria-label="Scroll left"
+            onClick={() => {
+              if (vitaminsSliderRef.current) {
+                vitaminsSliderRef.current.scrollBy({ left: -vitaminsSliderRef.current.offsetWidth, behavior: 'smooth' });
+              }
+            }}
+          >
+            <FaChevronLeft />
+          </button>
+          
+          <div className={styles.productsGrid} ref={vitaminsSliderRef} onScroll={handleVitaminsScrollCheck}>
+            {vitaminProducts.map((product) => (
+              <ProductCardLink 
+                key={product.id} 
+                to={`/product/${product.id}`} 
+                className={styles.productCardLink}
+              >
+                <ProductCard
+                  id={product.id}
+                  name={product.name}
+                  image={product.image}
+                  price={product.price}
+                  originalPrice={product.originalPrice}
+                  details={product.details}
+                  currency="TSh"
+                  className={styles.productCard}
+                />
+              </ProductCardLink>
+            ))}
+          </div>
+          
+          <button 
+            className={`${styles.carouselButton} ${styles.carouselButtonRight} ${currentVitaminsSlide === 1 ? styles.hidden : ''}`}
+            aria-label="Scroll right"
+            onClick={() => {
+              if (vitaminsSliderRef.current) {
+                vitaminsSliderRef.current.scrollBy({ left: vitaminsSliderRef.current.offsetWidth, behavior: 'smooth' });
+              }
+            }}
+          >
+            <FaChevronRight />
+          </button>
+        </div>
+      </section>
+      
+      {/* Popular Combo Deals Section */}
+      <section className={styles.productSection}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>Popular Combo Deals | <span className={styles.sectionSubtitle}>save big on wellness</span></h2>
+          <a href="/combo-deals" className={styles.viewAllLink}>SEE ALL <FaArrowRight /></a>
+        </div>
+        
+        <div className={styles.productsCarouselContainer}>
+          <button 
+            className={`${styles.carouselButton} ${styles.carouselButtonLeft} ${currentComboDealsSlide === 0 ? styles.hidden : ''}`}
+            aria-label="Scroll left"
+            onClick={() => {
+              if (comboDealsSliderRef.current) {
+                comboDealsSliderRef.current.scrollBy({ left: -comboDealsSliderRef.current.offsetWidth, behavior: 'smooth' });
+              }
+            }}
+          >
+            <FaChevronLeft />
+          </button>
+          
+          <div className={styles.productsGrid} ref={comboDealsSliderRef} onScroll={handleComboDealsScrollCheck}>
+            {comboDealsProducts.map((product) => (
+              <ProductCardLink key={product.id} to={`/product/${product.id}`}>
+                <ProductCard
+                  id={product.id}
+                  name={product.name}
+                  image={product.image}
+                  price={product.price}
+                  originalPrice={product.originalPrice}
+                  details={product.details}
+                  className={styles.productCard}
+                />
+              </ProductCardLink>
+            ))}
+          </div>
+          
+          <button 
+            className={`${styles.carouselButton} ${styles.carouselButtonRight} ${currentComboDealsSlide === 1 ? styles.hidden : ''}`}
+            aria-label="Scroll right"
+            onClick={() => {
+              if (comboDealsSliderRef.current) {
+                comboDealsSliderRef.current.scrollBy({ left: comboDealsSliderRef.current.offsetWidth, behavior: 'smooth' });
+              }
+            }}
+          >
+            <FaChevronRight />
+          </button>
+        </div>
+      </section>
+      
+      {/* Medicine Section */}
+      <section className={styles.productSection}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>Medicine | <span className={styles.sectionSubtitle}>everyday health essentials</span></h2>
+          <a href="/medicine" className={styles.viewAllLink}>SEE ALL <FaArrowRight /></a>
+        </div>
+        
+        <div className={styles.productsCarouselContainer}>
+          <button 
+            className={`${styles.carouselButton} ${styles.carouselButtonLeft} ${currentMedicineSlide === 0 ? styles.hidden : ''}`}
+            aria-label="Scroll left"
+            onClick={() => {
+              if (medicineSliderRef.current) {
+                medicineSliderRef.current.scrollBy({ left: -medicineSliderRef.current.offsetWidth, behavior: 'smooth' });
+              }
+            }}
+          >
+            <FaChevronLeft />
+          </button>
+          
+          <div className={styles.productsGrid} ref={medicineSliderRef} onScroll={handleMedicineScrollCheck}>
+            {medicineProducts.map((product) => (
+              <ProductCardLink 
+                key={product.id} 
+                to={`/product/${product.id}`} 
+                className={styles.productCardLink}
+              >
+                <ProductCard
+                  id={product.id}
+                  name={product.name}
+                  image={product.image}
+                  price={product.price}
+                  originalPrice={product.originalPrice}
+                  details={product.details}
+                  currency="TSh"
+                  className={styles.productCard}
+                />
+              </ProductCardLink>
+            ))}
+          </div>
+          
+          <button 
+            className={`${styles.carouselButton} ${styles.carouselButtonRight} ${currentMedicineSlide === 1 ? styles.hidden : ''}`}
+            aria-label="Scroll right"
+            onClick={() => {
+              if (medicineSliderRef.current) {
+                medicineSliderRef.current.scrollBy({ left: medicineSliderRef.current.offsetWidth, behavior: 'smooth' });
+              }
+            }}
+          >
+            <FaChevronRight />
+          </button>
+        </div>
+      </section>
+      
+      {/* Vitamins & Supplements Section */}
+      <section className={styles.productSection}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>Vitamins & Supplements | <span className={styles.sectionSubtitle}>boost your health</span></h2>
+          <a href="/vitamins-supplements" className={styles.viewAllLink}>SEE ALL <FaArrowRight /></a>
+        </div>
+        
+        <div className={styles.productsCarouselContainer}>
+          <button 
+            className={`${styles.carouselButton} ${styles.carouselButtonLeft} ${currentVitaminsSlide === 0 ? styles.hidden : ''}`}
+            aria-label="Scroll left"
+            onClick={() => {
+              if (vitaminsSliderRef.current) {
+                vitaminsSliderRef.current.scrollBy({ left: -vitaminsSliderRef.current.offsetWidth, behavior: 'smooth' });
+              }
+            }}
+          >
+            <FaChevronLeft />
+          </button>
+          
+          <div className={styles.productsGrid} ref={vitaminsSliderRef} onScroll={handleVitaminsScrollCheck}>
+            {vitaminProducts.map((product) => (
+              <ProductCardLink key={product.id} to={`/product/${product.id}`}>
+                <ProductCard
+                  id={product.id}
+                  name={product.name}
+                  image={product.image}
+                  price={product.price}
+                  originalPrice={product.originalPrice}
+                  details={product.details}
+                  className={styles.productCard}
+                />
+              </ProductCardLink>
+            ))}
+          </div>
+          
+          <button 
+            className={`${styles.carouselButton} ${styles.carouselButtonRight} ${currentVitaminsSlide === 1 ? styles.hidden : ''}`}
+            aria-label="Scroll right"
+            onClick={() => {
+              if (vitaminsSliderRef.current) {
+                vitaminsSliderRef.current.scrollBy({ left: vitaminsSliderRef.current.offsetWidth, behavior: 'smooth' });
+              }
+            }}
+          >
+            <FaChevronRight />
+          </button>
+        </div>
+      </section>
+      
+      {/* La Roche-Posay Products Section */}
+      <section className={styles.laRochePosaySection}>
+        
+        <div className={styles.sectionHeader}>
+          <div className={styles.headerContent}>
+            <h2 className={styles.sectionTitle}>New from La Roche-Posay</h2>
+            <p className={styles.sectionSubtitle}>Derm-approved skincare is here.</p>
+          </div>
+          <a href="/la-roche-posay" className={styles.viewAllLink}>
+            View all
+          </a>
+        </div>
+        
+        <div className={styles.laRocheProductsContainer}>
+          <button
+            className={`${styles.scrollButton} ${styles.scrollButtonLeft}`}
+            onClick={() => handleLaRocheScroll('left')}
+            aria-label="Scroll left"
+            style={{ display: showLeftLaRocheScroll ? 'flex' : 'none' }}
+          >
+            <FaChevronLeft />
+          </button>
+          
+          <div 
+            className={styles.laRocheProductsGrid} 
+            ref={laRocheContainerRef}
+            onScroll={handleLaRocheScrollCheck}
+          >
+            {laRochePosayProducts.slice(0, 18).map((product) => (
+              <ProductCardLink key={product.id} to={`/product/${product.id}`}>
+                <ProductCard
+                  id={product.id}
+                  name={product.name}
+                  image={product.image}
+                  price={product.price}
+                  className={styles.laRocheProductCard}
+                />
+              </ProductCardLink>
+            ))}
+          </div>
+          
+          <button
+            className={`${styles.scrollButton} ${styles.scrollButtonRight}`}
+            onClick={() => handleLaRocheScroll('right')}
+            aria-label="Scroll right"
+            style={{ display: showRightLaRocheScroll ? 'flex' : 'none' }}
+          >
+            <FaChevronRight />
+          </button>
+        </div>
+      </section>
+
+      {/* Quick Links Section with Modern Design */}
+      <section className={styles.quickLinksSection}>
+        <div className={styles.container}>
+          <div className={styles.quickLinksGrid}>
+            {quickLinks.map((link, index) => (
+              <Link to={link.link} key={index} className={styles.quickLinkCard}>
+                <div className={styles.quickLinkIcon} style={{ backgroundColor: `${link.color}15`, color: link.color }}>
+                  {link.icon}
+                </div>
+                <span className={styles.quickLinkTitle}>{link.title}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 
+        Health Supplements Section 
+        - Fully responsive promotional section with green gradient background
+        - Left side: promotional content with heading, button, and health icon
+        - Right side: product images with hover effects
+        - Interactive elements: shop now button, image hover effects
+        - Accessibility features: proper alt text, aria labels
+      */}
+      <section className={styles.healthSupplementsPromotion}>
+        <div className={styles.supplementsContainer}>
+          <div className={styles.supplementsContent}>
+            <h2 className={styles.supplementsHeading}>Health Supplements</h2>
+            <p className={styles.supplementsSubheading}>Boost your immunity and wellness</p>
+            <button className={styles.shopNowBtn}>Shop now</button>
+            <div className={styles.discountTag}>
+              <span className={styles.discountText}>Up to 40% off</span>
+            </div>
+          </div>
+          <div className={styles.supplementsImages}>
+            <img src="https://images.pexels.com/photos/4046316/pexels-photo-4046316.jpeg" 
+                 alt="Vitamin C supplements" 
+                 className={`${styles.supplementImage} ${styles.supplementImage1}`}
+                 loading="lazy" />
+            <img src="https://images.pexels.com/photos/4047140/pexels-photo-4047140.jpeg" 
+                 alt="Omega-3 supplements" 
+                 className={`${styles.supplementImage} ${styles.supplementImage2}`}
+                 loading="lazy" />
+            <img src="https://images.pexels.com/photos/4021808/pexels-photo-4021808.jpeg" 
+                 alt="Protein powder" 
+                 className={`${styles.supplementImage} ${styles.supplementImage3}`}
+                 loading="lazy" />
+          </div>
+        </div>
+      </section>
+
+      {/* 
+        Diabetes Care Section 
+        - Fully responsive promotional section with blue gradient background
+        - Left side: product grid with pricing and options
+        - Right side: promotional content with heading and features
+        - Interactive elements: wishlist toggle, options button
+        - Accessibility features: proper alt text, aria labels
+      */}
+      <section className={styles.diabetesCarePromotion}>
+        <div className={styles.diabetesContainer}>
+          <div className={styles.diabetesProducts}>
+            {/* Product 1 */}
+            <div className={styles.diabetesProductCard}>
+              <div className={styles.diabetesProductImageContainer}>
+                <button 
+                  className={styles.wishlistBtn}
+                  onClick={() => toggleWishlist('diabetes-1')}
+                  aria-label="Add to wishlist"
+                >
+                  {wishlistItems.includes('diabetes-1') ? <FaHeart style={{color: '#ff5722'}} /> : <FaRegHeart />}
+                </button>
+                <img src="https://images.pexels.com/photos/4226219/pexels-photo-4226219.jpeg" 
+                     alt="Glucose monitor" 
+                     className={styles.diabetesProductImage}
+                     loading="lazy" />
+              </div>
+              <div className={styles.diabetesProductInfo}>
+                <div className={styles.diabetesPriceInfo}>
+                  <span className={styles.currentPrice}>Now TSh 59,999</span>
+                  <span className={styles.originalPrice}>TSh 89,999</span>
+                </div>
+                <p className={styles.diabetesProductName}>Smart Glucose Monitor - Bluetooth Enabled</p>
+                <button className={styles.optionsButton}>Options</button>
+              </div>
+            </div>
+
+            {/* Product 2 */}
+            <div className={styles.diabetesProductCard}>
+              <div className={styles.diabetesProductImageContainer}>
+                <button 
+                  className={styles.wishlistBtn}
+                  onClick={() => toggleWishlist('diabetes-2')}
+                  aria-label="Add to wishlist"
+                >
+                  {wishlistItems.includes('diabetes-2') ? <FaHeart style={{color: '#ff5722'}} /> : <FaRegHeart />}
+                </button>
+                <img src="https://images.pexels.com/photos/4226769/pexels-photo-4226769.jpeg" 
+                     alt="Insulin pen" 
+                     className={styles.diabetesProductImage}
+                     loading="lazy" />
+              </div>
+              <div className={styles.diabetesProductInfo}>
+                <div className={styles.diabetesPriceInfo}>
+                  <span className={styles.currentPrice}>Now TSh 24,999</span>
+                  <span className={styles.originalPrice}>TSh 34,999</span>
+                </div>
+                <p className={styles.diabetesProductName}>Insulin Pen - Easy Dose Adjustment</p>
+                <button className={styles.optionsButton}>Options</button>
+              </div>
+            </div>
+
+            {/* Product 3 */}
+            <div className={styles.diabetesProductCard}>
+              <div className={styles.diabetesProductImageContainer}>
+                <button 
+                  className={styles.wishlistBtn}
+                  onClick={() => toggleWishlist('diabetes-3')}
+                  aria-label="Add to wishlist"
+                >
+                  {wishlistItems.includes('diabetes-3') ? <FaHeart style={{color: '#ff5722'}} /> : <FaRegHeart />}
+                </button>
+                <img src="https://images.pexels.com/photos/7722651/pexels-photo-7722651.jpeg" 
+                     alt="Glucose test strips" 
+                     className={styles.diabetesProductImage}
+                     loading="lazy" />
+              </div>
+              <div className={styles.diabetesProductInfo}>
+                <div className={styles.diabetesPriceInfo}>
+                  <span className={styles.currentPrice}>Now TSh 12,999</span>
+                  <span className={styles.originalPrice}>TSh 19,999</span>
+                </div>
+                <p className={styles.diabetesProductName}>Glucose Test Strips - Pack of 100</p>
+                <button className={styles.optionsButton}>Options</button>
+              </div>
+            </div>
+          </div>
+          <div className={styles.diabetesPromo}>
+            <div className={styles.diabetesPromoContent}>
+              <h2 className={styles.diabetesPromoHeading}>Diabetes Care</h2>
+              <ul className={styles.diabetesFeatureList}>
+                <li className={styles.diabetesFeature}>Accurate monitoring devices</li>
+                <li className={styles.diabetesFeature}>Easy-to-use insulin delivery</li>
+                <li className={styles.diabetesFeature}>Affordable test strips</li>
+                <li className={styles.diabetesFeature}>24/7 customer support</li>
+              </ul>
+              <button className={styles.shopNowBtn}>Shop now</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 
+        Baby Care Section 
+        - Fully responsive promotional section with soft pink gradient background
+        - Right side: promotional content with heading, features, and button
+        - Left side: carousel of baby care products with navigation
+        - Interactive elements: product carousel, wishlist toggle, shop now button
+        - Accessibility features: proper alt text, aria labels, keyboard navigation
+      */}
+      <section className={styles.babyCarePromotion}>
+        <div className={styles.babyContainer}>
+          <div className={styles.babyProductsCarousel}>
+            <div className={styles.babyProductsRow}>
+              {/* Product 1 */}
+              <div className={styles.babyProductCard}>
+                <div className={styles.babyProductImageContainer}>
+                  <button 
+                    className={styles.wishlistBtn}
+                    onClick={() => toggleWishlist('baby-1')}
+                    aria-label="Add to wishlist"
+                  >
+                    {wishlistItems.includes('baby-1') ? <FaHeart style={{color: '#ff5722'}} /> : <FaRegHeart />}
+                  </button>
+                  <img src="https://images.pexels.com/photos/3662667/pexels-photo-3662667.jpeg" 
+                       alt="Baby lotion" 
+                       className={styles.babyProductImage}
+                       loading="lazy" />
+                </div>
+                <div className={styles.babyProductInfo}>
+                  <div className={styles.babyPriceInfo}>
+                    <span className={styles.currentPrice}>Now TSh 8,999</span>
+                    <span className={styles.originalPrice}>TSh 12,999</span>
+                  </div>
+                  <p className={styles.babyProductName}>Gentle Baby Lotion - Hypoallergenic</p>
+                  <button className={styles.optionsButton}>Options</button>
+                </div>
+              </div>
+
+              {/* Product 2 */}
+              <div className={styles.babyProductCard}>
+                <div className={styles.babyProductImageContainer}>
+                  <button 
+                    className={styles.wishlistBtn}
+                    onClick={() => toggleWishlist('baby-2')}
+                    aria-label="Add to wishlist"
+                  >
+                    {wishlistItems.includes('baby-2') ? <FaHeart style={{color: '#ff5722'}} /> : <FaRegHeart />}
+                  </button>
+                  <img src="https://images.pexels.com/photos/3662807/pexels-photo-3662807.jpeg" 
+                       alt="Baby shampoo" 
+                       className={styles.babyProductImage}
+                       loading="lazy" />
+                </div>
+                <div className={styles.babyProductInfo}>
+                  <div className={styles.babyPriceInfo}>
+                    <span className={styles.currentPrice}>Now TSh 7,499</span>
+                    <span className={styles.originalPrice}>TSh 9,999</span>
+                  </div>
+                  <p className={styles.babyProductName}>Tear-Free Baby Shampoo - 200ml</p>
+                  <button className={styles.optionsButton}>Options</button>
+                </div>
+              </div>
+
+              {/* Product 3 */}
+              <div className={styles.babyProductCard}>
+                <div className={styles.babyProductImageContainer}>
+                  <button 
+                    className={styles.wishlistBtn}
+                    onClick={() => toggleWishlist('baby-3')}
+                    aria-label="Add to wishlist"
+                  >
+                    {wishlistItems.includes('baby-3') ? <FaHeart style={{color: '#ff5722'}} /> : <FaRegHeart />}
+                  </button>
+                  <img src="https://images.pexels.com/photos/3662789/pexels-photo-3662789.jpeg" 
+                       alt="Baby powder" 
+                       className={styles.babyProductImage}
+                       loading="lazy" />
+                </div>
+                <div className={styles.babyProductInfo}>
+                  <div className={styles.babyPriceInfo}>
+                    <span className={styles.currentPrice}>Now TSh 5,999</span>
+                    <span className={styles.originalPrice}>TSh 8,499</span>
+                  </div>
+                  <p className={styles.babyProductName}>Talc-Free Baby Powder - 100g</p>
+                  <button className={styles.optionsButton}>Options</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className={styles.babyPromo}>
+            <div className={styles.babyPromoContent}>
+              <h2 className={styles.babyPromoHeading}>Baby Care</h2>
+              <p className={styles.babyPromoSubheading}>Gentle products for your little ones</p>
+              <ul className={styles.babyFeatureList}>
+                <li className={styles.babyFeature}>Hypoallergenic formulas</li>
+                <li className={styles.babyFeature}>Dermatologically tested</li>
+                <li className={styles.babyFeature}>No harmful chemicals</li>
+              </ul>
+              <button className={styles.shopNowBtn}>Shop now</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 
+        Personal Care Section 
+        - Fully responsive promotional section with purple gradient background
+        - Left side: promotional content with heading, features, and button
+        - Right side: grid of personal care products with pricing
+        - Interactive elements: wishlist toggle, options button
+        - Accessibility features: proper alt text, aria labels
+      */}
+      <section className={styles.personalCarePromotion}>
+        <div className={styles.personalCareContainer}>
+          <div className={styles.personalCarePromo}>
+            <div className={styles.personalCarePromoContent}>
+              <h2 className={styles.personalCarePromoHeading}>Personal Care</h2>
+              <p className={styles.personalCarePromoSubheading}>Self-care essentials for everyday wellness</p>
+              <div className={styles.personalCareDiscount}>
+                <span className={styles.discountLabel}>Special Offer</span>
+                <span className={styles.discountValue}>Buy 2 Get 1 Free</span>
+              </div>
+              <button className={styles.shopNowBtn}>Shop now</button>
+            </div>
+          </div>
+          <div className={styles.personalCareProducts}>
+            {personalCareProducts.map((product) => (
+              <ProductCardLink key={product.id} to={`/product/${product.id}`}>
+                <div className={styles.personalCareProductCard}>
+                  <div className={styles.personalCareProductImageContainer}>
+                    <button 
+                      className={styles.wishlistBtn}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        toggleWishlist(product.id);
+                      }}
+                      aria-label="Add to wishlist"
+                    >
+                      {wishlistItems.includes(product.id) ? <FaHeart style={{color: '#ff5722'}} /> : <FaRegHeart />}
+                    </button>
+                    <img 
+                      src={product.image} 
+                      alt={product.name} 
+                      className={styles.personalCareProductImage}
+                      loading="lazy" 
+                    />
+                  </div>
+                  <div className={styles.personalCareProductInfo}>
+                    <div className={styles.personalCarePriceInfo}>
+                      <span className={styles.currentPrice}>Now TSh {product.price.toLocaleString()}</span>
+                      <span className={styles.originalPrice}>TSh {product.originalPrice.toLocaleString()}</span>
+                    </div>
+                    <p className={styles.personalCareProductName}>{product.name}</p>
+                    <button className={styles.optionsButton}>Options</button>
+                  </div>
+                </div>
+              </ProductCardLink>
+            ))}
+          </div>
+        </div>
+      </section>
+
+    </div>
+  );
+};
+
+export default Home;

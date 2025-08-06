@@ -1,0 +1,255 @@
+.pinCodeContainer {
+  width: 100%;
+}
+
+.errorMessage {
+  background-color: rgba(255, 0, 0, 0.1);
+  color: #d32f2f;
+  padding: 10px;
+  border-radius: var(--border-radius-sm);
+  margin-bottom: 15px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.searchForm {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.inputWithIcon {
+  position: relative;
+  flex: 1;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-light);
+  font-size: 16px;
+}
+
+.inputWithIcon input {
+  width: 100%;
+  padding: 12px 12px 12px 40px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+}
+
+.inputWithIcon input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(0, 113, 220, 0.2);
+}
+
+.searchButton {
+  padding: 0 20px;
+  background-color: var(--primary-color);
+  color: var(--white);
+  border: none;
+  border-radius: var(--border-radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.searchButton:hover {
+  background-color: var(--primary-dark);
+}
+
+.searchButton:disabled {
+  background-color: var(--border-color);
+  cursor: not-allowed;
+}
+
+.popularCities {
+  margin-bottom: 20px;
+}
+
+.popularCities h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0 0 12px;
+}
+
+.cityGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.cityItem {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border: 1px solid var(--border-color);
+}
+
+.cityItem:hover {
+  background-color: var(--background-light);
+  border-color: var(--primary-color);
+}
+
+.cityIcon {
+  margin-right: 8px;
+  font-size: 14px;
+  color: var(--primary-color);
+}
+
+.searchResults {
+  margin-bottom: 20px;
+}
+
+.searchResults h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0 0 12px;
+}
+
+.resultsList {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+}
+
+.locationItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.locationItem:last-child {
+  border-bottom: none;
+}
+
+.locationItem:hover {
+  background-color: var(--background-light);
+}
+
+.locationItem.selected {
+  background-color: rgba(0, 113, 220, 0.05);
+}
+
+.locationInfo {
+  flex: 1;
+}
+
+.locationInfo h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0 0 4px;
+}
+
+.locationInfo p {
+  font-size: 12px;
+  color: var(--text-light);
+  margin: 0;
+}
+
+.radioButton {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s ease;
+}
+
+.locationItem.selected .radioButton {
+  border-color: var(--primary-color);
+}
+
+.radioCircle {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.locationItem.selected .radioCircle {
+  opacity: 1;
+}
+
+.actionButtons {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.confirmButton {
+  padding: 10px 20px;
+  background-color: var(--primary-color);
+  color: var(--white);
+  border: none;
+  border-radius: var(--border-radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.confirmButton:hover {
+  background-color: var(--primary-dark);
+}
+
+.confirmButton:disabled {
+  background-color: var(--border-color);
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .cityGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 576px) {
+  .searchForm {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .searchButton {
+    width: 100%;
+    padding: 10px;
+  }
+  
+  .cityGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .inputWithIcon input {
+    padding: 10px 10px 10px 36px;
+    font-size: 13px;
+  }
+  
+  .searchIcon {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cityGrid {
+    grid-template-columns: 1fr;
+  }
+}
