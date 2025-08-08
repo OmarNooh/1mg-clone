@@ -1,7 +1,9 @@
  import React, { useState, useEffect, useRef } from 'react';
+import { RiMenuUnfoldFill } from "react-icons/ri";
+import { RxDoubleArrowLeft } from 'react-icons/rx';
+import { IoIosAddCircleOutline } from "react-icons/io";
 import { 
   FaSearch, 
-  FaFilter, 
   FaEllipsisH, 
   FaPlus, 
   FaChevronDown,
@@ -50,6 +52,30 @@ const ItemLibrary = () => {
   const [locationSearchQuery, setLocationSearchQuery] = useState('');
   const [selectedLocations, setSelectedLocations] = useState(['All locations']);
   const locationDropdownRef = useRef(null);
+  // Status dropdown state and ref
+  const [showStatusDropdown, setShowStatusDropdown] = useState(false);
+  const statusDropdownRef = useRef(null);
+  // Actions dropdown state
+  const [showActionsDropdown, setShowActionsDropdown] = useState(null); // stores item id
+  const actionsDropdownRef = useRef(null);
+  // Column toggle state
+  const [showColumnToggle, setShowColumnToggle] = useState(false);
+  const columnToggleRef = useRef(null);
+  const [visibleColumns, setVisibleColumns] = useState({
+    itemImage: true,
+    gtin: true,
+    sku: true,
+    reportingCategory: true,
+    locations: true,
+    stockOnHand: true,
+    availableToSell: true,
+    price: false,
+    weight: false,
+    ageRestriction: false,
+    unitCost: false,
+    defaultVendor: false,
+    vendorCode: false
+  });
   const [activeStatus, setActiveStatus] = useState('Active');
   const [showFilters, setShowFilters] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -165,13 +191,36 @@ const ItemLibrary = () => {
     setShowLocationDropdown(prev => !prev);
   };
 
-  // Close dropdown only when clicking outside
+  // Close dropdowns only when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      // Only close if clicking completely outside the dropdown
-      if (locationDropdownRef.current && 
-          !locationDropdownRef.current.contains(event.target)) {
+      // Location dropdown
+      if (
+        locationDropdownRef.current &&
+        !locationDropdownRef.current.contains(event.target)
+      ) {
         setShowLocationDropdown(false);
+      }
+      // Status dropdown
+      if (
+        statusDropdownRef.current &&
+        !statusDropdownRef.current.contains(event.target)
+      ) {
+        setShowStatusDropdown(false);
+      }
+      // Actions dropdown
+      if (
+        actionsDropdownRef.current &&
+        !actionsDropdownRef.current.contains(event.target)
+      ) {
+        setShowActionsDropdown(null);
+      }
+      // Column toggle dropdown
+      if (
+        columnToggleRef.current &&
+        !columnToggleRef.current.contains(event.target)
+      ) {
+        setShowColumnToggle(false);
       }
     };
 
@@ -230,6 +279,53 @@ const ItemLibrary = () => {
   // Handle add new item
   const handleAddItem = () => {
     setShowAddItemModal(true);
+  };
+  
+  // Handle actions dropdown toggle
+  const handleActionsToggle = (itemId, event) => {
+    event.stopPropagation();
+    setShowActionsDropdown(showActionsDropdown === itemId ? null : itemId);
+  };
+  
+  // Handle column toggle
+  const handleColumnToggle = (event) => {
+    event.stopPropagation();
+    setShowColumnToggle(!showColumnToggle);
+  };
+  
+  // Handle column visibility change
+  const handleColumnVisibilityChange = (columnKey) => {
+    setVisibleColumns(prev => ({
+      ...prev,
+      [columnKey]: !prev[columnKey]
+    }));
+  };
+  
+  // Get visible columns limited to 9
+  const getVisibleDataColumns = () => {
+    const allColumns = [
+      { key: 'gtin', label: 'GTIN', field: 'gtin' },
+      { key: 'sku', label: 'SKU', field: 'sku' },
+      { key: 'reportingCategory', label: 'Reporting category', field: 'category' },
+      { key: 'locations', label: 'Locations', field: 'locations' },
+      { key: 'stockOnHand', label: 'Stock on hand', field: 'stock' },
+      { key: 'availableToSell', label: 'Available to sell', field: 'available' },
+      { key: 'price', label: 'Price', field: 'price' },
+      { key: 'weight', label: 'Weight', field: 'weight' },
+      { key: 'ageRestriction', label: 'Age restriction', field: 'ageRestriction' },
+      { key: 'unitCost', label: 'Unit cost', field: 'unitCost' },
+      { key: 'defaultVendor', label: 'Default vendor', field: 'defaultVendor' },
+      { key: 'vendorCode', label: 'Vendor code', field: 'vendorCode' }
+    ];
+    
+    return allColumns.filter(col => visibleColumns[col.key]).slice(0, 9);
+  };
+  
+  // Handle action selection
+  const handleActionSelect = (action, itemId) => {
+    console.log(`Action: ${action} for item: ${itemId}`);
+    setShowActionsDropdown(null);
+    // Add specific action handlers here
   };
 
   // Loading view
@@ -403,22 +499,15 @@ const ItemLibrary = () => {
         </div>
         
         <div className={styles.filterContainer}>
-          <div className={styles.filterDropdown} onClick={() => document.getElementById('categorySelect').click()}>
+          <div
+            className={styles.filterDropdown}
+            onClick={() => {
+              setShowFilters(true);
+              setActiveSubPanel('category');
+            }}
+          >
             <span className={styles.filterLabel}>Category</span>
             <span className={styles.filterValue}>{activeCategory}</span>
-            <select 
-              id="categorySelect"
-              value={activeCategory} 
-              onChange={(e) => setActiveCategory(e.target.value)}
-              style={{ opacity: 0, position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', cursor: 'pointer' }}
-            >
-              <option value="All">All</option>
-              <option value="SYRINGES">SYRINGES</option>
-              <option value="SURGICALS">SURGICALS</option>
-              <option value="LIQUID">LIQUID</option>
-              <option value="TABLETS">TABLETS</option>
-              <option value="CAPSULES">CAPSULES</option>
-            </select>
           </div>
           
           <div className={styles.filterDropdown} onClick={toggleLocationDropdown} ref={locationDropdownRef}>
@@ -580,25 +669,68 @@ const ItemLibrary = () => {
             )}
           </div>
           
-          <div className={styles.filterDropdown} onClick={() => document.getElementById('statusSelect').click()}>
+          <div
+            className={styles.filterDropdown}
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowStatusDropdown(prev => !prev);
+            }}
+            ref={statusDropdownRef}
+          >
             <span className={styles.filterLabel}>Status</span>
             <span className={styles.filterValue}>{activeStatus}</span>
-            <select 
-              id="statusSelect"
-              value={activeStatus} 
-              onChange={(e) => setActiveStatus(e.target.value)}
-              style={{ opacity: 0, position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', cursor: 'pointer' }}
-            >
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-            </select>
+
+            {showStatusDropdown && (
+              <div className={styles.customDropdown} onClick={(e) => e.stopPropagation()}>
+                <div className={styles.dropdownList}>
+                  <button
+                    type="button"
+                    className={styles.dropdownItem}
+                    onClick={() => {
+                      // All statuses selected
+                      setTempStatus(['Active','Archived']);
+                      setActiveStatus('Any');
+                      setShowStatusDropdown(false);
+                    }}
+                  >
+                    <span>All statuses</span>
+                    <input type="checkbox" readOnly checked={Array.isArray(tempStatus) && tempStatus.length === 2} />
+                  </button>
+
+                  <button
+                    type="button"
+                    className={styles.dropdownItem}
+                    onClick={() => {
+                      setTempStatus(['Active']);
+                      setActiveStatus('Active');
+                      setShowStatusDropdown(false);
+                    }}
+                  >
+                    <span>Active</span>
+                    <input type="checkbox" readOnly checked={Array.isArray(tempStatus) && tempStatus.includes('Active')} />
+                  </button>
+
+                  <button
+                    type="button"
+                    className={styles.dropdownItem}
+                    onClick={() => {
+                      setTempStatus(['Archived']);
+                      setActiveStatus('Archived');
+                      setShowStatusDropdown(false);
+                    }}
+                  >
+                    <span>Archived</span>
+                    <input type="checkbox" readOnly checked={Array.isArray(tempStatus) && tempStatus.includes('Archived')} />
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
           
           <div className={styles.filterToggle}>
             <button onClick={() => setShowFilters(!showFilters)}>
-              <FaFilter style={{fontSize: '12px'}} />
+              <RiMenuUnfoldFill style={{fontSize: '16px', marginRight: '4px'}} />
               <span>All filters</span>
-              <FaCaretDown style={{fontSize: '12px'}} />
             </button>
           </div>
         </div>
@@ -757,7 +889,7 @@ const ItemLibrary = () => {
       <aside className={`${styles.filtersSubPanel} ${activeSubPanel ? styles.open : ''}`} aria-hidden={!activeSubPanel}>
         <div className={styles.subPanelHeader}>
           <button className={styles.navIconBtn} onClick={() => setActiveSubPanel(null)}>
-            <IoChevronBack />
+            <RxDoubleArrowLeft size={24} color="#333" style={{ cursor: 'pointer' }} />
           </button>
           <div className={styles.subHeaderActions}>
             <button className={styles.filtersResetBtn}
@@ -1052,20 +1184,61 @@ const ItemLibrary = () => {
           <table className={styles.itemTable}>
             <thead>
               <tr>
-                <th className={styles.checkboxColumn}>
-                  <input 
-                    type="checkbox" 
-                    onChange={handleSelectAll} 
-                    checked={selectedItems.length === filteredItems.length && filteredItems.length > 0}
-                  />
+                <th className={styles.itemColumn}>
+                  <div className={styles.itemColumnHeader}>
+                    <input 
+                      type="checkbox" 
+                      onChange={handleSelectAll} 
+                      checked={selectedItems.length === filteredItems.length && filteredItems.length > 0}
+                    />
+                    <span>Item</span>
+                  </div>
                 </th>
-                <th className={styles.itemColumn}>Item</th>
-                <th>Reporting category</th>
-                <th>Locations</th>
-                <th>Stock on hand</th>
-                <th>Available to sell</th>
-                <th>Price</th>
-                <th className={styles.actionsColumn}></th>
+                <th className={styles.spacerColumn}></th>
+                {getVisibleDataColumns().map(column => (
+                  <th key={column.key} className={styles.dataColumn}>{column.label}</th>
+                ))}
+                <th className={styles.spacerColumn}></th>
+                <th className={styles.actionsColumn}>
+                  <div className={styles.actionsHeader} ref={columnToggleRef}>
+                    <button 
+                      className={styles.columnToggleBtn}
+                      onClick={handleColumnToggle}
+                    >
+                      <IoIosAddCircleOutline style={{ fontSize: '30px' }} fontWeight={"bold"}/>
+                    </button>
+                    {showColumnToggle && (
+                      <div className={styles.columnToggleDropdown}>
+                        <div className={styles.columnToggleList}>
+                          {Object.entries({
+                            itemImage: 'Images',
+                            gtin: 'GTIN',
+                            sku: 'SKU',
+                            reportingCategory: 'Reporting category',
+                            locations: 'Locations',
+                            stockOnHand: 'Stock on hand',
+                            availableToSell: 'Available to sell',
+                            price: 'Price',
+                            weight: 'Weight',
+                            ageRestriction: 'Age restriction',
+                            unitCost: 'Unit cost',
+                            defaultVendor: 'Default vendor',
+                            vendorCode: 'Vendor code'
+                          }).map(([key, label]) => (
+                            <label key={key} className={styles.columnToggleItem}>
+                              <input
+                                type="checkbox"
+                                checked={visibleColumns[key]}
+                                onChange={() => handleColumnVisibilityChange(key)}
+                              />
+                              <span>{label}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -1075,36 +1248,103 @@ const ItemLibrary = () => {
                   className={selectedItems.includes(item.id) ? styles.selectedRow : ''}
                   onClick={() => handleItemClick(item)}
                 >
-                  <td className={styles.checkboxColumn} onClick={(e) => e.stopPropagation()}>
-                    <input 
-                      type="checkbox" 
-                      checked={selectedItems.includes(item.id)}
-                      onChange={() => handleCheckboxChange(item.id)}
-                    />
-                  </td>
-                  <td className={styles.itemColumn}>
-                    <div className={styles.itemInfo}>
-                      <img src={item.image} alt={item.name} className={styles.itemImage} />
+                  <td className={styles.itemColumn} onClick={(e) => e.stopPropagation()}>
+                    <div className={styles.itemCellContent}>
+                      <input 
+                        type="checkbox" 
+                        checked={selectedItems.includes(item.id)}
+                        onChange={() => handleCheckboxChange(item.id)}
+                      />
+                      {visibleColumns.itemImage && (
+                        <img src={item.image} alt={item.name} className={styles.itemImage} />
+                      )}
                       <span className={styles.itemName}>{item.name}</span>
                     </div>
                   </td>
-                  <td>{item.category}</td>
-                  <td>{item.locations}</td>
-                  <td>
-                    <span className={item.stock < 0 ? styles.negativeStock : styles.normalStock}>
-                      {item.stock}
-                    </span>
-                  </td>
-                  <td>
-                    <span className={item.available < 0 ? styles.negativeStock : styles.availableStock}>
-                      {item.available}
-                    </span>
-                  </td>
-                  <td>{item.price}</td>
-                  <td>
-                    <button className={styles.moreButton}>
-                      <FaEllipsisH />
-                    </button>
+                  <td className={styles.spacerColumn}></td>
+                  {getVisibleDataColumns().map(column => {
+                    let cellContent;
+                    switch(column.key) {
+                      case 'gtin':
+                        cellContent = item.gtin || 'D980974';
+                        break;
+                      case 'sku':
+                        cellContent = item.sku || item.id;
+                        break;
+                      case 'reportingCategory':
+                        cellContent = item.category;
+                        break;
+                      case 'locations':
+                        cellContent = item.locations;
+                        break;
+                      case 'stockOnHand':
+                        cellContent = (
+                          <span className={item.stock < 0 ? styles.negativeStock : styles.normalStock}>
+                            {item.stock}
+                          </span>
+                        );
+                        break;
+                      case 'availableToSell':
+                        cellContent = (
+                          <span className={item.available < 0 ? styles.negativeStock : styles.availableStock}>
+                            {item.available}
+                          </span>
+                        );
+                        break;
+                      case 'price':
+                        cellContent = item.price;
+                        break;
+                      case 'weight':
+                        cellContent = item.weight || '--';
+                        break;
+                      case 'ageRestriction':
+                        cellContent = item.ageRestriction || '--';
+                        break;
+                      case 'unitCost':
+                        cellContent = item.unitCost || '--';
+                        break;
+                      case 'defaultVendor':
+                        cellContent = item.defaultVendor || '--';
+                        break;
+                      case 'vendorCode':
+                        cellContent = item.vendorCode || '--';
+                        break;
+                      default:
+                        cellContent = '--';
+                    }
+                    return (
+                      <td key={column.key} className={styles.dataColumn}>
+                        {cellContent}
+                      </td>
+                    );
+                  })}
+                  <td className={styles.spacerColumn}></td>
+                  <td className={styles.actionsColumn}>
+                    <div className={styles.actionsCell} ref={showActionsDropdown === item.id ? actionsDropdownRef : null}>
+                      <button 
+                        className={styles.moreButton}
+                        onClick={(e) => handleActionsToggle(item.id, e)}
+                      >
+                        <FaEllipsisH />
+                      </button>
+                      {showActionsDropdown === item.id && (
+                        <div className={styles.actionsDropdown}>
+                          <div className={styles.actionsDropdownList}>
+                            <button onClick={() => handleActionSelect('edit', item.id)}>Edit</button>
+                            <button onClick={() => handleActionSelect('duplicate', item.id)}>Duplicate</button>
+                            <button onClick={() => handleActionSelect('updateSalesChannels', item.id)}>Update sales channels</button>
+                            <button onClick={() => handleActionSelect('updateSiteVisibility', item.id)}>Update site visibility</button>
+                            <button onClick={() => handleActionSelect('updateOnlineSalePrice', item.id)}>Update online sale price</button>
+                            <button onClick={() => handleActionSelect('updateCategories', item.id)}>Update categories</button>
+                            <button onClick={() => handleActionSelect('updateFulfillmentMethods', item.id)}>Update fulfillment methods</button>
+                            <button onClick={() => handleActionSelect('setAsNonTaxable', item.id)}>Set as non-taxable</button>
+                            <button onClick={() => handleActionSelect('archive', item.id)}>Archive</button>
+                            <button onClick={() => handleActionSelect('updateLowStockAlert', item.id)}>Update low stock alert</button>
+                            <button onClick={() => handleActionSelect('delete', item.id)} className={styles.deleteAction}>Delete</button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}

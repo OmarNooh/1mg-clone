@@ -3,7 +3,7 @@
   background-color: #fff;
   /* Allow dropdowns to overflow outside the container */
   overflow: visible;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: 'Bogle', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 /* =============================
@@ -41,13 +41,18 @@
 .navIconBtn {
   background: #F2F2F2;
   border: 1px solid #e0e0e0;
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
+  width: 40px; /* match subPanel header buttons */
+  height: 40px; /* match subPanel header buttons */
+  border-radius: 6px; /* match filtersCloseBtn */
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+}
+
+.navIconBtn svg {
+  color: #333;
+  font-size: 36px; /* icon size only, button unchanged */
 }
 
 .subHeaderActions {
@@ -92,8 +97,7 @@
 }
 
 .searchInput:focus {
-  border-color: #0066ff;
-  box-shadow: 0 0 0 3px rgba(0,102,255,0.1);
+  border-color: none;
 }
 
 .categoryList {
@@ -214,7 +218,7 @@
   text-transform: none;
   cursor: text;
   transition-property: flex, padding;
-  padding: 12px 16px;
+  padding: 0 16px;
   gap: 8px;
   position: relative;
 }
@@ -241,6 +245,12 @@
   background: transparent;
   color: rgba(0, 0, 0, 0.9);
   padding: 0;
+  box-shadow: none;
+}
+
+/* Remove border when input is empty */
+.searchInput:not(:placeholder-shown) {
+  box-shadow: none;
 }
 
 .searchInput::placeholder {
@@ -249,12 +259,85 @@
 
 .searchInput:focus {
   outline: none;
+  box-shadow: none;
 }
 
 .searchIcon {
   color: #666;
   font-size: 14px;
   flex-shrink: 0;
+}
+
+/* =============================
+   Generic dropdown list styles
+   ============================= */
+.customDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  /* requested positioning */
+  inset: 0 auto auto 0;
+  margin: 0;
+  transform: translate(813px, 104px);
+  /* visual styles */
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible !important;
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 1);
+  box-shadow: 0 4px 32px 0 rgb(0 0 0 / 10%), 0 8px 16px 0 rgb(0 0 0 / 10%);
+  color: #1a1a1a;
+  text-rendering: optimizeLegibility;
+  border: 1px solid #e6e6e6;
+  z-index: 1000;
+}
+
+.dropdownList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 200px;
+  max-width: 400px;
+  max-height: 452px; /* padding accounts for container max-height */
+  overflow: auto;
+  padding: 24px;
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible !important;
+  width: 100%;
+  color: #1a1a1a;
+  text-rendering: optimizeLegibility;
+}
+
+@media (min-width: 600px) {
+  .customDropdown {
+    width: auto;
+  }
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: transparent;
+  padding: 10px 12px;
+  cursor: pointer;
+  color: rgba(0,0,0,0.9);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0;
+  text-transform: none;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.dropdownItem:hover {
+  background: #f5f6f7;
+}
+
+.dropdownItem input[type="checkbox"] {
+  pointer-events: none;
 }
 
 .clearSearch {
@@ -264,17 +347,23 @@
   background: none;
   border: none;
   color: rgba(0, 0, 0, 0.4);
-  font-size: 22px;
   cursor: pointer;
-  padding: 0;
+  padding: 4px;
+  border-radius: 50%;
   width: 20px;
   height: 20px;
-  flex-shrink: 0;
+  font-size: 16px;
+  line-height: 1;
+  transition: background-color 0.2s;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
-.clearSearch:hover {
-  color: #666;
-  background-color: #f0f0f0;
+.clearSearch:focus,
+.clearSearch:active {
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .filterContainer {
@@ -677,6 +766,10 @@
   transition: all 0.2s ease;
 }
 
+.filterToggle span {
+  font-weight: 600;  
+}
+
 .filterToggle button:hover {
   background-color: rgba(0, 0, 0, 0.02);
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
@@ -923,9 +1016,6 @@
 .tableContainer {
   width: 100%;
   overflow-x: auto;
-  border: 1px solid #E0E0E0;
-  border-radius: 8px;
-  margin-top: 16px;
 }
 
 .noLocationContainer {
@@ -952,7 +1042,9 @@
 
 .itemTable {
   width: 100%;
-  border-collapse: collapse;
+  /* Sticky header/column work more reliably with separate border model */
+  border-collapse: separate;
+  border-spacing: 0;
   table-layout: fixed;
 }
 
@@ -973,9 +1065,10 @@
   padding-bottom: 16px;
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 5; /* keep header above sticky cells */
   background-color: #fff;
   white-space: nowrap;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .itemTable tbody tr {
@@ -990,35 +1083,251 @@
   background-color: #f0f7ff;
 }
 
-.checkboxColumn {
-  width: 30px;
-  padding-left: 16px;
-  padding-right: 0;
+/* Checkbox styling within item column */
+.itemCellContent input[type="checkbox"],
+.itemColumnHeader input[type="checkbox"] {
+  flex-shrink: 0;
+  margin: 0;
+  width: 16px;
+  height: 16px;
 }
 
 .itemColumn {
+  width: 280px;
+  min-width: 280px;
+  max-width: 280px;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-drag: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  position: sticky;
+  left: 0;
+  padding: 8px;
+  z-index: 2;
+  overflow: visible;
+  background: #fff;
+  color: #1a1a1a;
+  font-weight: 600;
+  border-top: 1px #f2f2f2 solid;
+  border-bottom: 1px #b3b3b3 solid;
+  border-right: none;
+  height: 48px;
+  vertical-align: middle;
+  /* Remove right border and shadow */
+  box-shadow: none;
+}
+
+/* Ensure header cell of first column is also sticky on the left and above body */
+.itemTable th.itemColumn {
+  position: sticky;
+  left: 0;
+  background: #fff;
+  z-index: 6;
+  /* Remove right border and shadow */
+  box-shadow: none;
+}
+
+/* Item column header layout */
+.itemColumnHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+/* Item cell content layout */
+.itemCellContent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+/* Data columns styling */
+.dataColumn {
+  width: 100px;
+  min-width: 100px;
+  max-width: 100px;
+  padding: 8px;
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+/* Spacer columns */
+.spacerColumn {
+  width: 40px;
+  min-width: 40px;
+  max-width: 40px;
+  padding: 8px;
+  background: transparent;
+}
+
+/* Actions column */
+.actionsColumn {
+  width: 60px;
+  min-width: 60px;
+  padding: 8px;
+  text-align: center;
+  vertical-align: middle;
+  position: relative;
+  right: 0;
+  background: #fff;
+}
+
+/* Column toggle button */
+.columnToggleBtn {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  color: #0066ff;
+  padding: 8px;
+  margin-right: 10px;
+}
+
+.columnToggleBtn:hover {
+  background: #f5f5f5;
+  border-color: #ccc;
+}
+
+/* Actions header container */
+.actionsHeader {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+/* Actions cell container */
+.actionsCell {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+/* Actions dropdown */
+.actionsDropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 20px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 5;
   min-width: 220px;
-  padding-left: 16px;
+  padding: 6px; /* vertical breathing room like reference */
+}
+
+.actionsDropdownList {
+  padding: 0; /* handled by container */
+}
+
+.actionsDropdownList button {
+  width: 100%;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  text-align: left;
+  font-size: 14px;
+  color: #0a66ff; /* blue links like reference */
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.actionsDropdownList button:hover {
+  background: #f0f4ff; /* subtle blue hover */
+}
+
+.actionsDropdownList button.deleteAction {
+  color: #e53935;
+  font-weight: 600;
+  margin-top: 6px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0; /* separator above delete */
+}
+
+.actionsDropdownList button.deleteAction:hover {
+  background: #ffebee;
+}
+
+/* Column toggle dropdown */
+.columnToggleDropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  min-width: 220px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.columnToggleList {
+  padding: 8px 0;
+}
+
+.columnToggleItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  transition: background-color 0.2s;
+}
+
+.columnToggleItem:hover {
+  background: #f5f5f5;
+}
+
+.columnToggleItem input[type="checkbox"] {
+  margin: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.columnToggleItem span {
+  flex: 1;
+  margin-left: 8px;
 }
 
 .itemInfo {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
 }
 
 .itemImage {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 4px;
   object-fit: cover;
   border: 1px solid #f0f0f0;
+  flex-shrink: 0;
 }
 
 .itemName {
   font-size: 13px;
-  color: #333;
-  font-weight: 400;
+  color: #005ad9;;
+  font-weight: 500;
+  flex: 1;
+  min-width: 0;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .negativeStock {
@@ -1062,22 +1371,19 @@
   border: none;
   cursor: pointer;
   color: #666;
-  padding: 4px;
+  padding: 6px;
   border-radius: 4px;
   display: flex;
   justify-content: center;
   align-items: center;
   width: 28px;
   height: 28px;
+  transition: background-color 0.2s;
 }
 
 .moreButton:hover {
-  background-color: #eee;
-}
-
-.actionsColumn {
-  width: 40px;
-  text-align: center;
+  background: #f5f5f5;
+  color: #333;
 }
 
 /* Loading state */
