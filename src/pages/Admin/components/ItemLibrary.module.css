@@ -1,89 +1,690 @@
 .itemLibraryContainer {
   width: 100%;
   background-color: #fff;
-  border-radius: 4px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  overflow: hidden;
+  /* Allow dropdowns to overflow outside the container */
+  overflow: visible;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
+
+/* =============================
+   Filters Sub-Panel (Category)
+   ============================= */
+.filtersSubPanel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 450px;
+  max-width: 95vw;
+  background: #fff;
+  box-shadow: -8px 0 24px rgba(0,0,0,0.12);
+  border-left: 1px solid #e0e0e0;
+  transform: translateX(100%);
+  transition: transform 250ms ease;
+  z-index: 902; /* above main filtersPanel */
+  display: flex;
+  flex-direction: column;
+}
+
+.filtersSubPanel.open {
+  transform: translateX(0);
+}
+
+.subPanelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.navIconBtn {
+  background: #F2F2F2;
+  border: 1px solid #e0e0e0;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.subHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.subPanelBody {
+  padding: 16px 24px 24px 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.subPanelTitleBlock {
+  margin-bottom: 16px;
+}
+
+.subPanelEyebrow {
+  color: #6b7280;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.subPanelTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.searchInputWrap {
+  margin: 16px 0 12px 0;
+}
+
+.searchInput {
+  width: 100%;
+  height: 44px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 0 12px;
+  outline: none;
+}
+
+.searchInput:focus {
+  border-color: #0066ff;
+  box-shadow: 0 0 0 3px rgba(0,102,255,0.1);
+}
+
+.categoryList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.categoryRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.categoryLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.categoryIconPlaceholder {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  background: #f5f6f7;
+  border: 1px solid #ececec;
+}
+
+.categoryTexts {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.categoryName {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.categorySub {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Channel empty state */
+.emptyCard {
+  margin-top: 12px;
+  border: 1px solid #eaeaea;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  background: #fff;
+}
+.emptyTitle { font-weight: 700; color: #111827; margin-bottom: 6px; }
+.emptySub { color: #6b7280; }
+.link { color: #0a66ff; text-decoration: none; }
+
+/* Simple list rows (custom attribute, etc.) */
+.simpleList { display: flex; flex-direction: column; gap: 8px; }
+.simpleRow { display:flex; align-items:center; justify-content:space-between; padding: 12px; border: 1px solid #eee; border-radius: 8px; background:#fff; }
+.simpleRowTexts { display:flex; flex-direction:column; }
+.simpleRowTitle { font-weight:600; color:#111827; }
+.simpleRowSub { font-size:12px; color:#6b7280; }
+
+/* Location list */
+.locationList { display:flex; flex-direction:column; gap:8px; }
+.locationRow { display:flex; align-items:center; justify-content:space-between; padding:12px; border-bottom:1px solid #f3f4f6; }
+.locationName { font-weight:600; color:#111827; }
+
+/* Status checklist */
+.checkList { display:flex; flex-direction:column; gap:8px; }
+.checkRow { display:flex; align-items:center; justify-content:space-between; padding:12px; border-bottom:1px solid #f3f4f6; }
+
+/* Stock quantity controls */
+.stockControls { display:flex; gap:12px; align-items:flex-start; }
+.selectWrap { position:relative; min-width: 180px; height:44px; border:1px solid #1a73e8; border-radius:10px; padding:0 12px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 0 0 3px rgba(26,115,232,0.15); background:#fff; cursor:pointer; }
+.selectChevron { color:#1a73e8; }
+.selectMenu { position:absolute; top:48px; left:0; width:100%; background:#fff; border:1px solid #e5e7eb; border-radius:12px; box-shadow: 0 12px 24px rgba(0,0,0,0.12); overflow:hidden; z-index: 3; }
+.selectOption { padding:12px; cursor:pointer; }
+.selectOption:hover { background:#f3f4f6; }
+.selected { background:#eef2ff; }
+.amountInput { height:44px; border:1px solid #e5e7eb; border-radius:10px; padding:0 12px; width: 140px; }
+
+.placeholderText { color:#6b7280; }
 
 /* Header styles */
 .itemLibraryHeader {
   display: flex;
   align-items: center;
-  padding: 12px 16px;
-  border-bottom: 1px solid #e8e8e8;
-  background-color: #f9f9f9;
-  gap: 12px;
+  padding: 30px 20px 20px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  background-color: #ffffff;
+  gap: 16px;
+  /* Create a stacking context above the table so the dropdown appears on top */
+  position: relative;
+  z-index: 5;
 }
 
 .searchContainer {
+  width: 240px;
+  max-width: 240px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 1);
+  color: rgba(0, 0, 0, 0.9);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0;
+  text-transform: none;
+  cursor: text;
+  transition-property: flex, padding;
+  padding: 12px 16px;
+  gap: 8px;
   position: relative;
-  margin-right: 12px;
-  min-width: 180px;
-  max-width: 200px;
 }
 
-.searchIcon {
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #666;
-  font-size: 14px;
+.searchIconContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(0, 0, 0, 0.6);
+  flex-shrink: 0;
+}
+
+.searchInputContainer {
+  flex: 1;
+  min-width: 0;
 }
 
 .searchInput {
   width: 100%;
-  padding: 7px 8px 7px 32px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 13px;
+  font-size: 16px;
+  font-weight: 400;
+  border: none;
   outline: none;
+  background: transparent;
+  color: rgba(0, 0, 0, 0.9);
+  padding: 0;
+}
+
+.searchInput::placeholder {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.searchInput:focus {
+  outline: none;
+}
+
+.searchIcon {
+  color: #666;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.clearSearch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: rgba(0, 0, 0, 0.4);
+  font-size: 22px;
+  cursor: pointer;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.clearSearch:hover {
+  color: #666;
+  background-color: #f0f0f0;
 }
 
 .filterContainer {
   display: flex;
   align-items: center;
   flex-grow: 1;
-  gap: 8px;
+  gap: 16px;
+  /* Ensure children dropdowns can stack above subsequent content */
+  position: relative;
+  z-index: 5;
 }
 
 .filterDropdown {
   display: flex;
   align-items: center;
-  gap: 8px;
+  width: auto;
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 1);
+  color: rgba(0, 0, 0, 0.9);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  padding: 12px 16px;
+  position: relative;
+  cursor: pointer;
+  overflow: visible;
+  /* Slightly raised so the absolute dropdown inside can render above */
+  z-index: 6;
 }
 
-.filterDropdown span {
-  font-size: 13px;
-  color: #666;
+.filterLabel {
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.9);
   font-weight: 400;
+  margin-right: 8px;
+}
+
+.filterValue {
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.9);
+  font-weight: 600; /* Changed from 400 to 600 for bold text */
+}
+
+/* Custom dropdown styles */
+.customDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 320px;
+  min-width: 200px;
+  max-width: 400px;
+  max-height: 400px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 32px 0 rgb(0 0 0 / 10%), 0 8px 16px 0 rgb(0 0 0 / 10%);
+  /* High z-index to appear above table head/body */
+  z-index: 1000;
+  overflow: visible;
+  pointer-events: auto;
+  visibility: visible !important;
+  opacity: 1;
+  transform: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdownSearchContainer {
+  display: flex;
+  align-items: center;
+  color: rgba(0,0,0,0.9);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin: 12px;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0;
+  text-transform: none;
+  cursor: text;
+  transition-property: flex, padding;
+  background-color: #f7f7f7;
+}
+
+.leadingAccessory {
+  display: flex;
+  align-items: center;
+  padding-right: 8px;
+}
+
+.inputContainer {
+  flex-grow: 1;
+}
+
+.dropdownSearchInput {
+  border: none;
+  outline: none;
+  width: 100%;
+  padding: 8px 0;
+  font-size: 14px;
+  background-color: transparent;
+}
+
+.trailingAccessory {
+  display: flex;
+  align-items: center;
+  padding-left: 8px;
+}
+
+.locationsList {
+  max-height: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* Square.com style dropdown list head/body */
+.listHead {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  font-weight: 600;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.9);
+  background-color: #ffffff;
+}
+
+.listBody {
+  padding: 8px 0;
+  flex: 1;
+  overflow-y: auto;
+  max-height: 250px;
+}
+
+/* Hover states */
+.locationItem:hover .locationName {
+  color: #006aff;
+}
+
+/* Selected state */
+.locationItemSelected .locationName {
+  color: #006aff;
+  font-weight: 600;
+}
+
+.locationItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  min-height: 40px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: rgba(0, 0, 0, 0.9);
+  border-bottom: none;
+}
+
+.locationItem:hover {
+  background-color: #f7f7f7;
+}
+
+.allLocationsSelected {
+  background-color: #EAF1FB;
+}
+
+.locationItemSelected {
+  background-color: #EAF1FB;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 0;
+}
+
+.leadingAccessory {
+  display: flex;
+  align-items: center;
+  margin-right: 0;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  margin-right: 8px;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+}
+
+.locationName {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.9);
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.subtext {
+  display: flex;
+  align-items: center;
+  margin-right: 8px;
+}
+
+.locationCount {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.6);
+  font-weight: 400;
+  line-height: 20px;
+  margin-left: 4px;
+}
+
+.side {
+  display: flex;
+  align-items: center;
+}
+
+.sideLabel {
+  display: flex;
+  align-items: center;
+}
+
+.sideSubtext {
+  display: flex;
+  align-items: center;
+}
+
+.trailingAccessory {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.control {
+  display: flex;
+  align-items: center;
+}
+
+.marketCheckbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 20px;
+  height: 20px;
+}
+
+.marketCheckboxAllSelected {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 20px;
+  height: 20px;
+}
+
+.marketCheckboxPartialSelected {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 18px;
+  height: 18px;
+  background-color: #006aff;
+  border-radius: 4px;
+  border: 1px solid #006aff;
+}
+
+.partialCheck {
+  width: 10px;
+  height: 2px;
+  background-color: white;
+  position: absolute;
+}
+
+.marketCheckboxInput {
+  width: 18px;
+  height: 18px;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  position: relative;
+  transition: all 0.15s ease;
+}
+
+.marketCheckboxInput:checked {
+  background-color: #006aff;
+  border-color: #006aff;
+}
+
+.marketCheckboxInput:checked::after {
+  content: '';
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+  width: 5px;
+  height: 10px;
+  border-bottom: 2px solid white;
+  border-right: 2px solid white;
+}
+
+.marketCheckboxInput:hover {
+  border-color: #1a73e8;
+}
+
+/* Custom checkbox styles */
+.checkbox {
+  position: relative;
+  display: inline-block;
+}
+
+.checkbox input {
+  opacity: 0;
+  position: absolute;
+}
+
+.checkbox label {
+  position: relative;
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+  cursor: pointer;
+  background-color: white;
+}
+
+.checkbox input:checked + label::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 6px;
+  width: 5px;
+  height: 10px;
+  border: solid #0066ff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
 }
 
 .filterDropdown select {
-  padding: 6px 24px 6px 8px;
-  border: 1px solid #ddd;
+  padding: 8px 28px 8px 12px;
+  border: 1px solid #e0e0e0;
   border-radius: 4px;
   background-color: white;
-  font-size: 13px;
+  font-size: 14px;
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%23666' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 8px center;
+  background-position: right 10px center;
   outline: none;
+  color: #333;
+  height: 36px;
+}
+
+.filterDropdown select:focus {
+  border-color: #0066ff;
+  box-shadow: 0 0 0 2px rgba(0, 102, 255, 0.1);
+}
+
+.filterToggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .filterToggle button {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background-color: white;
-  font-size: 14px;
+  justify-content: center;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 1);
+  color: rgba(0, 0, 0, 0.9);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+  font-size: 16px;
+  font-weight: 400;
   cursor: pointer;
+  height: auto;
+  transition: all 0.2s ease;
+}
+
+.filterToggle button:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+/* Remove dropdown arrow from the button */
+.filterToggle button::after {
+  display: none;
 }
 
 .actionsContainer {
@@ -92,30 +693,261 @@
   align-items: center;
 }
 
+/* =============================
+   All Filters Slide Panel
+   ============================= */
+.filtersPanelOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 900; /* below panel's 901 */
+  opacity: 0;
+  transition: opacity 200ms ease;
+  pointer-events: none;
+}
+
+.filtersPanelOverlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.filtersPanel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 450px;
+  max-width: 90vw;
+  background-color: #fff;
+  box-shadow: -8px 0 24px rgba(0,0,0,0.12);
+  border-left: 1px solid #e0e0e0;
+  transform: translateX(100%);
+  transition: transform 250ms ease;
+  z-index: 901;
+  display: flex;
+  flex-direction: column;
+}
+
+.filtersPanel.open {
+  transform: translateX(0);
+}
+
+.filtersHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+}
+
+.filtersHeaderLeft {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filtersCloseBtn {
+  background: #F2F2F2;
+  border: 1px solid #e0e0e0;
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+}
+
+
+.filtersTitle {
+  font-size: 22px;
+  font-weight: 600;
+  color: #000;
+  margin-left: 8px;
+}
+
+.filtersHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.filtersResetBtn {
+  background: #F2F2F2;
+  border: none;
+  color: #0066ff;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 14px 18px;
+  border-radius: 4px;
+}
+
+.filtersResetBtn:hover {
+  background: rgba(0, 102, 255, 0.05);
+}
+
+.filtersApplyBtn {
+  background: #0066ff;
+  color: #fff;
+  border: none;
+  padding: 14px 18px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  min-width: 80px;
+  text-align: center;
+}
+
+.filtersApplyBtn:hover {
+  background: #0052cc;
+}
+
+.filtersBody {
+  overflow-y: auto;
+  padding: 0 24px;
+  flex: 1;
+}
+
+.filterRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 8px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.filterRow:hover {
+  background-color: #EAF1FB;
+}
+
+.filterRowLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filterRowLabel {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 2px;
+}
+
+.filterRowValue {
+  font-size: 14px;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+  max-width: 200px;
+}
+
+.filterRowRight {
+  color: #999;
+  font-size: 16px;
+  margin-left: 8px;
+}
+
 .actionButton {
-  background-color: #006AFF;
+  background-color: #0066ff;
   color: white;
   border: none;
   border-radius: 4px;
-  padding: 7px 14px;
-  font-size: 13px;
+  padding: 8px 16px;
+  font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 8px;
+  transition: background-color 0.2s ease;
+  height: 36px;
 }
 
 .actionButton:hover {
-  background-color: #0055cc;
+  background-color: #0052cc;
+}
+
+.locationDropdown {
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.locationDropdown:hover {
+  background-color: #f5f5f5;
+}
+
+.locationDropdown:active {
+  background-color: #e0e0e0;
+}
+
+.locationDropdown:focus {
+  border-color: #0066ff;
+  box-shadow: 0 0 0 2px rgba(0, 102, 255, 0.1);
+}
+
+.locationItem {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.locationItem:hover {
+  background-color: #f5f5f5;
+}
+
+.allLocationsSelected {
+  background-color: #EAF1FB;
+}
+
+.locationItemSelected {
+  background-color: #EAF1FB;
 }
 
 /* Table styles */
 .tableContainer {
   width: 100%;
   overflow-x: auto;
-  padding: 0;
-  margin-top: 0;
+  border: 1px solid #E0E0E0;
+  border-radius: 8px;
+  margin-top: 16px;
+}
+
+.noLocationContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 0;
+  text-align: center;
+  border: 1px solid #E0E0E0;
+  border-radius: 8px;
+  margin-top: 16px;
+}
+
+.noLocationIcon {
+  margin-bottom: 16px;
+}
+
+.noLocationText {
+  font-size: 16px;
+  color: #5F6368;
+  font-weight: 500;
 }
 
 .itemTable {
@@ -126,19 +958,24 @@
 
 .itemTable th,
 .itemTable td {
-  padding: 10px 16px;
+  padding: 12px 16px;
   text-align: left;
-  border-bottom: 1px solid #eee;
-  font-size: 13px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 14px;
 }
 
 .itemTable th {
-  background-color: #f9f9f9;
+  background-color: #ffffff;
   font-weight: 500;
   color: #333;
-  font-size: 13px;
-  padding-top: 12px;
-  padding-bottom: 12px;
+  font-size: 14px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: #fff;
+  white-space: nowrap;
 }
 
 .itemTable tbody tr {
@@ -155,26 +992,27 @@
 
 .checkboxColumn {
   width: 30px;
-  padding-left: 10px;
+  padding-left: 16px;
   padding-right: 0;
 }
 
 .itemColumn {
   min-width: 220px;
-  padding-left: 10px;
+  padding-left: 16px;
 }
 
 .itemInfo {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .itemImage {
-  width: 32px;
-  height: 32px;
-  border-radius: 3px;
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
   object-fit: cover;
+  border: 1px solid #f0f0f0;
 }
 
 .itemName {
@@ -186,18 +1024,37 @@
 .negativeStock {
   color: #e53935;
   background-color: #ffebee;
-  padding: 3px 6px;
-  border-radius: 4px;
+  padding: 4px 8px;
+  border-radius: 16px;
   display: inline-block;
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  min-width: 28px;
+  text-align: center;
 }
 
 .availableStock {
   background-color: #e8f5e9;
-  padding: 3px 6px;
-  border-radius: 4px;
+  padding: 4px 8px;
+  border-radius: 16px;
   display: inline-block;
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #2e7d32;
+  min-width: 28px;
+  text-align: center;
+}
+
+.normalStock {
+  padding: 4px 8px;
+  border-radius: 16px;
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+  background-color: #f5f5f5;
+  min-width: 28px;
+  text-align: center;
 }
 
 .moreButton {
@@ -209,6 +1066,9 @@
   border-radius: 4px;
   display: flex;
   justify-content: center;
+  align-items: center;
+  width: 28px;
+  height: 28px;
 }
 
 .moreButton:hover {

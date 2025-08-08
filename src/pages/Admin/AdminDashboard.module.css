@@ -7,7 +7,7 @@
 
 /* Sidebar styles */
 .sidebar {
-  width: 250px;
+  width: 300px;
   background-color: #FAFAFA;
   color: #333333;
   display: flex;
@@ -341,8 +341,8 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  margin-left: 250px;
-  width: calc(100% - 250px);
+  margin-left: 300px;
+  width: calc(100% - 300px);
   overflow-y: auto;
   background-color: #f8f9fa;
 }
@@ -431,8 +431,8 @@
 .mainContent {
   flex: 1;
   overflow-y: auto;
-  background-color: white;
-  margin: 16px;
+  background-color: #ffffff;
+  padding: 20px;
 }
 
 /* User Profile Panel */
