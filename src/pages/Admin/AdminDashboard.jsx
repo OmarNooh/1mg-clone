@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { 
   FaUsers, 
   FaShoppingCart, 
@@ -31,11 +32,150 @@ import Overview from './components/Overview';
 import ItemLibrary from './components/ItemLibrary';
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState('overview');
+  const location = useLocation();
+  const navigate = useNavigate();
+  
+  // Function to extract active tab from URL path
+  const getActiveTabFromPath = (pathname) => {
+    const path = pathname.replace('/admin', '').replace(/^\//, '');
+    if (!path || path === '') return 'overview';
+    return path.replace(/\//g, '-');
+  };
+
+  // Function to convert tab ID back to URL path
+  const getPathFromTabId = (tabId) => {
+    if (tabId === 'overview') return '/admin/overview';
+    return `/admin/${tabId.replace(/-/g, '/')}`;
+  };
+
+  const [activeTab, setActiveTab] = useState(() => getActiveTabFromPath(location.pathname));
   const [openMenus, setOpenMenus] = useState({});
   const [activeNavPanel, setActiveNavPanel] = useState(null);
   const [navHistory, setNavHistory] = useState([]);
   const [isUserProfileOpen, setIsUserProfileOpen] = useState(false);
+
+  // Update active tab when URL changes
+  useEffect(() => {
+    const newActiveTab = getActiveTabFromPath(location.pathname);
+    setActiveTab(newActiveTab);
+    
+    // Redirect base admin route to overview
+    if (location.pathname === '/admin' || location.pathname === '/admin/dashboard') {
+      navigate('/admin/overview', { replace: true });
+      return;
+    }
+
+    // Set navigation panel state based on URL
+    const pathParts = location.pathname.replace('/admin/', '').split('/');
+    if (pathParts.length > 1) {
+      // We're in a nested route, so we need to open the appropriate navigation panel
+      const parentId = pathParts[0].replace(/-/g, '-');
+      
+      // Find the parent menu item and set the navigation panel
+      const parentItem = menuItems.find(item => item.id === parentId);
+      if (parentItem && parentItem.hasSubMenu) {
+        setActiveNavPanel(parentId);
+        setNavHistory([{ id: parentId, label: parentItem.label }]);
+        
+        // If we're deeper than 2 levels, we need to open submenus too
+        if (pathParts.length > 2) {
+          const subMenuId = pathParts.slice(0, 2).join('-');
+          setOpenMenus(prev => ({ ...prev, [subMenuId]: true }));
+        }
+      }
+    } else {
+      // We're at a top-level route, close navigation panels
+      setActiveNavPanel(null);
+      setNavHistory([]);
+      setOpenMenus({});
+    }
+  }, [location.pathname, navigate]);
+
+  // Handle main menu item click with URL navigation (preserves existing UI behavior)
+  const handleMenuClick = (itemId) => {
+    const item = menuItems.find(m => m.id === itemId);
+    
+    if (item && item.hasSubMenu) {
+      // For items with submenus, open the navigation panel (existing behavior)
+      setActiveNavPanel(itemId);
+      setNavHistory([{ id: itemId, label: item.label }]);
+      // Don't navigate for parent items, just open the panel to preserve UI
+    } else {
+      // For leaf items, navigate to the URL and update active tab
+      const newPath = getPathFromTabId(itemId);
+      navigate(newPath);
+    }
+  };
+
+  // Handle submenu item click with URL navigation (preserves existing UI behavior)
+  const handleSubMenuClick = (parentId, itemId, item) => {
+    const fullId = `${parentId}-${itemId}`;
+    
+    if (item.hasSubMenu) {
+      // Toggle submenu dropdown (existing behavior preserved)
+      setOpenMenus(prev => ({
+        ...prev,
+        [fullId]: !prev[fullId]
+      }));
+    } else {
+      // Navigate to URL for leaf items
+      const newPath = getPathFromTabId(fullId);
+      navigate(newPath);
+    }
+  };
+
+  // Handle nested submenu item click with URL navigation
+  const handleNestedSubMenuClick = (parentId, subParentId, itemId) => {
+    const fullId = `${parentId}-${subParentId}-${itemId}`;
+    const newPath = getPathFromTabId(fullId);
+    navigate(newPath);
+  };
+
+  // Handle back navigation with URL updates (preserves existing UI behavior)
+  const handleBackNavigation = () => {
+    if (navHistory.length > 1) {
+      const newHistory = navHistory.slice(0, -1);
+      setNavHistory(newHistory);
+      const parentId = newHistory[newHistory.length - 1].id;
+      setActiveNavPanel(parentId);
+      // Navigate to parent level
+      const newPath = getPathFromTabId(parentId);
+      navigate(newPath);
+    } else {
+      setActiveNavPanel(null);
+      setNavHistory([]);
+      navigate('/admin/overview');
+    }
+  };
+
+  // Check if a submenu is open (existing function preserved)
+  const isSubmenuOpen = (itemId) => {
+    return openMenus[itemId] || false;
+  };
+
+  // Toggle submenu open/closed state (existing function preserved)
+  const toggleSubmenu = (itemId) => {
+    setOpenMenus(prevState => ({
+      ...prevState,
+      [itemId]: !prevState[itemId]
+    }));
+  };
+
+  // Function to go back in navigation history (existing function preserved)
+  const goBack = () => {
+    if (navHistory.length > 0) {
+      const previousItem = navHistory.pop();
+      setActiveNavPanel(previousItem.id);
+      setNavHistory([...navHistory]);
+    } else {
+      setActiveNavPanel(null);
+    }
+  };
+  
+  // Function to toggle user profile menu (existing function preserved)
+  const toggleUserProfile = () => {
+    setIsUserProfileOpen(!isUserProfileOpen);
+  };
   
   // Define nested menu structure based on database schema
   const menuItems = [
@@ -520,39 +660,10 @@ const AdminDashboard = () => {
     },
   ];
 
-  // Navigate to a submenu panel
+  // Navigate to a submenu panel (legacy function - replaced by URL navigation)
   const navigateToPanel = (itemId, label) => {
     setActiveNavPanel(itemId);
     setNavHistory(prev => [...prev, { id: itemId, label }]);
-  };
-
-  // Function to go back in navigation history
-  const goBack = () => {
-    if (navHistory.length > 0) {
-      const previousItem = navHistory.pop();
-      setActiveNavPanel(previousItem.id);
-      setNavHistory([...navHistory]);
-    } else {
-      setActiveNavPanel(null);
-    }
-  };
-  
-  // Function to toggle user profile menu
-  const toggleUserProfile = () => {
-    setIsUserProfileOpen(!isUserProfileOpen);
-  };
-
-  // Toggle submenu open/closed state (for dropdowns within secondary panels)
-  const toggleSubmenu = (itemId) => {
-    setOpenMenus(prevState => ({
-      ...prevState,
-      [itemId]: !prevState[itemId]
-    }));
-  };
-  
-  // Check if a submenu is open
-  const isSubmenuOpen = (itemId) => {
-    return openMenus[itemId] || false;
   };
   
   // Render main navigation items
@@ -562,13 +673,7 @@ const AdminDashboard = () => {
         key={item.id}
         className={`${styles.navItem} ${activeTab === item.id ? styles.active : ''}`}
         style={{ paddingLeft: '16px' }}
-        onClick={() => {
-          if (item.hasSubMenu) {
-            navigateToPanel(item.id, item.label);
-          } else {
-            setActiveTab(item.id);
-          }
-        }}
+        onClick={() => handleMenuClick(item.id)}
       >
         {item.icon && <span className={styles.icon}>{item.icon}</span>}
         <span className={styles.label}>{item.label}</span>
@@ -584,26 +689,22 @@ const AdminDashboard = () => {
     return parent.subMenu.map(item => (
       <React.Fragment key={item.id}>
         <li 
-          className={`${styles.navItem} ${activeTab === item.id ? styles.active : ''}`}
+          className={`${styles.navItem} ${activeTab === `${parentId}-${item.id}` ? styles.active : ''}`}
           onClick={(e) => {
             e.stopPropagation();
-            if (item.hasSubMenu) {
-              toggleSubmenu(item.id);
-            } else {
-              setActiveTab(item.id);
-            }
+            handleSubMenuClick(parentId, item.id, item);
           }}
         >
           <span className={styles.label}>{item.label}</span>
           {item.hasSubMenu && (
             <FaAngleDown 
-              className={`${styles.submenuIndicator} ${isSubmenuOpen(item.id) ? styles.rotated : ''}` } 
+              className={`${styles.submenuIndicator} ${isSubmenuOpen(`${parentId}-${item.id}`) ? styles.rotated : ''}`} 
             />
           )}
         </li>
         <div 
           className={styles.submenuDropdown} 
-          data-open={isSubmenuOpen(item.id) ? 'true' : 'false'}
+          data-open={isSubmenuOpen(`${parentId}-${item.id}`) ? 'true' : 'false'}
         >
           {item.subMenu.map(subItem => (
             <React.Fragment key={subItem.id}>
@@ -740,9 +841,8 @@ const AdminDashboard = () => {
                     <div 
                       className={styles.subMenuHeader} 
                       onClick={() => {
-                        // Go directly back to main menu
-                        setActiveNavPanel(null);
-                        setNavHistory([]);
+                        // Go directly back to main menu with URL navigation
+                        handleBackNavigation();
                       }}
                       style={{ cursor: 'pointer' }}
                     >

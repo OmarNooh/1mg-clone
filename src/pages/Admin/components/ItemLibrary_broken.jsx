@@ -1,5 +1,5 @@
  import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { RiMenuUnfoldFill } from "react-icons/ri";
 import { RxDoubleArrowLeft } from 'react-icons/rx';
 import { IoIosAddCircleOutline } from "react-icons/io";
@@ -16,7 +16,9 @@ import { MdArrowForwardIos } from 'react-icons/md';
 import styles from './ItemLibrary.module.css';
 
 const ItemLibrary = () => {
+  const location = useLocation();
   const navigate = useNavigate();
+  
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedItems, setSelectedItems] = useState([]);
@@ -80,6 +82,7 @@ const ItemLibrary = () => {
   });
   const [activeStatus, setActiveStatus] = useState('Active');
   const [showFilters, setShowFilters] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
   const [showAddItemModal, setShowAddItemModal] = useState(false);
 
   // Mock data for demonstration
@@ -90,21 +93,21 @@ const ItemLibrary = () => {
   ];
   
   const mockItems = [
-    { id: 1, uniqueId: 'RSUGLT6QVJHPQHKI6MWTZVIV', name: '10CC - SYRINGE ( NEOJECT ) 10MLS 100\'S', category: 'SYRINGES', locations: 'All locations', stock: 44, available: 44, price: 'TSH 500.00/ea', image: 'https://via.placeholder.com/40' },
-    { id: 2, uniqueId: 'BKJHG7TYUI9OPLMNBVCXZAQW', name: '10CC SYRINGE ( SURGIMED )', category: 'SYRINGES', locations: 'All locations', stock: -1, available: -1, price: 'TSH 500.00/ea', image: 'https://via.placeholder.com/40' },
-    { id: 3, uniqueId: 'MNBVCXZLKJHGFDSAPOIUYTRE', name: '10CM GAUZE W . O . W ( GENSAFE - BANDA)', category: 'SURGICALS', locations: 'All locations', stock: 0, available: 0, price: 'TSH 500.00/ea', image: 'https://via.placeholder.com/40' },
-    { id: 4, uniqueId: 'QWERTYUIOPASDFGHJKLZXCVB', name: '10CM SPANDEX CREPE (SPANDEX - NEOSP', category: 'SURGICALS', locations: 'All locations', stock: 13, available: 13, price: 'TSH 2,500.00/ea', image: 'https://via.placeholder.com/40' },
-    { id: 5, uniqueId: 'ZXCVBNMASDFGHJKLQWERTYUI', name: '10CM - CREPE BAND 10CM (NEOSPORT) 1', category: 'SURGICALS', locations: 'All locations', stock: 5, available: 5, price: 'TSH 2,500.00/ea', image: 'https://via.placeholder.com/40' },
-    { id: 6, uniqueId: 'POIUYTREWQLKJHGFDSAMNBVC', name: '15CM GAUZE W . O . W ( GENSAFE - BANDA', category: 'SURGICALS', locations: 'All locations', stock: 18, available: 18, price: 'TSH 600.00/ea', image: 'https://via.placeholder.com/40' },
-    { id: 7, uniqueId: 'LKJHGFDSAPOIUYTREWQMNBVC', name: '15CM SPANDEX CREPE (SPANDEX - NEOSP', category: 'SURGICALS', locations: 'All locations', stock: -1, available: -1, price: 'TSH 3,500.00/ea', image: 'https://via.placeholder.com/40' },
-    { id: 8, uniqueId: 'ASDFGHJKLZXCVBNMQWERTYUI', name: '15CM - CREPE BAND 15CM (NEOSPORT) 1', category: 'SURGICALS', locations: 'All locations', stock: 6, available: 6, price: 'TSH 3,500.00/ea', image: 'https://via.placeholder.com/40' },
-    { id: 9, uniqueId: 'HJKLZXCVBNMQWERTYUIOPASDF', name: '1CC SYRINGE INSULIN ( NEOJET - YELLOW', category: 'SYRINGES', locations: 'All locations', stock: 100, available: 100, price: 'TSH 750.00/ea', image: 'https://via.placeholder.com/40' },
-    { id: 10, uniqueId: 'XCVBNMQWERTYUIOPASDFGHJKL', name: '1L Kilimanjaro Water', category: 'LIQUID', locations: 'All locations', stock: -38, available: -38, price: 'TSH 1,000.00/ea', image: 'https://via.placeholder.com/40' },
-    { id: 11, uniqueId: 'QWERTYUIOPASDFGHJKLZXCVBN', name: '21ST - JOINT SUPPORT 30\'S ( UK - MMS - G', category: 'TABLETS', locations: 'All locations', stock: 0, available: 0, price: 'TSH 23,500.00/ea', image: 'https://via.placeholder.com/40' },
-    { id: 12, uniqueId: 'TYUIOPASDFGHJKLZXCVBNMQWE', name: '21ST - PreNATAL (USA) 30\'S', category: 'TABLETS', locations: 'All locations', stock: -1, available: -1, price: 'TSH 19,500.00/ea', image: 'https://via.placeholder.com/40' },
-    { id: 13, uniqueId: 'OPASDFGHJKLZXCVBNMQWERTY', name: '21ST- FISH OIL ( USA - OMEGA3,6,9 - 1000', category: 'CAPSULES', locations: 'All locations', stock: 0, available: 0, price: 'TSH 23,500.00/ea', image: 'https://via.placeholder.com/40' },
-    { id: 14, uniqueId: 'DFGHJKLZXCVBNMQWERTYUIOP', name: '21ST- LUTEIN ( UK - EYE SUPPORT) 30\'S', category: 'TABLETS', locations: 'All locations', stock: 0, available: 0, price: 'TSH 20,000.00/ea', image: 'https://via.placeholder.com/40' },
-    { id: 15, uniqueId: 'HJKLZXCVBNMQWERTYUIOPASDF', name: '21ST- OSTEO SUPPORT TAS 30\'S (US - CAL', category: 'TABLETS', locations: 'All locations', stock: 0, available: 0, price: 'TSH 19,500.00/ea', image: 'https://via.placeholder.com/40' },
+    { id: 1, name: '10CC - SYRINGE ( NEOJECT ) 10MLS 100\'S', category: 'SYRINGES', locations: 'All locations', stock: 44, available: 44, price: 'TSH 500.00/ea', image: 'https://via.placeholder.com/40' },
+    { id: 2, name: '10CC SYRINGE ( SURGIMED )', category: 'SYRINGES', locations: 'All locations', stock: -1, available: -1, price: 'TSH 500.00/ea', image: 'https://via.placeholder.com/40' },
+    { id: 3, name: '10CM GAUZE W . O . W ( GENSAFE - BANDA)', category: 'SURGICALS', locations: 'All locations', stock: 0, available: 0, price: 'TSH 500.00/ea', image: 'https://via.placeholder.com/40' },
+    { id: 4, name: '10CM SPANDEX CREPE (SPANDEX - NEOSP', category: 'SURGICALS', locations: 'All locations', stock: 13, available: 13, price: 'TSH 2,500.00/ea', image: 'https://via.placeholder.com/40' },
+    { id: 5, name: '10CM - CREPE BAND 10CM (NEOSPORT) 1', category: 'SURGICALS', locations: 'All locations', stock: 5, available: 5, price: 'TSH 2,500.00/ea', image: 'https://via.placeholder.com/40' },
+    { id: 6, name: '15CM GAUZE W . O . W ( GENSAFE - BANDA', category: 'SURGICALS', locations: 'All locations', stock: 18, available: 18, price: 'TSH 600.00/ea', image: 'https://via.placeholder.com/40' },
+    { id: 7, name: '15CM SPANDEX CREPE (SPANDEX - NEOSP', category: 'SURGICALS', locations: 'All locations', stock: -1, available: -1, price: 'TSH 3,500.00/ea', image: 'https://via.placeholder.com/40' },
+    { id: 8, name: '15CM - CREPE BAND 15CM (NEOSPORT) 1', category: 'SURGICALS', locations: 'All locations', stock: 6, available: 6, price: 'TSH 3,500.00/ea', image: 'https://via.placeholder.com/40' },
+    { id: 9, name: '1CC SYRINGE INSULIN ( NEOJET - YELLOW', category: 'SYRINGES', locations: 'All locations', stock: 100, available: 100, price: 'TSH 750.00/ea', image: 'https://via.placeholder.com/40' },
+    { id: 10, name: '1L Kilimanjaro Water', category: 'LIQUID', locations: 'All locations', stock: -38, available: -38, price: 'TSH 1,000.00/ea', image: 'https://via.placeholder.com/40' },
+    { id: 11, name: '21ST - JOINT SUPPORT 30\'S ( UK - MMS - G', category: 'TABLETS', locations: 'All locations', stock: 0, available: 0, price: 'TSH 23,500.00/ea', image: 'https://via.placeholder.com/40' },
+    { id: 12, name: '21ST - PreNATAL (USA) 30\'S', category: 'TABLETS', locations: 'All locations', stock: -1, available: -1, price: 'TSH 19,500.00/ea', image: 'https://via.placeholder.com/40' },
+    { id: 13, name: '21ST- FISH OIL ( USA - OMEGA3,6,9 - 1000', category: 'CAPSULES', locations: 'All locations', stock: 0, available: 0, price: 'TSH 23,500.00/ea', image: 'https://via.placeholder.com/40' },
+    { id: 14, name: '21ST- LUTEIN ( UK - EYE SUPPORT) 30\'S', category: 'TABLETS', locations: 'All locations', stock: 0, available: 0, price: 'TSH 20,000.00/ea', image: 'https://via.placeholder.com/40' },
+    { id: 15, name: '21ST- OSTEO SUPPORT TAS 30\'S (US - CAL', category: 'TABLETS', locations: 'All locations', stock: 0, available: 0, price: 'TSH 19,500.00/ea', image: 'https://via.placeholder.com/40' },
   ];
 
   // Load items
@@ -272,16 +275,41 @@ const ItemLibrary = () => {
     }
   };
 
-  // Handle item click to navigate to detail page
+  // Handle item click to view details with URL navigation for standalone page
   const handleItemClick = (item) => {
-    navigate(`/admin/dashboard/items/library/v1/${item.uniqueId}/`);
+    // Navigate to standalone item detail page
+    const itemDetailPath = `/admin/items-services/items/item-library/edit-item/${item.id}`;
+    navigate(itemDetailPath);
   };
+
+  // Handle back navigation from item detail
+  const handleBackToLibrary = () => {
+    setSelectedItem(null);
+    navigate('/admin/items-services/items/item-library');
+  };
+
+  // Check if we're in item detail view based on URL
+  useEffect(() => {
+    const pathParts = location.pathname.split('/');
+    const isEditMode = pathParts.includes('edit-item');
+    const itemId = pathParts[pathParts.length - 1];
+    
+    if (isEditMode && itemId) {
+      // Find item by ID and set as selected
+      const item = mockItems.find(item => item.id.toString() === itemId);
+      if (item) {
+        setSelectedItem(item);
+      }
+    } else if (!isEditMode) {
+      setSelectedItem(null);
+    }
+  }, [location.pathname]);
 
   // Handle add new item
   const handleAddItem = () => {
     setShowAddItemModal(true);
   };
-  
+
   // Handle actions dropdown toggle
   const handleActionsToggle = (itemId, event) => {
     event.stopPropagation();
@@ -340,6 +368,284 @@ const ItemLibrary = () => {
   }
 
 
+
+  // Render item detail container (pixel-perfect to reference images)
+  const renderItemDetailContainer = () => {
+    if (!selectedItem) return null;
+
+    return (
+      <div className={styles.itemDetailOverlay}>
+        <div className={styles.itemDetailContainer}>
+          {/* Header */}
+          <div className={styles.itemDetailHeader}>
+            <div className={styles.itemDetailHeaderLeft}>
+              <button 
+                className={styles.itemDetailBackBtn}
+                onClick={handleBackToLibrary}
+              >
+                ×
+              </button>
+              <h2 className={styles.itemDetailTitle}>Edit Item</h2>
+            </div>
+            <div className={styles.itemDetailHeaderRight}>
+              <button className={styles.itemDetailActionsBtn}>
+                Actions
+                <FaChevronDown />
+              </button>
+              <button className={styles.itemDetailSaveBtn}>Save</button>
+            </div>
+          </div>
+
+          {/* Content - Scrollable */}
+          <div className={styles.itemDetailContent}>
+            {/* Details Section */}
+            <div className={styles.itemDetailSection}>
+              <h3 className={styles.itemDetailSectionTitle}>Details</h3>
+              
+              <div className={styles.itemDetailMainRow}>
+                <div className={styles.itemDetailLeftColumn}>
+                  <div className={styles.itemDetailField}>
+                    <label className={styles.itemDetailLabel}>Item type</label>
+                    <div className={styles.itemDetailValueRow}>
+                      <span className={styles.itemDetailValue}>Physical good</span>
+                      <button className={styles.itemDetailChangeBtn}>Change</button>
+                    </div>
+                  </div>
+
+                  <div className={styles.itemDetailField}>
+                    <label className={styles.itemDetailLabel}>Name</label>
+                    <input 
+                      type="text" 
+                      className={styles.itemDetailInput}
+                      defaultValue={selectedItem.name}
+                    />
+                  </div>
+
+                  <div className={styles.itemDetailField}>
+                    <label className={styles.itemDetailLabel}>Kitchen facing name</label>
+                    <input 
+                      type="text" 
+                      className={styles.itemDetailInput}
+                      placeholder="Kitchen facing name"
+                    />
+                  </div>
+
+                  <div className={styles.itemDetailField}>
+                    <label className={styles.itemDetailLabel}>Description</label>
+                    <textarea 
+                      className={styles.itemDetailTextarea}
+                      defaultValue="SALMAA ="
+                      rows="4"
+                    />
+                  </div>
+
+                  <div className={styles.itemDetailImageUpload}>
+                    <div className={styles.itemDetailUploadArea}>
+                      <div className={styles.itemDetailUploadIcon}>📷</div>
+                      <div className={styles.itemDetailUploadText}>
+                        <span>Drag and drop images here, </span>
+                        <button className={styles.itemDetailUploadBtn}>upload</button>
+                        <span>, or </span>
+                        <button className={styles.itemDetailBrowseBtn}>browse image library</button>
+                      </div>
+                    </div>
+                    <div className={styles.itemDetailPrimaryImage}>
+                      <img src="/api/placeholder/60/60" alt="Primary" />
+                      <span>Primary</span>
+                    </div>
+                  </div>
+
+                  <div className={styles.itemDetailField}>
+                    <label className={styles.itemDetailLabel}>Locations</label>
+                    <select className={styles.itemDetailSelect}>
+                      <option>All locations</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className={styles.itemDetailRightColumn}>
+                  <div className={styles.itemDetailProductImage}>
+                    <img src="/api/placeholder/200/200" alt="Product" />
+                    <button className={styles.itemDetailEditImageBtn}>Edit</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Age Restriction */}
+            <div className={styles.itemDetailSection}>
+              <div className={styles.itemDetailSectionRow}>
+                <div className={styles.itemDetailSectionInfo}>
+                  <h3 className={styles.itemDetailSectionTitle}>Age restriction</h3>
+                </div>
+                <button className={styles.itemDetailSetBtn}>Set</button>
+              </div>
+            </div>
+
+            {/* Categorization */}
+            <div className={styles.itemDetailSection}>
+              <h3 className={styles.itemDetailSectionTitle}>Categorization</h3>
+              <p className={styles.itemDetailSectionDesc}>
+                Group items to organize the menu on your POS and Square Online sites. Categorize items for Square POS, sourcing, sales reporting, and kitchen routing.
+              </p>
+
+              <div className={styles.itemDetailField}>
+                <div className={styles.itemDetailFieldRow}>
+                  <div className={styles.itemDetailFieldIcon}>📋</div>
+                  <div className={styles.itemDetailFieldContent}>
+                    <label className={styles.itemDetailLabel}>Menu organization</label>
+                  </div>
+                  <button className={styles.itemDetailSelectBtn}>Select</button>
+                </div>
+              </div>
+
+              <div className={styles.itemDetailField}>
+                <div className={styles.itemDetailFieldRow}>
+                  <div className={styles.itemDetailFieldIcon}>📁</div>
+                  <div className={styles.itemDetailFieldContent}>
+                    <label className={styles.itemDetailLabel}>Categories</label>
+                    <div className={styles.itemDetailCategoryTag}>
+                      <span>SYRINGES</span>
+                    </div>
+                  </div>
+                  <button className={styles.itemDetailEditBtn}>Edit</button>
+                </div>
+              </div>
+            </div>
+
+            {/* Options */}
+            <div className={styles.itemDetailSection}>
+              <div className={styles.itemDetailSectionRow}>
+                <div className={styles.itemDetailSectionInfo}>
+                  <h3 className={styles.itemDetailSectionTitle}>Options</h3>
+                  <p className={styles.itemDetailSectionDesc}>
+                    Add options such as size, color, or material to create variations in bulk. <button className={styles.itemDetailLearnMore}>Learn more</button>
+                  </p>
+                </div>
+                <button className={styles.itemDetailAddBtn}>Add</button>
+              </div>
+            </div>
+
+            {/* Units */}
+            <div className={styles.itemDetailSection}>
+              <h3 className={styles.itemDetailSectionTitle}>Units</h3>
+              <p className={styles.itemDetailSectionDesc}>
+                Add additional units to track and measure this item. For example, sell a case of wine by both a glass and bottle. <button className={styles.itemDetailLearnMore}>Learn more</button>
+              </p>
+
+              <div className={styles.itemDetailUnitsGrid}>
+                <div className={styles.itemDetailField}>
+                  <label className={styles.itemDetailLabel}>Unit</label>
+                  <select className={styles.itemDetailSelect}>
+                    <option>Per item</option>
+                  </select>
+                </div>
+                <div className={styles.itemDetailField}>
+                  <label className={styles.itemDetailLabel}>Unit Cost and Vendor</label>
+                  <button className={styles.itemDetailAddUnitBtn}>Add</button>
+                </div>
+              </div>
+            </div>
+
+            {/* Variations */}
+            <div className={styles.itemDetailSection}>
+              <div className={styles.itemDetailSectionRow}>
+                <h3 className={styles.itemDetailSectionTitle}>Variations</h3>
+                <div className={styles.itemDetailVariationActions}>
+                  <button className={styles.itemDetailLinkBtn}>View stock history</button>
+                  <span className={styles.itemDetailSeparator}>|</span>
+                  <button className={styles.itemDetailLinkBtn}>Edit variation details</button>
+                  <button className={styles.itemDetailAddBtn}>Add</button>
+                </div>
+              </div>
+
+              <div className={styles.itemDetailVariationCard}>
+                <div className={styles.itemDetailVariationTop}>
+                  <div className={styles.itemDetailVariationLabels}>
+                    <div className={styles.itemDetailVariationLabelGroup}>
+                      <span className={styles.itemDetailVariationLabel}>GTIN</span>
+                    </div>
+                    <div className={styles.itemDetailVariationLabelGroup}>
+                      <span className={styles.itemDetailVariationLabel}>SKU</span>
+                      <span className={styles.itemDetailVariationValue}>D980074</span>
+                    </div>
+                    <div className={styles.itemDetailVariationLabelGroup}>
+                      <span className={styles.itemDetailVariationLabel}>Price</span>
+                      <span className={styles.itemDetailVariationPrice}>$500.00</span>
+                      <button className={styles.itemDetailOptionsDropdown}>Options <FaChevronDown /></button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles.itemDetailVariationContent}>
+                  <div className={styles.itemDetailVariationField}>
+                    <label className={styles.itemDetailVariationFieldLabel}>Weight</label>
+                    <div className={styles.itemDetailVariationInputGroup}>
+                      <input type="text" className={styles.itemDetailVariationInput} />
+                      <span className={styles.itemDetailVariationUnit}>kg</span>
+                    </div>
+                  </div>
+
+                  <div className={styles.itemDetailVariationSection}>
+                    <div className={styles.itemDetailVariationSectionHeader}>
+                      <h4 className={styles.itemDetailVariationSectionTitle}>Tracking</h4>
+                      <div className={styles.itemDetailToggleSwitch}>
+                        <input type="checkbox" defaultChecked className={styles.itemDetailToggleInput} />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className={styles.itemDetailVariationSection}>
+                    <h4 className={styles.itemDetailVariationSectionTitle}>Stock</h4>
+                    <div className={styles.itemDetailStockRow}>
+                      <span className={styles.itemDetailStockText}>44 on hand | 44 available</span>
+                      <button className={styles.itemDetailReceiveStockBtn}>Receive stock</button>
+                    </div>
+                    
+                    <div className={styles.itemDetailVariationField}>
+                      <label className={styles.itemDetailVariationFieldLabel}>Low stock alert</label>
+                      <input type="number" defaultValue="10" className={styles.itemDetailVariationInput} />
+                    </div>
+                    
+                    <input 
+                      type="text" 
+                      placeholder="Dosage Form (Square)"
+                      className={styles.itemDetailVariationInput}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Additional sections abbreviated for brevity */}
+            <div className={styles.itemDetailSection}>
+              <div className={styles.itemDetailSectionRow}>
+                <div className={styles.itemDetailSectionInfo}>
+                  <h3 className={styles.itemDetailSectionTitle}>Modifiers</h3>
+                  <p className={styles.itemDetailSectionDesc}>
+                    Allow customizations such as add-ons or special requests. <button className={styles.itemDetailLearnMore}>Learn more</button>
+                  </p>
+                </div>
+                <button className={styles.itemDetailAddBtn}>Add</button>
+              </div>
+            </div>
+
+            <div className={styles.itemDetailSection}>
+              <div className={styles.itemDetailSectionRow}>
+                <div className={styles.itemDetailSectionInfo}>
+                  <h3 className={styles.itemDetailSectionTitle}>Custom attributes</h3>
+                  <p className={styles.itemDetailSectionDesc}>
+                    Track additional details such as a book's author or a difficulty level for a game. <button className={styles.itemDetailLearnMore}>Learn more</button>
+                  </p>
+                </div>
+                <button className={styles.itemDetailAddBtn}>Add</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   // Render add item modal
   const renderAddItemModal = () => {
@@ -417,43 +723,49 @@ const ItemLibrary = () => {
   };
 
   // Main item library view
+  // If item is selected, show standalone item detail page
+  if (selectedItem) {
+    return renderItemDetailContainer();
+  }
+
+  // Temporary test - force show item detail for testing
+  // if (true) {
+  //   return renderItemDetailContainer();
+  // }
+
   return (
     <div className={styles.itemLibraryContainer}>
-      {/* Header with search and filters */}
-      <div className={styles.itemLibraryHeader}>
-        <div className={styles.searchContainer}>
-          <div className={styles.searchIconContainer}>
-            <FaSearch className={styles.searchIcon} />
-          </div>
-          <div className={styles.searchInputContainer}>
-            <input
-              type="text"
-              placeholder="Search"
-              value={searchQuery}
-              onChange={handleSearch}
-              className={styles.searchInput}
-            />
-          </div>
-          {searchQuery && (
-            <button className={styles.clearSearch} onClick={() => setSearchQuery('')}>
-              &times;
-            </button>
-          )}
-        </div>
+      {!loading && (
+        <div className={styles.itemLibraryContent}>
+          <div className={styles.itemLibraryHeader}>
+            <div className={styles.searchContainer}>
+              <div className={styles.searchIconContainer}>
+                <FaSearch className={styles.searchIcon} />
+              </div>
+              <div className={styles.searchInputContainer}>
+                <input
+                  type="text"
+                  placeholder="Search"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className={styles.searchInput}
+                />
+              </div>
+            </div>
         
-        <div className={styles.filterContainer}>
-          <div
-            className={styles.filterDropdown}
-            onClick={() => {
-              setShowFilters(true);
-              setActiveSubPanel('category');
-            }}
-          >
-            <span className={styles.filterLabel}>Category</span>
-            <span className={styles.filterValue}>{activeCategory}</span>
-          </div>
+            <div className={styles.filterContainer}>
+              <div
+                className={styles.filterDropdown}
+                onClick={() => {
+                  setShowFilters(true);
+                  setActiveSubPanel('category');
+                }}
+              >
+                <span className={styles.filterLabel}>Category</span>
+                <span className={styles.filterValue}>{activeCategory}</span>
+              </div>
           
-          <div className={styles.filterDropdown} onClick={toggleLocationDropdown} ref={locationDropdownRef}>
+              <div className={styles.filterDropdown} onClick={toggleLocationDropdown} ref={locationDropdownRef}>
             <span className={styles.filterLabel}>Locations</span>
             <span className={styles.filterValue}>{activeLocation}</span>
             
@@ -1190,6 +1502,7 @@ const ItemLibrary = () => {
                   key={item.id} 
                   className={selectedItems.includes(item.id) ? styles.selectedRow : ''}
                   onClick={() => handleItemClick(item)}
+                  style={{ cursor: 'pointer' }}
                 >
                   <td className={styles.itemColumn}>
                     <div className={styles.itemCellContent}>
