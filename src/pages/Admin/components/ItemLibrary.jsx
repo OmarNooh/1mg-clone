@@ -13,6 +13,7 @@ import {
 } from 'react-icons/fa';
 import { IoCloseSharp, IoChevronBack } from 'react-icons/io5';
 import { MdArrowForwardIos } from 'react-icons/md';
+import ItemWizard from './ItemWizard';
 import styles from './ItemLibrary.module.css';
 
 const ItemLibrary = () => {
@@ -80,7 +81,7 @@ const ItemLibrary = () => {
   });
   const [activeStatus, setActiveStatus] = useState('Active');
   const [showFilters, setShowFilters] = useState(false);
-  const [showAddItemModal, setShowAddItemModal] = useState(false);
+  const [showAddItemWizard, setShowAddItemWizard] = useState(false);
 
   // Mock data for demonstration
   const locations = [
@@ -274,12 +275,14 @@ const ItemLibrary = () => {
 
   // Handle item click to navigate to detail page
   const handleItemClick = (item) => {
-    navigate(`/admin/dashboard/items/library/v1/${item.uniqueId}/`);
+    navigate(`/admin/dashboard/items/library/v1/${item.uniqueId}/`, {
+      state: { item },
+    });
   };
 
   // Handle add new item
   const handleAddItem = () => {
-    setShowAddItemModal(true);
+    setShowAddItemWizard(true);
   };
   
   // Handle actions dropdown toggle
@@ -341,80 +344,7 @@ const ItemLibrary = () => {
 
 
 
-  // Render add item modal
-  const renderAddItemModal = () => {
-    if (!showAddItemModal) return null;
-    
-    return (
-      <div className={styles.modalOverlay}>
-        <div className={styles.addItemModal}>
-          <div className={styles.modalHeader}>
-            <h2>Add New Item</h2>
-            <button 
-              className={styles.closeButton}
-              onClick={() => setShowAddItemModal(false)}
-            >
-              &times;
-            </button>
-          </div>
-          
-          <div className={styles.modalContent}>
-            <div className={styles.formGroup}>
-              <label htmlFor="itemName">Item Name</label>
-              <input type="text" id="itemName" placeholder="Enter item name" />
-            </div>
-            
-            <div className={styles.formGroup}>
-              <label htmlFor="itemCategory">Category</label>
-              <select id="itemCategory">
-                <option value="">Select category</option>
-                <option value="SYRINGES">SYRINGES</option>
-                <option value="SURGICALS">SURGICALS</option>
-                <option value="LIQUID">LIQUID</option>
-                <option value="TABLETS">TABLETS</option>
-                <option value="CAPSULES">CAPSULES</option>
-              </select>
-            </div>
-            
-            <div className={styles.formGroup}>
-              <label htmlFor="itemLocation">Location</label>
-              <select id="itemLocation">
-                <option value="All locations">All locations</option>
-              </select>
-            </div>
-            
-            <div className={styles.formGroup}>
-              <label htmlFor="itemStock">Initial Stock</label>
-              <input type="number" id="itemStock" placeholder="0" />
-            </div>
-            
-            <div className={styles.formGroup}>
-              <label htmlFor="itemPrice">Price</label>
-              <input type="text" id="itemPrice" placeholder="TSH 0.00" />
-            </div>
-            
-            <div className={styles.formGroup}>
-              <label htmlFor="itemImage">Image</label>
-              <div className={styles.imageUpload}>
-                <button className={styles.uploadButton}>Upload Image</button>
-                <span>No file selected</span>
-              </div>
-            </div>
-          </div>
-          
-          <div className={styles.modalFooter}>
-            <button 
-              className={styles.cancelButton}
-              onClick={() => setShowAddItemModal(false)}
-            >
-              Cancel
-            </button>
-            <button className={styles.saveButton}>Save Item</button>
-          </div>
-        </div>
-      </div>
-    );
-  };
+
 
   // Main item library view
   return (
@@ -1319,7 +1249,11 @@ const ItemLibrary = () => {
         </div>
       )}
       
-      {renderAddItemModal()}
+      {showAddItemWizard && (
+        <ItemWizard 
+          onClose={() => setShowAddItemWizard(false)}
+        />
+      )}
     </div>
   );
 };

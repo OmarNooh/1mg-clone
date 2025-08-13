@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { IoCloseSharp, IoChevronDown } from 'react-icons/io5';
-import { FaChevronDown } from 'react-icons/fa';
+import ItemWizard from './ItemWizard';
 import styles from './ItemDetail.module.css';
 
 const ItemDetail = () => {
@@ -9,8 +9,7 @@ const ItemDetail = () => {
   const navigate = useNavigate();
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [showItemTypeModal, setShowItemTypeModal] = useState(false);
-  const [selectedItemType, setSelectedItemType] = useState('Physical good');
+  const [showWizard, setShowWizard] = useState(true);
 
   // Item type options
   const itemTypeOptions = [
@@ -42,18 +41,13 @@ const ItemDetail = () => {
     }
   ];
 
-  // Modal handlers
-  const handleOpenItemTypeModal = () => {
-    setShowItemTypeModal(true);
+  const handleClose = () => {
+    navigate('/admin/dashboard/items/library');
   };
 
-  const handleCloseItemTypeModal = () => {
-    setShowItemTypeModal(false);
-  };
-
-  const handleSelectItemType = (itemType) => {
-    setSelectedItemType(itemType.name);
-    setShowItemTypeModal(false);
+  const handleWizardClose = () => {
+    setShowWizard(false);
+    navigate('/admin/dashboard/items/library');
   };
 
   // Mock data - same as in ItemLibrary
@@ -84,16 +78,34 @@ const ItemDetail = () => {
     setLoading(false);
   }, [itemId]);
 
-  const handleClose = () => {
-    navigate('/admin/dashboard/items/library');
-  };
-
   if (loading) {
-    return <div className={styles.loading}>Loading...</div>;
+    return (
+      <div className={styles.loadingContainer}>
+        <div className={styles.spinner}></div>
+        <p>Loading item details...</p>
+      </div>
+    );
   }
 
   if (!item) {
-    return <div className={styles.notFound}>Item not found</div>;
+    return (
+      <div className={styles.errorContainer}>
+        <h2>Item not found</h2>
+        <p>The item you're looking for doesn't exist.</p>
+        <button onClick={handleClose} className={styles.backButton}>
+          Back to Items
+        </button>
+      </div>
+    );
+  }
+
+  if (showWizard) {
+    return (
+      <ItemWizard 
+        itemId={itemId}
+        onClose={handleWizardClose}
+      />
+    );
   }
 
   return (
@@ -105,12 +117,6 @@ const ItemDetail = () => {
         </button>
         <h1 className={styles.title}>Edit item</h1>
         <div className={styles.headerActions}>
-          <div className={styles.actionsDropdown}>
-            <button className={styles.actionsButton}>
-              Actions
-              <IoChevronDown />
-            </button>
-          </div>
           <button className={styles.saveButton}>Save</button>
         </div>
       </div>
@@ -124,46 +130,73 @@ const ItemDetail = () => {
             
             <div className={styles.detailsGrid}>
               <div className={styles.leftColumn}>
+                {/* Item type field */}
                 <div className={styles.itemTypeField}>
                   <div className={styles.itemTypeLeft}>
-                    <div className={styles.itemTypeLabel}>Item type</div>
-                    <div className={styles.itemTypeValue}>{selectedItemType}</div>
+                    <span className={styles.itemTypeLabel}>Item type</span>
+                    <span className={styles.itemTypeValue}>Physical good</span>
                   </div>
                   <div className={styles.itemTypeRight}>
-                    <button className={styles.changeButton} onClick={handleOpenItemTypeModal}>Change</button>
+                    <button className={styles.changeButton}>Change</button>
                   </div>
                 </div>
 
+                {/* Name field */}
                 <div className={styles.field}>
-                  <label className={styles.label}>Name</label>
-                  <input 
-                    type="text" 
+                  <span className={styles.label}>Name</span>
+                  <input
+                    type="text"
                     className={styles.input}
                     defaultValue={item.name}
                   />
                 </div>
 
+                {/* Optional selling name field */}
                 <div className={styles.field}>
-                  <label className={styles.label}>Kitchen facing name</label>
-                  <input 
-                    type="text" 
+                  <span className={styles.label}>Optional selling name</span>
+                  <input
+                    type="text"
                     className={styles.input}
-                    placeholder="Kitchen facing name"
+                    placeholder=""
                   />
                 </div>
 
+                {/* Description field */}
                 <div className={styles.field}>
-                  <label className={styles.label}>Description</label>
-                  <textarea 
+                  <span className={styles.label}>Description</span>
+                  <textarea
                     className={styles.textarea}
+                    rows="4"
                     defaultValue="SALAMA ="
                   />
                 </div>
 
+                {/* Generate description notice */}
+                <div className={styles.notice}>
+                  <span>📱 Get this image tagged. Then, upload it to create image library</span>
+                </div>
+
+                {/* Location field */}
                 <div className={styles.field}>
-                  <label className={styles.label}>Brand Name</label>
-                  <input 
-                    type="text" 
+                  <span className={styles.label}>Location</span>
+                  <select className={styles.input}>
+                    <option>All locations</option>
+                  </select>
+                </div>
+
+                {/* Age restriction field */}
+                <div className={styles.field}>
+                  <span className={styles.label}>Age restriction</span>
+                  <select className={styles.input}>
+                    <option>None</option>
+                  </select>
+                </div>
+
+                {/* Brand Name field */}
+                <div className={styles.field}>
+                  <span className={styles.label}>Brand Name</span>
+                  <input
+                    type="text"
                     className={styles.input}
                     placeholder="Enter brand name"
                   />
@@ -171,84 +204,57 @@ const ItemDetail = () => {
 
                 <div className={styles.dateFieldsRow}>
                   <div className={styles.field}>
-                    <label className={styles.label}>Expiry Date</label>
-                    <input 
-                      type="date" 
+                    <span className={styles.label}>Expiry Date</span>
+                    <input
+                      type="date"
                       className={styles.input}
                     />
                   </div>
 
                   <div className={styles.field}>
-                    <label className={styles.label}>Manufacturing Date</label>
-                    <input 
-                      type="date" 
+                    <span className={styles.label}>Manufacturing Date</span>
+                    <input
+                      type="date"
                       className={styles.input}
                     />
                   </div>
                 </div>
 
                 <div className={styles.field}>
-                  <label className={styles.label}>Batch No</label>
-                  <input 
-                    type="text" 
+                  <span className={styles.label}>Batch No</span>
+                  <input
+                    type="text"
                     className={styles.input}
                     placeholder="Enter batch number"
                   />
                 </div>
 
                 <div className={styles.field}>
-                  <label className={styles.label}>Lot No</label>
-                  <input 
-                    type="text" 
+                  <span className={styles.label}>Lot No</span>
+                  <input
+                    type="text"
                     className={styles.input}
                     placeholder="Enter lot number"
                   />
                 </div>
 
                 <div className={styles.field}>
-                  <label className={styles.label}>Manufactured By</label>
-                  <input 
-                    type="text" 
+                  <span className={styles.label}>Manufactured By</span>
+                  <input
+                    type="text"
                     className={styles.input}
-                    placeholder="Enter manufacturer name"
+                    placeholder="Enter manufacturer"
                   />
-                </div>
-
-                <div className={styles.imageUpload}>
-                  <div className={styles.uploadArea}>
-                    <div className={styles.uploadIcon}>📷</div>
-                    <p>Drag and drop images here, <span className={styles.uploadLink}>upload</span>, or <span className={styles.uploadLink}>browse image library</span>.</p>
-                  </div>
-                  <div className={styles.primaryImage}>
-                    <img src="/api/placeholder/60/60" alt="Primary" />
-                    <span>Primary</span>
-                  </div>
-                </div>
-
-                <div className={styles.field}>
-                  <label className={styles.label}>Locations</label>
-                  <div className={styles.dropdown}>
-                    <select className={styles.select}>
-                      <option>All locations</option>
-                    </select>
-                  </div>
                 </div>
               </div>
 
               <div className={styles.rightColumn}>
-                <div className={styles.itemImage}>
-                  <img src="/api/placeholder/120/120" alt={item.name} />
-                  <button className={styles.editImageButton}>Edit</button>
+                <div className={styles.imageUpload}>
+                  <div className={styles.imagePlaceholder}>
+                    Add
+                  </div>
                 </div>
               </div>
-            </div>
-          </section>
-
-          {/* Age Restriction */}
-          <section className={styles.section}>
-            <div className={styles.ageRestriction}>
-              <label className={styles.label}>Age restriction</label>
-              <button className={styles.setButton}>Set</button>
             </div>
           </section>
 
@@ -256,26 +262,23 @@ const ItemDetail = () => {
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>Categorization</h2>
             <p className={styles.sectionDescription}>
-              Group items to organize the menu on your POS and Square Online store. Categorize items for Square POS, sourcing, sales reporting, and kitchen routing.
+              Create, edit, or organize the categories where this item will appear. Online sales, Categories, online for Square Online, POS, and other integrations.
             </p>
-
-            <div className={styles.categorizationGrid}>
-              <div className={styles.categorizationItem}>
-                <div className={styles.categorizationIcon}>📋</div>
-                <div className={styles.categorizationContent}>
-                  <span className={styles.categorizationLabel}>Menu organization</span>
-                  <button className={styles.selectButton}>Select</button>
-                </div>
+            
+            <div className={styles.categoryItem}>
+              <div className={styles.categoryCheckbox}>
+                <input type="checkbox" />
+                <span>Menu organization</span>
               </div>
+              <button className={styles.selectButton}>Select</button>
+            </div>
 
-              <div className={styles.categorizationItem}>
-                <div className={styles.categorizationIcon}>📁</div>
-                <div className={styles.categorizationContent}>
-                  <span className={styles.categorizationLabel}>Categories</span>
-                  <span className={styles.categorizationValue}>{item.category}</span>
-                  <button className={styles.editButton}>Edit</button>
-                </div>
+            <div className={styles.categoryItem}>
+              <div className={styles.categoryCheckbox}>
+                <input type="checkbox" />
+                <span>Categories</span>
               </div>
+              <button className={styles.selectButton}>Select</button>
             </div>
           </section>
 
@@ -283,9 +286,56 @@ const ItemDetail = () => {
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>Options</h2>
             <p className={styles.sectionDescription}>
-              Add options such as size, color, or material to create variations in bulk. <span className={styles.learnMore}>Learn more</span>
+              Customize items with size, color, or optional or required variations to create variations. Learn more.
             </p>
             <button className={styles.addButton}>Add</button>
+          </section>
+
+          {/* Units Section */}
+          <section className={styles.section}>
+            <h2 className={styles.sectionTitle}>Units</h2>
+            <p className={styles.sectionDescription}>
+              Set unit price and how this item is measured, and choose if you'll sell it both a unit and in bulk. Learn more.
+            </p>
+            
+            <div className={styles.unitsGrid}>
+              <div className={styles.unitField}>
+                <span className={styles.label}>SKU</span>
+                <input type="text" className={styles.input} />
+              </div>
+              <button className={styles.generateButton}>Add base unit and pricing</button>
+            </div>
+          </section>
+
+          {/* Variations Section */}
+          <section className={styles.section}>
+            <h2 className={styles.sectionTitle}>Variations</h2>
+            <div className={styles.variationsActions}>
+              <button className={styles.editButton}>Edit variations details</button>
+              <button className={styles.addButton}>Add</button>
+            </div>
+            
+            <div className={styles.variationItem}>
+              <span className={styles.label}>SKU</span>
+              <input type="text" className={styles.input} />
+              <span className={styles.label}>Price</span>
+              <select className={styles.input}>
+                <option>Options</option>
+              </select>
+            </div>
+          </section>
+
+          {/* Tracking Section */}
+          <section className={styles.section}>
+            <h2 className={styles.sectionTitle}>Tracking</h2>
+            <div className={styles.toggleItem}>
+              <span>Stock</span>
+              <div className={styles.itemDetailToggle}>
+                <input type="checkbox" defaultChecked />
+                <span className={styles.itemDetailSlider}></span>
+              </div>
+            </div>
+            <button className={styles.addButton}>Add low stock alert - Receive stock</button>
           </section>
 
           {/* Units Section */}
