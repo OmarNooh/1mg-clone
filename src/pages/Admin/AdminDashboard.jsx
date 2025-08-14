@@ -30,6 +30,7 @@ import Analytics from './components/Analytics';
 import Settings from './components/Settings';
 import Overview from './components/Overview';
 import ItemLibrary from './components/ItemLibrary';
+import ServiceLibrary from './components/ServiceLibrary';
 
 const AdminDashboard = () => {
   const location = useLocation();
@@ -796,6 +797,8 @@ const AdminDashboard = () => {
         return <Settings />;
       case 'item-library':
         return <ItemLibrary />;
+      case 'service-library':
+        return <ServiceLibrary />;
       case 'overview':
       default:
         return <Overview />;

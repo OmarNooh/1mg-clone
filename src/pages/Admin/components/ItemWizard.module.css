@@ -18,7 +18,7 @@
 }
 
 /* Header */
-.header {
+.wizardHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -27,19 +27,39 @@
   background: #f9fafb;
 }
 
+.headerLeft {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  justify-content: flex-end;
+}
+
 .closeButton {
-  background: none;
-  border: none;
-  font-size: 24px;
-  color: #6b7280;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 8px 12px;
   cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  font-size: 16px;
+  color: #666;
+  min-width: 40px;
+  height: 36px;
 }
 
 .closeButton:hover {
-  background: #f3f4f6;
-  color: #374151;
+  background-color: #f9f9f9;
+  border-color: #ccc;
+  color: #333;
 }
 
 .title {
@@ -47,26 +67,148 @@
   font-weight: 600;
   color: #111827;
   margin: 0;
-}
-
-.headerActions {
-  display: flex;
-  gap: 12px;
+  text-align: center;
+  flex: 2;
 }
 
 .saveButton {
-  background: #2563eb;
-  color: white;
-  border: none;
-  padding: 8px 16px;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
   border-radius: 6px;
-  font-size: 14px;
-  font-weight: 500;
+  padding: 8px 16px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+  height: 36px;
 }
 
 .saveButton:hover {
-  background: #1d4ed8;
+  background-color: #f9f9f9;
+  border-color: #ccc;
+}
+
+.saveButton:active {
+  background-color: #2563eb;
+  color: white;
+  border-color: #2563eb;
+}
+
+/* Unsaved Changes Dialog */
+.dialogOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.dialogContainer {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 90%;
+  position: relative;
+}
+
+.dialogHeader {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 16px 0 16px;
+}
+
+.dialogCloseButton {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #666;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+.dialogCloseButton:hover {
+  color: #333;
+}
+
+.dialogContent {
+  padding: 0 24px 24px 24px;
+  text-align: center;
+}
+
+.dialogTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 12px 0;
+}
+
+.dialogMessage {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.dialogWarning {
+  background-color: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin-top: 12px;
+  color: #856404;
+  font-size: 13px;
+}
+
+.dialogActions {
+  display: flex;
+  gap: 12px;
+  padding: 0 24px 24px 24px;
+  justify-content: center;
+}
+
+.discardButton {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.discardButton:hover {
+  background-color: #f9f9f9;
+  border-color: #ccc;
+}
+
+.saveChangesButton {
+  background-color: #2563eb;
+  border: 1px solid #2563eb;
+  border-radius: 6px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  color: white;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.saveChangesButton:hover {
+  background-color: #1d4ed8;
+  border-color: #1d4ed8;
 }
 
 /* Progress Steps */

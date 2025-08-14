@@ -1,0 +1,314 @@
+/* Container */
+.container {
+  padding: 24px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+/* Loading State */
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: #666;
+}
+
+.loadingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #e0e0e0;
+  border-top: 3px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Empty State (First-time Experience) */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 500px;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.emptyStateIcon {
+  width: 80px;
+  height: 80px;
+  background-color: #e9ecef;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  color: #6c757d;
+  font-size: 32px;
+}
+
+.emptyStateTitle {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 12px 0;
+}
+
+.emptyStateDescription {
+  font-size: 16px;
+  color: #666;
+  line-height: 1.5;
+  margin: 0 0 32px 0;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.primaryButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.primaryButton:hover {
+  background-color: #0056b3;
+}
+
+.secondaryButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: white;
+  color: #007bff;
+  border: 1px solid #007bff;
+  border-radius: 6px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.secondaryButton:hover {
+  background-color: #f8f9fa;
+}
+
+/* Populated Service Library Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  background-color: white;
+  padding: 20px 24px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.searchContainer {
+  position: relative;
+}
+
+.searchInput {
+  width: 300px;
+  padding: 10px 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: #f8f9fa;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #007bff;
+  background-color: white;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.filterControls {
+  display: flex;
+  gap: 12px;
+}
+
+.categoryFilter,
+.locationFilter {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.actionsButton {
+  padding: 10px 16px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.actionsButton:hover {
+  background-color: #f8f9fa;
+}
+
+.createServiceButton {
+  padding: 10px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.createServiceButton:hover {
+  background-color: #0056b3;
+}
+
+/* Service Table */
+.serviceTable {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.serviceTable table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.serviceTable th {
+  background-color: #f8f9fa;
+  padding: 16px 20px;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.serviceTable td {
+  padding: 16px 20px;
+  border-bottom: 1px solid #e9ecef;
+  font-size: 14px;
+  color: #333;
+}
+
+.serviceTable tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.serviceInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.serviceIcon {
+  width: 32px;
+  height: 32px;
+  background-color: #e9ecef;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c757d;
+  font-size: 14px;
+}
+
+.moreButton {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #666;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.moreButton:hover {
+  background-color: #f8f9fa;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+  
+  .header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+  
+  .headerLeft {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+  
+  .searchInput {
+    width: 100%;
+  }
+  
+  .filterControls {
+    flex-wrap: wrap;
+  }
+  
+  .actionButtons {
+    flex-direction: column;
+  }
+  
+  .serviceTable {
+    overflow-x: auto;
+  }
+}

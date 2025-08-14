@@ -3,11 +3,15 @@ import { IoCloseSharp, IoChevronBack, IoChevronForward, IoWarning, IoHelpCircle 
 import { useNavigate, useLocation } from 'react-router-dom';
 import styles from './ItemWizard.module.css';
 
-const ItemWizard = ({ itemId = null, onClose }) => {
+const ItemWizard = ({ itemId = null, onClose, duplicateItem = null, editItem = null, onSave = null }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const prefillItem = location?.state?.item || null;
+  const itemToEdit = duplicateItem || editItem || prefillItem;
   const [currentStep, setCurrentStep] = useState(1);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [showUnsavedDialog, setShowUnsavedDialog] = useState(false);
+  const [initialFormData, setInitialFormData] = useState(null);
   const [formData, setFormData] = useState({
     // Product Identity
     itemType: 'Physical good',
@@ -56,22 +60,71 @@ const ItemWizard = ({ itemId = null, onClose }) => {
     packageSize: ''
   });
 
-  // Prefill form when arriving from ItemLibrary with route state
+  // Prefill form when arriving from ItemLibrary with route state or duplicate item
   useEffect(() => {
-    if (!prefillItem) return;
-    setFormData(prev => ({
-      ...prev,
-      name: prefillItem.name || prev.name,
-      category: prefillItem.category || prev.category,
-      location: prefillItem.locations || prev.location,
-      sku: prefillItem.sku || prefillItem.uniqueId || prev.sku,
-      price: typeof prefillItem.price === 'string'
-        ? (prefillItem.price.match(/[0-9.,]+/)?.[0] || '').replace(/,/g, '')
-        : (prefillItem.price ?? prev.price),
-      quantity: typeof prefillItem.stock === 'number' ? String(prefillItem.stock) : (prefillItem.stock ?? prev.quantity),
-      images: prefillItem.image ? [prefillItem.image] : prev.images,
-    }));
-  }, [prefillItem]);
+    if (!itemToEdit) return;
+    
+    // Convert item data to form data format
+    const convertedFormData = {
+      // Product Identity
+      itemType: itemToEdit.itemType || 'Physical good',
+      name: itemToEdit.name || '',
+      optionalSellingName: itemToEdit.optionalSellingName || '',
+      brand: itemToEdit.brand || '',
+      
+      // Description
+      description: itemToEdit.description || '',
+      bulletPoints: itemToEdit.bulletPoints || [''],
+      images: itemToEdit.images || (itemToEdit.image ? [{ url: itemToEdit.image, file: null, name: 'item-image' }] : []),
+      
+      // Product Details
+      category: itemToEdit.category || itemToEdit.reportingCategory || '',
+      location: itemToEdit.locations || itemToEdit.location || 'All locations',
+      ageRestriction: itemToEdit.ageRestriction || 'None',
+      expiryDate: itemToEdit.expiryDate || '',
+      manufacturingDate: itemToEdit.manufacturingDate || '',
+      batchNo: itemToEdit.batchNo || '',
+      lotNo: itemToEdit.lotNo || '',
+      manufacturedBy: itemToEdit.manufacturedBy || '',
+      
+      // Offer
+      sku: itemToEdit.sku || itemToEdit.uniqueId || '',
+      price: typeof itemToEdit.price === 'string'
+        ? (itemToEdit.price.match(/[0-9.,]+/)?.[0] || '').replace(/,/g, '')
+        : String(itemToEdit.price || ''),
+      compareAtPrice: itemToEdit.compareAtPrice || '',
+      costPerItem: itemToEdit.costPerItem || itemToEdit.unitCost || '',
+      trackQuantity: itemToEdit.trackQuantity !== undefined ? itemToEdit.trackQuantity : true,
+      quantity: typeof itemToEdit.stock === 'number' ? String(itemToEdit.stock) : String(itemToEdit.quantity || itemToEdit.available || ''),
+      
+      // Safety & Compliance
+      safetyWarnings: itemToEdit.safetyWarnings || '',
+      complianceInfo: itemToEdit.complianceInfo || '',
+      certifications: itemToEdit.certifications || [],
+
+      // Additional fields
+      customAttributes: itemToEdit.customAttributes || [{ key: '', value: '' }],
+      options: itemToEdit.options || [''],
+      variations: itemToEdit.variations || [''],
+      units: itemToEdit.units || '',
+      weight: itemToEdit.weight || '',
+      modifiers: itemToEdit.modifiers || [''],
+      vendor: itemToEdit.vendor || itemToEdit.defaultVendor || '',
+      gtin: itemToEdit.gtin || '',
+      unitStrength: itemToEdit.unitStrength || '',
+      packageSize: itemToEdit.packageSize || ''
+    };
+    
+    setFormData(prevFormData => {
+      const newFormData = {
+        ...prevFormData,
+        ...convertedFormData
+      };
+      
+      setInitialFormData(newFormData); // Store initial data for comparison
+      return newFormData;
+    });
+  }, [itemToEdit]);
 
   const steps = [
     {
@@ -107,10 +160,20 @@ const ItemWizard = ({ itemId = null, onClose }) => {
   ];
 
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    setFormData(prev => {
+      const newData = {
+        ...prev,
+        [field]: value
+      };
+      
+      // Check if changes have been made (always check, not just when hasUnsavedChanges is false)
+      if (initialFormData) {
+        const hasChanges = JSON.stringify(newData) !== JSON.stringify(initialFormData);
+        setHasUnsavedChanges(hasChanges);
+      }
+      
+      return newData;
+    });
   };
 
   const handleNext = () => {
@@ -130,11 +193,41 @@ const ItemWizard = ({ itemId = null, onClose }) => {
   };
 
   const handleClose = () => {
+    if (hasUnsavedChanges) {
+      setShowUnsavedDialog(true);
+    } else {
+      closeWizard();
+    }
+  };
+
+  const closeWizard = () => {
     if (onClose) {
       onClose();
     } else {
-      navigate('/admin/dashboard/items/library');
+      navigate(-1);
     }
+  };
+
+  const handleDiscardChanges = () => {
+    // Reset form data to initial state
+    if (initialFormData) {
+      setFormData(initialFormData);
+    }
+    setHasUnsavedChanges(false);
+    setShowUnsavedDialog(false);
+    closeWizard();
+    console.log('Changes discarded - form reset to initial state');
+  };
+
+  const handleSaveChanges = () => {
+    setShowUnsavedDialog(false);
+    // Validate required fields before saving
+    if (!formData.name || !formData.itemType) {
+      alert('Please fill in all required fields (Product name and Item type) before saving.');
+      return;
+    }
+    handleSave();
+    console.log('Changes saved successfully');
   };
 
   const handleImageUpload = (event) => {
@@ -185,9 +278,58 @@ const ItemWizard = ({ itemId = null, onClose }) => {
   };
 
   const handleSave = () => {
-    // Save logic here
-    console.log('Saving item:', formData);
-    handleClose();
+    // Create new item object from form data
+    const newItem = {
+      id: duplicateItem?.id || editItem?.id || Date.now(),
+      uniqueId: duplicateItem?.uniqueId || editItem?.uniqueId || `ITEM-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      name: formData.name,
+      category: formData.category,
+      reportingCategory: formData.category,
+      locations: formData.location,
+      stock: parseInt(formData.quantity) || 0,
+      available: parseInt(formData.quantity) || 0,
+      price: parseFloat(formData.price) || 0,
+      image: formData.images?.[0]?.url || 'https://via.placeholder.com/40',
+      sku: formData.sku,
+      visible: true,
+      taxable: true,
+      status: duplicateItem ? 'Active' : 'Active',
+      lowStockThreshold: 5,
+      // Additional fields
+      description: formData.description,
+      brand: formData.brand,
+      itemType: formData.itemType,
+      ageRestriction: formData.ageRestriction,
+      expiryDate: formData.expiryDate,
+      manufacturingDate: formData.manufacturingDate,
+      batchNo: formData.batchNo,
+      lotNo: formData.lotNo,
+      manufacturedBy: formData.manufacturedBy,
+      compareAtPrice: parseFloat(formData.compareAtPrice) || null,
+      costPerItem: parseFloat(formData.costPerItem) || null,
+      trackQuantity: formData.trackQuantity,
+      safetyWarnings: formData.safetyWarnings,
+      complianceInfo: formData.complianceInfo,
+      customAttributes: formData.customAttributes,
+      options: formData.options,
+      variations: formData.variations,
+      units: formData.units,
+      weight: formData.weight,
+      modifiers: formData.modifiers,
+      vendor: formData.vendor,
+      gtin: formData.gtin,
+      unitStrength: formData.unitStrength,
+      packageSize: formData.packageSize
+    };
+    
+    // Call the onSave callback to add item to ItemLibrary
+    if (onSave) {
+      onSave(newItem);
+    }
+    
+    console.log('Saving item:', newItem);
+    setHasUnsavedChanges(false);
+    closeWizard();
   };
 
   const renderStepContent = () => {
@@ -219,14 +361,16 @@ const ItemWizard = ({ itemId = null, onClose }) => {
     <div className={styles.wizardOverlay}>
       <div className={styles.wizardContainer}>
         {/* Header */}
-        <div className={styles.header}>
-          <button className={styles.closeButton} onClick={handleClose}>
-            <IoCloseSharp />
-          </button>
+        <div className={styles.wizardHeader}>
+          <div className={styles.headerLeft}>
+            <button className={styles.closeButton} onClick={handleClose}>
+              <IoCloseSharp />
+            </button>
+          </div>
           <h1 className={styles.title}>
-            {(itemId || prefillItem) ? 'Edit item' : 'Create item'}
+            {duplicateItem ? 'Duplicate item' : (editItem || prefillItem ? 'Edit item' : 'Add new item')}
           </h1>
-          <div className={styles.headerActions}>
+          <div className={styles.headerRight}>
             <button className={styles.saveButton} onClick={handleSave}>
               Save
             </button>
@@ -296,6 +440,45 @@ const ItemWizard = ({ itemId = null, onClose }) => {
             <IoChevronForward />
           </button>
         </div>
+        
+        {/* Unsaved Changes Dialog */}
+        {showUnsavedDialog && (
+          <div className={styles.dialogOverlay}>
+            <div className={styles.dialogContainer}>
+              <div className={styles.dialogHeader}>
+                <button 
+                  className={styles.dialogCloseButton} 
+                  onClick={() => setShowUnsavedDialog(false)}
+                >
+                  ×
+                </button>
+              </div>
+              <div className={styles.dialogContent}>
+                <h3 className={styles.dialogTitle}>You have unsaved changes.</h3>
+                <p className={styles.dialogMessage}>
+                  Are you sure you want to leave this screen and discard your changes?
+                </p>
+                <div className={styles.dialogWarning}>
+                  <strong>Warning:</strong> All unsaved changes will be permanently lost.
+                </div>
+              </div>
+              <div className={styles.dialogActions}>
+                <button 
+                  className={styles.discardButton} 
+                  onClick={handleDiscardChanges}
+                >
+                  Discard Changes
+                </button>
+                <button 
+                  className={styles.saveChangesButton} 
+                  onClick={handleSaveChanges}
+                >
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

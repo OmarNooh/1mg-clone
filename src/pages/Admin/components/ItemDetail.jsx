@@ -10,6 +10,8 @@ const ItemDetail = () => {
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showWizard, setShowWizard] = useState(true);
+  const [showItemTypeModal, setShowItemTypeModal] = useState(false);
+  const [selectedItemType, setSelectedItemType] = useState('Physical good');
 
   // Item type options
   const itemTypeOptions = [
@@ -48,6 +50,14 @@ const ItemDetail = () => {
   const handleWizardClose = () => {
     setShowWizard(false);
     navigate('/admin/dashboard/items/library');
+  };
+
+  const handleCloseItemTypeModal = () => {
+    setShowItemTypeModal(false);
+  };
+
+  const handleSelectItemType = (option) => {
+    setSelectedItemType(option.name);
   };
 
   // Mock data - same as in ItemLibrary

@@ -1,0 +1,421 @@
+/* Modal Overlay */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid #e9ecef;
+  background-color: #f8f9fa;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: #666;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.closeButton:hover {
+  background-color: #e9ecef;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+}
+
+.saveButton {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.saveButton:hover {
+  background-color: #0056b3;
+}
+
+/* Content */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Sections */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 8px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+/* Form Fields */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.input {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.textarea {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 80px;
+  transition: border-color 0.2s ease;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.select {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: white;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.select:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+/* Price Input */
+.priceInput {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+
+.priceInput:focus-within {
+  border-color: #007bff;
+}
+
+.currency {
+  background-color: #f8f9fa;
+  padding: 10px 12px;
+  font-size: 14px;
+  color: #666;
+  border-right: 1px solid #ddd;
+}
+
+.priceInput .input {
+  border: none;
+  border-radius: 0;
+  flex: 1;
+}
+
+.priceInput .input:focus {
+  border: none;
+}
+
+/* Duration Input */
+.durationInput {
+  display: flex;
+  gap: 8px;
+}
+
+.durationInput .input {
+  flex: 1;
+}
+
+.durationInput .select {
+  min-width: 80px;
+}
+
+/* Checkbox Fields */
+.checkboxField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.checkboxLabel input[type="checkbox"] {
+  margin-top: 2px;
+}
+
+.checkboxText {
+  color: #333;
+  font-weight: 500;
+}
+
+.helpText {
+  font-size: 13px;
+  color: #666;
+  margin: 4px 0 0 0;
+  line-height: 1.4;
+}
+
+/* Advanced Settings */
+.advancedToggle {
+  margin-top: 16px;
+}
+
+.toggleButton {
+  background: none;
+  border: none;
+  color: #007bff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  transition: color 0.2s ease;
+}
+
+.toggleButton:hover {
+  color: #0056b3;
+}
+
+.expanded {
+  transform: rotate(180deg);
+  transition: transform 0.2s ease;
+}
+
+.collapsed {
+  transform: rotate(0deg);
+  transition: transform 0.2s ease;
+}
+
+.advancedContent {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e9ecef;
+}
+
+/* Unsaved Changes Dialog */
+.dialogOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+}
+
+.dialogContainer {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 90%;
+  position: relative;
+}
+
+.dialogHeader {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 16px 0 16px;
+}
+
+.dialogCloseButton {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #666;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: color 0.2s ease;
+}
+
+.dialogCloseButton:hover {
+  color: #333;
+}
+
+.dialogContent {
+  padding: 0 24px 24px 24px;
+  text-align: center;
+}
+
+.dialogTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 12px 0;
+}
+
+.dialogMessage {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.dialogWarning {
+  background-color: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin-top: 12px;
+  color: #856404;
+  font-size: 13px;
+}
+
+.dialogActions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  padding: 0 24px 24px 24px;
+}
+
+.discardButton {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.discardButton:hover {
+  background-color: #c82333;
+}
+
+.saveChangesButton {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.saveChangesButton:hover {
+  background-color: #0056b3;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .modal {
+    width: 95%;
+    max-height: 95vh;
+  }
+  
+  .content {
+    padding: 16px;
+  }
+  
+  .form {
+    gap: 24px;
+  }
+  
+  .durationInput {
+    flex-direction: column;
+  }
+  
+  .dialogActions {
+    flex-direction: column;
+  }
+}

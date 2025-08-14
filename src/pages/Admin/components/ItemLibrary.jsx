@@ -82,6 +82,8 @@ const ItemLibrary = () => {
   const [activeStatus, setActiveStatus] = useState('Active');
   const [showFilters, setShowFilters] = useState(false);
   const [showAddItemWizard, setShowAddItemWizard] = useState(false);
+  const [duplicateItemData, setDuplicateItemData] = useState(null);
+  const [editItemData, setEditItemData] = useState(null);
 
   // Mock data for demonstration
   const locations = [
@@ -91,21 +93,261 @@ const ItemLibrary = () => {
   ];
   
   const mockItems = [
-    { id: 1, uniqueId: 'RSUGLT6QVJHPQHKI6MWTZVIV', name: '10CC - SYRINGE ( NEOJECT ) 10MLS 100\'S', category: 'SYRINGES', locations: 'All locations', stock: 44, available: 44, price: 'TSH 500.00/ea', image: 'https://via.placeholder.com/40' },
-    { id: 2, uniqueId: 'BKJHG7TYUI9OPLMNBVCXZAQW', name: '10CC SYRINGE ( SURGIMED )', category: 'SYRINGES', locations: 'All locations', stock: -1, available: -1, price: 'TSH 500.00/ea', image: 'https://via.placeholder.com/40' },
-    { id: 3, uniqueId: 'MNBVCXZLKJHGFDSAPOIUYTRE', name: '10CM GAUZE W . O . W ( GENSAFE - BANDA)', category: 'SURGICALS', locations: 'All locations', stock: 0, available: 0, price: 'TSH 500.00/ea', image: 'https://via.placeholder.com/40' },
-    { id: 4, uniqueId: 'QWERTYUIOPASDFGHJKLZXCVB', name: '10CM SPANDEX CREPE (SPANDEX - NEOSP', category: 'SURGICALS', locations: 'All locations', stock: 13, available: 13, price: 'TSH 2,500.00/ea', image: 'https://via.placeholder.com/40' },
-    { id: 5, uniqueId: 'ZXCVBNMASDFGHJKLQWERTYUI', name: '10CM - CREPE BAND 10CM (NEOSPORT) 1', category: 'SURGICALS', locations: 'All locations', stock: 5, available: 5, price: 'TSH 2,500.00/ea', image: 'https://via.placeholder.com/40' },
-    { id: 6, uniqueId: 'POIUYTREWQLKJHGFDSAMNBVC', name: '15CM GAUZE W . O . W ( GENSAFE - BANDA', category: 'SURGICALS', locations: 'All locations', stock: 18, available: 18, price: 'TSH 600.00/ea', image: 'https://via.placeholder.com/40' },
-    { id: 7, uniqueId: 'LKJHGFDSAPOIUYTREWQMNBVC', name: '15CM SPANDEX CREPE (SPANDEX - NEOSP', category: 'SURGICALS', locations: 'All locations', stock: -1, available: -1, price: 'TSH 3,500.00/ea', image: 'https://via.placeholder.com/40' },
-    { id: 8, uniqueId: 'ASDFGHJKLZXCVBNMQWERTYUI', name: '15CM - CREPE BAND 15CM (NEOSPORT) 1', category: 'SURGICALS', locations: 'All locations', stock: 6, available: 6, price: 'TSH 3,500.00/ea', image: 'https://via.placeholder.com/40' },
-    { id: 9, uniqueId: 'HJKLZXCVBNMQWERTYUIOPASDF', name: '1CC SYRINGE INSULIN ( NEOJET - YELLOW', category: 'SYRINGES', locations: 'All locations', stock: 100, available: 100, price: 'TSH 750.00/ea', image: 'https://via.placeholder.com/40' },
-    { id: 10, uniqueId: 'XCVBNMQWERTYUIOPASDFGHJKL', name: '1L Kilimanjaro Water', category: 'LIQUID', locations: 'All locations', stock: -38, available: -38, price: 'TSH 1,000.00/ea', image: 'https://via.placeholder.com/40' },
-    { id: 11, uniqueId: 'QWERTYUIOPASDFGHJKLZXCVBN', name: '21ST - JOINT SUPPORT 30\'S ( UK - MMS - G', category: 'TABLETS', locations: 'All locations', stock: 0, available: 0, price: 'TSH 23,500.00/ea', image: 'https://via.placeholder.com/40' },
-    { id: 12, uniqueId: 'TYUIOPASDFGHJKLZXCVBNMQWE', name: '21ST - PreNATAL (USA) 30\'S', category: 'TABLETS', locations: 'All locations', stock: -1, available: -1, price: 'TSH 19,500.00/ea', image: 'https://via.placeholder.com/40' },
-    { id: 13, uniqueId: 'OPASDFGHJKLZXCVBNMQWERTY', name: '21ST- FISH OIL ( USA - OMEGA3,6,9 - 1000', category: 'CAPSULES', locations: 'All locations', stock: 0, available: 0, price: 'TSH 23,500.00/ea', image: 'https://via.placeholder.com/40' },
-    { id: 14, uniqueId: 'DFGHJKLZXCVBNMQWERTYUIOP', name: '21ST- LUTEIN ( UK - EYE SUPPORT) 30\'S', category: 'TABLETS', locations: 'All locations', stock: 0, available: 0, price: 'TSH 20,000.00/ea', image: 'https://via.placeholder.com/40' },
-    { id: 15, uniqueId: 'HJKLZXCVBNMQWERTYUIOPASDF', name: '21ST- OSTEO SUPPORT TAS 30\'S (US - CAL', category: 'TABLETS', locations: 'All locations', stock: 0, available: 0, price: 'TSH 19,500.00/ea', image: 'https://via.placeholder.com/40' },
+    { 
+      id: 1, 
+      uniqueId: 'RSUGLT6QVJHPQHKI6MWTZVIV', 
+      name: '10CC - SYRINGE ( NEOJECT ) 10MLS 100\'S', 
+      category: 'SYRINGES', 
+      reportingCategory: 'SYRINGES',
+      locations: 'All locations', 
+      stock: 44, 
+      available: 44, 
+      price: 500.00, 
+      image: 'https://via.placeholder.com/40',
+      sku: 'SYR-10CC-NEO-001',
+      visible: true,
+      taxable: true,
+      status: 'Active',
+      lowStockThreshold: 10
+    },
+    { 
+      id: 2, 
+      uniqueId: 'BKJHG7TYUI9OPLMNBVCXZAQW', 
+      name: '10CC SYRINGE ( SURGIMED )', 
+      category: 'SYRINGES', 
+      reportingCategory: 'SYRINGES',
+      locations: 'All locations', 
+      stock: -1, 
+      available: -1, 
+      price: 500.00, 
+      image: 'https://via.placeholder.com/40',
+      sku: 'SYR-10CC-SUR-002',
+      visible: true,
+      taxable: true,
+      status: 'Active',
+      lowStockThreshold: 5
+    },
+    { 
+      id: 3, 
+      uniqueId: 'MNBVCXZLKJHGFDSAPOIUYTRE', 
+      name: '10CM GAUZE W . O . W ( GENSAFE - BANDA)', 
+      category: 'SURGICALS', 
+      reportingCategory: 'SURGICALS',
+      locations: 'All locations', 
+      stock: 0, 
+      available: 0, 
+      price: 500.00, 
+      image: 'https://via.placeholder.com/40',
+      sku: 'GAU-10CM-GEN-003',
+      visible: true,
+      taxable: true,
+      status: 'Active',
+      lowStockThreshold: 15
+    },
+    { 
+      id: 4, 
+      uniqueId: 'QWERTYUIOPASDFGHJKLZXCVB', 
+      name: '10CM SPANDEX CREPE (SPANDEX - NEOSP', 
+      category: 'SURGICALS', 
+      reportingCategory: 'SURGICALS',
+      locations: 'All locations', 
+      stock: 13, 
+      available: 13, 
+      price: 2500.00, 
+      image: 'https://via.placeholder.com/40',
+      sku: 'CRE-10CM-NEO-004',
+      visible: true,
+      taxable: false,
+      status: 'Active',
+      lowStockThreshold: 8
+    },
+    { 
+      id: 5, 
+      uniqueId: 'ZXCVBNMASDFGHJKLQWERTYUI', 
+      name: '10CM - CREPE BAND 10CM (NEOSPORT) 1', 
+      category: 'SURGICALS', 
+      reportingCategory: 'SURGICALS',
+      locations: 'All locations', 
+      stock: 5, 
+      available: 5, 
+      price: 2500.00, 
+      image: 'https://via.placeholder.com/40',
+      sku: 'CRE-10CM-NEO-005',
+      visible: false,
+      taxable: true,
+      status: 'Active',
+      lowStockThreshold: 12
+    },
+    { 
+      id: 6, 
+      uniqueId: 'POIUYTREWQLKJHGFDSAMNBVC', 
+      name: '15CM GAUZE W . O . W ( GENSAFE - BANDA', 
+      category: 'SURGICALS', 
+      reportingCategory: 'SURGICALS',
+      locations: 'All locations', 
+      stock: 18, 
+      available: 18, 
+      price: 600.00, 
+      image: 'https://via.placeholder.com/40',
+      sku: 'GAU-15CM-GEN-006',
+      visible: true,
+      taxable: true,
+      status: 'Active',
+      lowStockThreshold: 20
+    },
+    { 
+      id: 7, 
+      uniqueId: 'LKJHGFDSAPOIUYTREWQMNBVC', 
+      name: '15CM SPANDEX CREPE (SPANDEX - NEOSP', 
+      category: 'SURGICALS', 
+      reportingCategory: 'SURGICALS',
+      locations: 'All locations', 
+      stock: -1, 
+      available: -1, 
+      price: 3500.00, 
+      image: 'https://via.placeholder.com/40',
+      sku: 'CRE-15CM-NEO-007',
+      visible: true,
+      taxable: false,
+      status: 'Active',
+      lowStockThreshold: 6
+    },
+    { 
+      id: 8, 
+      uniqueId: 'ASDFGHJKLZXCVBNMQWERTYUI', 
+      name: '15CM - CREPE BAND 15CM (NEOSPORT) 1', 
+      category: 'SURGICALS', 
+      reportingCategory: 'SURGICALS',
+      locations: 'All locations', 
+      stock: 6, 
+      available: 6, 
+      price: 3500.00, 
+      image: 'https://via.placeholder.com/40',
+      sku: 'CRE-15CM-NEO-008',
+      visible: true,
+      taxable: true,
+      status: 'Active',
+      lowStockThreshold: 10
+    },
+    { 
+      id: 9, 
+      uniqueId: 'HJKLZXCVBNMQWERTYUIOPASDF', 
+      name: '1CC SYRINGE INSULIN ( NEOJET - YELLOW', 
+      category: 'SYRINGES', 
+      reportingCategory: 'SYRINGES',
+      locations: 'All locations', 
+      stock: 100, 
+      available: 100, 
+      price: 750.00, 
+      image: 'https://via.placeholder.com/40',
+      sku: 'SYR-1CC-NEO-009',
+      visible: true,
+      taxable: true,
+      status: 'Active',
+      lowStockThreshold: 25
+    },
+    { 
+      id: 10, 
+      uniqueId: 'XCVBNMQWERTYUIOPASDFGHJKL', 
+      name: '1L Kilimanjaro Water', 
+      category: 'LIQUID', 
+      reportingCategory: 'LIQUID',
+      locations: 'All locations', 
+      stock: -38, 
+      available: -38, 
+      price: 1000.00, 
+      image: 'https://via.placeholder.com/40',
+      sku: 'WAT-1L-KIL-010',
+      visible: true,
+      taxable: false,
+      status: 'Active',
+      lowStockThreshold: 50
+    },
+    { 
+      id: 11, 
+      uniqueId: 'QWERTYUIOPASDFGHJKLZXCVBN', 
+      name: '21ST - JOINT SUPPORT 30\'S ( UK - MMS - G', 
+      category: 'TABLETS', 
+      reportingCategory: 'TABLETS',
+      locations: 'All locations', 
+      stock: 0, 
+      available: 0, 
+      price: 23500.00, 
+      image: 'https://via.placeholder.com/40',
+      sku: 'TAB-21ST-JOI-011',
+      visible: false,
+      taxable: true,
+      status: 'Active',
+      lowStockThreshold: 5
+    },
+    { 
+      id: 12, 
+      uniqueId: 'TYUIOPASDFGHJKLZXCVBNMQWE', 
+      name: '21ST - PreNATAL (USA) 30\'S', 
+      category: 'TABLETS', 
+      reportingCategory: 'TABLETS',
+      locations: 'All locations', 
+      stock: -1, 
+      available: -1, 
+      price: 19500.00, 
+      image: 'https://via.placeholder.com/40',
+      sku: 'TAB-21ST-PRE-012',
+      visible: true,
+      taxable: true,
+      status: 'Active',
+      lowStockThreshold: 3
+    },
+    { 
+      id: 13, 
+      uniqueId: 'OPASDFGHJKLZXCVBNMQWERTY', 
+      name: '21ST- FISH OIL ( USA - OMEGA3,6,9 - 1000', 
+      category: 'CAPSULES', 
+      reportingCategory: 'CAPSULES',
+      locations: 'All locations', 
+      stock: 0, 
+      available: 0, 
+      price: 23500.00, 
+      image: 'https://via.placeholder.com/40',
+      sku: 'CAP-21ST-FIS-013',
+      visible: true,
+      taxable: false,
+      status: 'Active',
+      lowStockThreshold: 4
+    },
+    { 
+      id: 14, 
+      uniqueId: 'DFGHJKLZXCVBNMQWERTYUIOP', 
+      name: '21ST- LUTEIN ( UK - EYE SUPPORT) 30\'S', 
+      category: 'TABLETS', 
+      reportingCategory: 'TABLETS',
+      locations: 'All locations', 
+      stock: 0, 
+      available: 0, 
+      price: 20000.00, 
+      image: 'https://via.placeholder.com/40',
+      sku: 'TAB-21ST-LUT-014',
+      visible: true,
+      taxable: true,
+      status: 'Active',
+      lowStockThreshold: 6
+    },
+    { 
+      id: 15, 
+      uniqueId: 'HJKLZXCVBNMQWERTYUIOPASDF', 
+      name: '21ST- OSTEO SUPPORT TAS 30\'S (US - CAL', 
+      category: 'TABLETS', 
+      reportingCategory: 'TABLETS',
+      locations: 'All locations', 
+      stock: 0, 
+      available: 0, 
+      price: 19500.00, 
+      image: 'https://via.placeholder.com/40',
+      sku: 'TAB-21ST-OST-015',
+      visible: true,
+      taxable: true,
+      status: 'Active',
+      lowStockThreshold: 7
+    },
   ];
 
   // Load items
@@ -329,7 +571,282 @@ const ItemLibrary = () => {
   const handleActionSelect = (action, itemId) => {
     console.log(`Action: ${action} for item: ${itemId}`);
     setShowActionsDropdown(null);
-    // Add specific action handlers here
+    
+    const item = items.find(item => item.id === itemId);
+    if (!item) return;
+    
+    switch (action) {
+      case 'edit':
+        handleEditItem(item);
+        break;
+      case 'duplicate':
+        handleDuplicateItem(item);
+        break;
+      case 'updateSalesChannels':
+        handleUpdateSalesChannels(item);
+        break;
+      case 'updateSiteVisibility':
+        handleUpdateSiteVisibility(item);
+        break;
+      case 'updateOnlineSalePrice':
+        handleUpdateOnlineSalePrice(item);
+        break;
+      case 'updateCategories':
+        handleUpdateCategories(item);
+        break;
+      case 'updateFulfillmentMethods':
+        handleUpdateFulfillmentMethods(item);
+        break;
+      case 'setAsNonTaxable':
+        handleSetAsNonTaxable(item);
+        break;
+      case 'archive':
+        handleArchiveItem(item);
+        break;
+      case 'updateLowStockAlert':
+        handleUpdateLowStockAlert(item);
+        break;
+      case 'delete':
+        handleDeleteItem(item);
+        break;
+      default:
+        console.warn(`Unknown action: ${action}`);
+    }
+  };
+
+  // Handle saving items from the wizard
+  const handleSaveItem = (newItem) => {
+    if (duplicateItemData) {
+      // Adding a new duplicated item
+      setItems(prevItems => [...prevItems, newItem]);
+      console.log('Duplicated item added:', newItem.name);
+    } else if (editItemData) {
+      // Updating an existing item
+      setItems(prevItems => 
+        prevItems.map(item => 
+          item.id === editItemData.id ? newItem : item
+        )
+      );
+      console.log('Item updated:', newItem.name);
+    } else {
+      // Adding a completely new item
+      setItems(prevItems => [...prevItems, newItem]);
+      console.log('New item added:', newItem.name);
+    }
+  };
+
+  // Individual action handlers
+  const handleEditItem = (item) => {
+    // Set the item data for editing and open the wizard
+    setEditItemData(item);
+    setShowAddItemWizard(true);
+    console.log('Editing item:', item.name);
+  };
+
+  const handleDuplicateItem = (item) => {
+    // Generate smart numbering for duplicate names
+    const generateDuplicateName = (originalName) => {
+      const existingNames = items.map(item => item.name);
+      let counter = 1;
+      let newName = `${originalName} (${counter})`;
+      
+      // Keep incrementing counter until we find a unique name
+      while (existingNames.includes(newName)) {
+        counter++;
+        newName = `${originalName} (${counter})`;
+      }
+      
+      return newName;
+    };
+
+    // Generate smart SKU numbering
+    const generateDuplicateSKU = (originalSKU) => {
+      const existingSKUs = items.map(item => item.sku);
+      let counter = 1;
+      let newSKU = `${originalSKU}-${counter}`;
+      
+      // Keep incrementing counter until we find a unique SKU
+      while (existingSKUs.includes(newSKU)) {
+        counter++;
+        newSKU = `${originalSKU}-${counter}`;
+      }
+      
+      return newSKU;
+    };
+
+    const duplicatedItem = {
+      ...item,
+      id: Date.now(), // Generate new ID
+      uniqueId: `DUP-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      name: generateDuplicateName(item.name),
+      sku: generateDuplicateSKU(item.sku),
+      status: 'Draft' // Set as draft for new duplicated items
+    };
+    
+    // Set the duplicate item data and open the wizard
+    setDuplicateItemData(duplicatedItem);
+    setShowAddItemWizard(true);
+  };
+
+  const handleUpdateSalesChannels = (item) => {
+    // This would typically open a modal to manage sales channels
+    const channels = prompt(
+      `Update sales channels for "${item.name}"\nCurrent: Online, In-store\nEnter new channels (comma-separated):`,
+      'Online, In-store'
+    );
+    
+    if (channels !== null) {
+      // Update item with new sales channels
+      setItems(prevItems => 
+        prevItems.map(i => 
+          i.id === item.id 
+            ? { ...i, salesChannels: channels.split(',').map(c => c.trim()) }
+            : i
+        )
+      );
+      alert(`Sales channels updated for "${item.name}"`);
+    }
+  };
+
+  const handleUpdateSiteVisibility = (item) => {
+    const visibility = confirm(
+      `Current visibility for "${item.name}": ${item.visible ? 'Visible' : 'Hidden'}\n\nClick OK to make it ${item.visible ? 'Hidden' : 'Visible'}, or Cancel to keep current setting.`
+    );
+    
+    if (visibility !== null) {
+      setItems(prevItems => 
+        prevItems.map(i => 
+          i.id === item.id 
+            ? { ...i, visible: !item.visible }
+            : i
+        )
+      );
+      alert(`Site visibility updated for "${item.name}"`);
+    }
+  };
+
+  const handleUpdateOnlineSalePrice = (item) => {
+    const newPrice = prompt(
+      `Update online sale price for "${item.name}"\nCurrent price: $${item.price}`,
+      item.price.toString()
+    );
+    
+    if (newPrice !== null && !isNaN(parseFloat(newPrice))) {
+      setItems(prevItems => 
+        prevItems.map(i => 
+          i.id === item.id 
+            ? { ...i, price: parseFloat(newPrice) }
+            : i
+        )
+      );
+      alert(`Price updated for "${item.name}" to $${newPrice}`);
+    }
+  };
+
+  const handleUpdateCategories = (item) => {
+    const categories = prompt(
+      `Update categories for "${item.name}"\nCurrent: ${item.category}\nEnter new categories (comma-separated):`,
+      item.category
+    );
+    
+    if (categories !== null) {
+      setItems(prevItems => 
+        prevItems.map(i => 
+          i.id === item.id 
+            ? { ...i, category: categories, reportingCategory: categories.split(',')[0]?.trim() }
+            : i
+        )
+      );
+      alert(`Categories updated for "${item.name}"`);
+    }
+  };
+
+  const handleUpdateFulfillmentMethods = (item) => {
+    const methods = prompt(
+      `Update fulfillment methods for "${item.name}"\nCurrent: Pickup, Delivery\nEnter new methods (comma-separated):`,
+      'Pickup, Delivery'
+    );
+    
+    if (methods !== null) {
+      // Update item with new fulfillment methods
+      setItems(prevItems => 
+        prevItems.map(i => 
+          i.id === item.id 
+            ? { ...i, fulfillmentMethods: methods.split(',').map(m => m.trim()) }
+            : i
+        )
+      );
+      alert(`Fulfillment methods updated for "${item.name}"`);
+    }
+  };
+
+  const handleSetAsNonTaxable = (item) => {
+    const confirm = window.confirm(
+      `Set "${item.name}" as ${item.taxable ? 'non-taxable' : 'taxable'}?`
+    );
+    
+    if (confirm) {
+      setItems(prevItems => 
+        prevItems.map(i => 
+          i.id === item.id 
+            ? { ...i, taxable: !item.taxable }
+            : i
+        )
+      );
+      alert(`"${item.name}" is now ${item.taxable ? 'non-taxable' : 'taxable'}`);
+    }
+  };
+
+  const handleArchiveItem = (item) => {
+    const confirm = window.confirm(
+      `Are you sure you want to archive "${item.name}"?\n\nArchived items will be hidden from the main view but can be restored later.`
+    );
+    
+    if (confirm) {
+      setItems(prevItems => 
+        prevItems.map(i => 
+          i.id === item.id 
+            ? { ...i, archived: true, status: 'Archived' }
+            : i
+        )
+      );
+      alert(`"${item.name}" has been archived successfully!`);
+    }
+  };
+
+  const handleUpdateLowStockAlert = (item) => {
+    const threshold = prompt(
+      `Set low stock alert threshold for "${item.name}"\nCurrent threshold: ${item.lowStockThreshold || 'Not set'}\nEnter new threshold:`,
+      (item.lowStockThreshold || 5).toString()
+    );
+    
+    if (threshold !== null && !isNaN(parseInt(threshold))) {
+      setItems(prevItems => 
+        prevItems.map(i => 
+          i.id === item.id 
+            ? { ...i, lowStockThreshold: parseInt(threshold) }
+            : i
+        )
+      );
+      alert(`Low stock alert threshold set to ${threshold} for "${item.name}"`);
+    }
+  };
+
+  const handleDeleteItem = (item) => {
+    const confirm = window.confirm(
+      `⚠️ WARNING: This action cannot be undone!\n\nAre you sure you want to permanently delete "${item.name}"?\n\nThis will remove all associated data including:\n• Product information\n• Inventory records\n• Sales history\n• Images and documents`
+    );
+    
+    if (confirm) {
+      const secondConfirm = window.confirm(
+        `Final confirmation required!\n\nType the item name to confirm deletion: "${item.name}"\n\nClick OK only if you're absolutely sure.`
+      );
+      
+      if (secondConfirm) {
+        setItems(prevItems => prevItems.filter(i => i.id !== item.id));
+        alert(`"${item.name}" has been permanently deleted.`);
+      }
+    }
   };
 
   // Loading view
@@ -1251,7 +1768,14 @@ const ItemLibrary = () => {
       
       {showAddItemWizard && (
         <ItemWizard 
-          onClose={() => setShowAddItemWizard(false)}
+          onClose={() => {
+            setShowAddItemWizard(false);
+            setDuplicateItemData(null); // Clear duplicate data when closing
+            setEditItemData(null); // Clear edit data when closing
+          }}
+          duplicateItem={duplicateItemData} // Pass duplicate item data to wizard
+          editItem={editItemData} // Pass edit item data to wizard
+          onSave={handleSaveItem} // Pass save callback to add items to library
         />
       )}
     </div>
